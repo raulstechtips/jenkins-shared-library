@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add the first shared library: Gradle build with JenkinsPipelineUnit tests on Groovy 2.4.21, and pinned tool images and registry targets ([DEVSECOPS-34](https://raulstechtips.atlassian.net/browse/DEVSECOPS-34)).
+- Add the library reference README: config keys, flags, stage order, version and release rules, and how to add a step ([DEVSECOPS-34](https://raulstechtips.atlassian.net/browse/DEVSECOPS-34))
 
 ### Changed
 
