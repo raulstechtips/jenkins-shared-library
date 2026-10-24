@@ -20,6 +20,24 @@ class ChangelogUpdater implements Serializable {
     private static final String FRESH_UNRELEASED =
         '## [Unreleased]\n\n### Added\n\n### Changed\n\n### Fixed\n'
 
+    /**
+     * Moves the Unreleased entries into a new release section and returns the new changelog text.
+     *
+     * It writes a fresh, empty Unreleased section (Added, Changed, Fixed), then "## [version] -
+     * isoDate" with the old Unreleased subsections that have bullets. It replaces the [Unreleased]
+     * link with a compare link from version to HEAD and adds a link for version: a compare link
+     * from previousVersion, or a release tag link when there is no previous version. When there is
+     * no [Unreleased] link, both links are appended at the end. No other line changes.
+     *
+     * @param text the current CHANGELOG.md content
+     * @param version the release version, X.Y.Z
+     * @param isoDate the release date, YYYY-MM-DD
+     * @param repoSlug the GitHub repository, owner/repo
+     * @param previousVersion the previous release, X.Y.Z, or null or empty for the first release
+     * @return the updated changelog text
+     * @throws IllegalArgumentException when an argument has the wrong format, when text uses CRLF
+     *     line endings, or when there is no "## [Unreleased]" heading
+     */
     @NonCPS
     String release(String text, String version, String isoDate, String repoSlug, String previousVersion) {
         if (!(version ==~ /[0-9]+[.][0-9]+[.][0-9]+/)) {
@@ -81,6 +99,16 @@ class ChangelogUpdater implements Serializable {
         return endsWithNewline ? result + '\n' : result
     }
 
+    /**
+     * Tells whether the Unreleased section has at least one entry.
+     *
+     * Only lines that start with "- " count as entries.
+     *
+     * @param text the CHANGELOG.md content
+     * @return true when there is an entry; false when there is none or there is no Unreleased
+     *     heading
+     * @throws IllegalArgumentException when text uses CRLF line endings
+     */
     @NonCPS
     boolean hasUnreleasedEntries(String text) {
         checkLineEndings(text)

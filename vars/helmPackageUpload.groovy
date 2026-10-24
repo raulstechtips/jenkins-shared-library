@@ -1,5 +1,19 @@
 import dev.raulstechtips.jenkins.helpers.RegistryCatalog
 
+/**
+ * Packages the chart with the build version and pushes it to every publish target.
+ *
+ * When helm-image-tag-path is set, it first writes VERSION@DIGEST to that path in
+ * charts/values.yaml with yq in the tools container. In the helm container it runs helm package
+ * into .pipeline/dist. For each target it logs in to the registry, runs helm push, and reads the
+ * chart back with helm show chart to check its version.
+ *
+ * @param cfg the loaded config. Reads publish-targets, version and helm-image-tag-path.
+ * @param digest the built image digest. Used only when helm-image-tag-path is set.
+ * @throws error (fails the build) when the uploaded chart version is not cfg.version or a helm
+ *     command fails
+ * @throws IllegalArgumentException when a publish target is not in registries.yaml
+ */
 def call(Map cfg, String digest) {
     Map registries = readYaml(text: libraryResource('dev/raulstechtips/jenkins/registries.yaml'))
     def catalog = new RegistryCatalog(registries)

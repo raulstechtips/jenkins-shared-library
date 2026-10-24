@@ -3,8 +3,24 @@ package dev.raulstechtips.jenkins.helpers
 import com.cloudbees.groovy.cps.NonCPS
 import groovy.json.JsonOutput
 
+/**
+ * Builds the Kubernetes pod spec for the main pipeline agent from the loaded config and tools.yaml.
+ */
 class PodSpecBuilder implements Serializable {
 
+    /**
+     * Returns the agent pod spec as pretty-printed JSON.
+     *
+     * The pod always has a tools container. It adds helm when the repo has a chart, kubeconform
+     * when helm-test is true, trivy when trivy-scan is true, and jdk for the java pipeline. Each
+     * container runs sleep infinity as user 1000 with the same HOME and cache paths, and trivy also
+     * gets the Trivy database mirrors. Memory is limited to 2Gi for trivy and jdk and to 1Gi for
+     * the others. The service account token is not mounted.
+     *
+     * @param cfg the loaded config. Reads chartPresent, type and pipeline-steps.
+     * @param tools the parsed tools.yaml, which maps each container name to a map with its image
+     * @return the pod spec as JSON
+     */
     @NonCPS
     String build(Map cfg, Map tools) {
         List names = ['tools']

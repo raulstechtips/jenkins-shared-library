@@ -1,5 +1,15 @@
 import dev.raulstechtips.jenkins.helpers.ShellQuote
 
+/**
+ * Validates every rendered manifest in .pipeline/render/ with kubeconform in strict mode.
+ *
+ * It runs in the kubeconform container and uses the default schemas plus the datree CRDs catalog.
+ * It skips the Infisical secret kinds and CustomResourceDefinition objects. It expects renderChart
+ * to have run, and does nothing when the repo has no chart.
+ *
+ * @param cfg the loaded config. Reads chartPresent.
+ * @throws error (fails the build) when a manifest is invalid
+ */
 def call(Map cfg) {
     if (!cfg.chartPresent) {
         return

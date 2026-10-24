@@ -2,6 +2,20 @@ import com.cloudbees.groovy.cps.NonCPS
 import dev.raulstechtips.jenkins.helpers.FindingsEvaluator
 import dev.raulstechtips.jenkins.helpers.ShellQuote
 
+/**
+ * Runs an opengrep scan with the pinned rules for each language found in the repo.
+ *
+ * It reads the opengrep-rules.yaml and tools.yaml resources and picks the rule folders whose globs
+ * match a file outside .git, .pipeline and chart templates. When none match, it logs that and
+ * returns. In the tools container it downloads the pinned opengrep binary, checks its SHA-256, and
+ * fetches the rules repo at the pinned commit. In the shell container it scans the repo, excluding
+ * charts and .pipeline, into .pipeline/reports/opengrep.json. It logs the ERROR, WARNING and INFO
+ * counts. When opengrep-fail-on is empty it only logs a warning.
+ *
+ * @param cfg the loaded config. Reads opengrep-fail-on.
+ * @throws error (fails the build) when a resource is malformed, the download or checksum fails, the
+ *     scan fails, or a finding matches opengrep-fail-on
+ */
 def call(Map cfg) {
     Map rules = readYaml(text: libraryResource('dev/raulstechtips/jenkins/opengrep-rules.yaml'))
     Map tools = readYaml(text: libraryResource('dev/raulstechtips/jenkins/tools.yaml'))

@@ -1,3 +1,18 @@
+/**
+ * Opens a pull request in cluster-config that moves the project's dev Argo CD app to this build's
+ * chart version.
+ *
+ * In the tools container, with the github-app credentials, it clones cluster-config main into
+ * .pipeline/cluster-config. In argo/dev/PROJECT.yaml it finds the source whose chart is the name in
+ * charts/Chart.yaml and sets its targetRevision to cfg.version on the branch
+ * argo-deploy/PROJECT-dev-VERSION. It opens no PR when the file already has that version or an open
+ * PR exists for the branch, and it reuses the branch when it already exists on the remote. The PR
+ * is merged by hand.
+ *
+ * @param cfg the loaded config. Reads project-name and version.
+ * @throws error (fails the build) when the app file is missing, when no source uses the chart, when
+ *     the edit is not exactly one changed line, or when a git, yq, curl or jq command fails
+ */
 def call(Map cfg) {
     String chart = readYaml(file: 'charts/Chart.yaml').name
     String version = cfg.version

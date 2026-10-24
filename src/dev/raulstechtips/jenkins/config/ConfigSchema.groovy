@@ -2,7 +2,23 @@ package dev.raulstechtips.jenkins.config
 
 import com.cloudbees.groovy.cps.NonCPS
 
+/**
+ * Describes the keys, types and defaults allowed in project-pipeline-config.yaml.
+ *
+ * ConfigValidator reads this tree to check and normalise a parsed config. Each node is a map with a
+ * type (string, boolean, list or map) and, where they apply, required, defaultValue, choices (the
+ * allowed list values) and children (the keys of a nested map).
+ */
 class ConfigSchema implements Serializable {
+    /**
+     * Returns the schema tree for one pipeline type.
+     *
+     * The root has one required map key, project-config. The java type also gets the build step
+     * flag and the build-command key. Any other type value gets the cluster shape.
+     *
+     * @param type the pipeline type, 'cluster' or 'java'
+     * @return a new map of key name to node spec, rooted at project-config
+     */
     @NonCPS
     static Map tree(String type) {
         Map flags = [:]

@@ -8,6 +8,10 @@ class ShellQuote implements Serializable {
      * Returns value as one POSIX single-quoted word; each embedded single quote becomes '\''.
      * A null value throws IllegalArgumentException: a missing config value must fail loudly,
      * not become an empty argument.
+     *
+     * @param value the text to quote
+     * @return the quoted word, safe to paste into a shell command
+     * @throws IllegalArgumentException when value is null
      */
     @NonCPS
     static String quote(String value) {

@@ -2,7 +2,20 @@ package dev.raulstechtips.jenkins.helpers
 
 import com.cloudbees.groovy.cps.NonCPS
 
+/**
+ * Finds the known key closest to a mistyped key, for the "Did you mean" hint in config errors.
+ */
 class NearestKey implements Serializable {
+    /**
+     * Returns the sibling with the smallest Levenshtein edit distance to key, when that distance is
+     * below 4.
+     *
+     * On a tie, the first sibling found wins.
+     *
+     * @param key the unknown key
+     * @param siblings the valid keys at the same level
+     * @return the closest sibling, or null when none is within 3 edits
+     */
     @NonCPS
     static String suggest(String key, Collection<String> siblings) {
         String nearest = null

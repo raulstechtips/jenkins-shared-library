@@ -3,6 +3,21 @@ import dev.raulstechtips.jenkins.helpers.ChangelogUpdater
 import dev.raulstechtips.jenkins.helpers.SemVer
 import dev.raulstechtips.jenkins.helpers.VersionCalculator
 
+/**
+ * Creates the release commit and tag for cfg.releaseVersion, without pushing them.
+ *
+ * In the tools container it checks that the version is X.Y.Z and higher than the version file
+ * (charts/Chart.yaml or gradle.properties), that CHANGELOG.md has entries in [Unreleased], and that
+ * the tag does not exist on origin. It then releases the changelog with ChangelogUpdater, linking
+ * it to the highest X.Y.Z tag on origin, sets the new version in the version file, commits
+ * "release: VERSION" as the Jenkins bot, and creates an annotated tag. The github-app credentials
+ * are used only for git ls-remote, through the environment of that one process, and are never
+ * stored. finish pushes the result.
+ *
+ * @param cfg the loaded config. Reads releaseVersion and type, and sets version.
+ * @throws error (fails the build) when a check fails or a git command fails
+ * @throws IllegalArgumentException when origin is not a GitHub HTTPS or SSH URL
+ */
 void prepare(Map cfg) {
     container('tools') {
         String version = cfg.releaseVersion as String
@@ -75,6 +90,16 @@ git tag -a "$V" -m "$V"'''
     }
 }
 
+/**
+ * Pushes the release commit to main and the release tag in one atomic push.
+ *
+ * It runs git push --atomic in the tools container with the github-app credentials, so main and the
+ * tag move together or not at all.
+ *
+ * @param cfg the loaded config. Reads releaseVersion.
+ * @throws error (fails the build) when the push fails, for example when main has moved
+ * @throws IllegalArgumentException when origin is not a GitHub HTTPS or SSH URL
+ */
 void finish(Map cfg) {
     container('tools') {
         String slug = repoSlug(sh(script: 'git remote get-url origin', returnStdout: true).trim())

@@ -3,7 +3,34 @@ package dev.raulstechtips.jenkins.helpers
 import com.cloudbees.groovy.cps.NonCPS
 import dev.raulstechtips.jenkins.config.ConfigSchema
 
+/**
+ * Checks a parsed project-pipeline-config.yaml against ConfigSchema and fills in the defaults.
+ *
+ * It collects every error it finds and reports them together, so one run shows all problems. An
+ * unknown key gets a "Did you mean" hint from NearestKey.
+ */
 class ConfigValidator implements Serializable {
+    /**
+     * Validates a parsed config and returns its normalised project-config map.
+     *
+     * Besides the schema types and allowed values, it checks: the project-name format (a DNS label
+     * of at most 53 characters) and the project-namespace format; that project-namespace is set
+     * when helm-install or helm-clean-install is true; that test-command is set when unit-test is
+     * true and build-command when build is true; that publish-targets has no duplicates and is not
+     * empty when build-docker-image or helm-package-upload is true; the docker-image.name format
+     * when build-docker-image is true; that docker-image.dockerfile, docker-image.context and each
+     * helm-overrides entry are paths relative to the repo root; and that helm-image-tag-path starts
+     * with '.' and needs build-docker-image. When docker-image.name is not given, it defaults to
+     * project-name.
+     *
+     * @param raw the parsed YAML root. Any value is accepted, so a malformed root gets a validation
+     *     error.
+     * @param type the pipeline type, 'cluster' or 'java'
+     * @return the project-config map, with every schema key present and missing values set to their
+     *     defaults
+     * @throws IllegalArgumentException when type is not cluster or java, when raw is not a map, or
+     *     when any check fails. The message lists every error, one per line.
+     */
     // Object deliberately accepts malformed YAML roots so they get validation errors.
     @NonCPS
     static Map validate(Object raw, String type) {

@@ -1,5 +1,18 @@
 import dev.raulstechtips.jenkins.helpers.HelmInstallCommands
 
+/**
+ * Installs or upgrades the chart in the project namespace and waits for it to be ready.
+ *
+ * It checks out the repo, reads charts/Chart.yaml and runs the HelmInstallCommands.install commands
+ * one by one in the kubectl container, so the pipelines call it on the deployer agent.
+ *
+ * @param cfg the loaded config. Reads project-name, project-namespace, version, helm-image-tag-path
+ *     and helm-overrides.
+ * @param digest the built image digest, or null when no image was built
+ * @throws IllegalArgumentException when project-name or project-namespace is missing, or when the
+ *     digest is used and is invalid
+ * @throws error (fails the build) when a helm or yq command fails
+ */
 def call(Map cfg, String digest = null) {
     checkout scm
     container('kubectl') {

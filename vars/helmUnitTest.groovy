@@ -1,3 +1,13 @@
+/**
+ * Runs the helm-unittest tests in charts/tests/.
+ *
+ * In the tools container it downloads the pinned helm-unittest plugin (0.3.1), checks its SHA-256
+ * and removes its install hooks. In the helm container it installs the plugin and runs helm
+ * unittest charts. It does nothing when the repo has no chart or charts/tests/ is missing.
+ *
+ * @param cfg the loaded config. Reads chartPresent.
+ * @throws error (fails the build) when the download or checksum fails or a test fails
+ */
 def call(Map cfg) {
     if (!cfg.chartPresent) {
         return

@@ -2,6 +2,27 @@ import dev.raulstechtips.jenkins.helpers.RegistryCatalog
 import dev.raulstechtips.jenkins.helpers.SemVer
 import dev.raulstechtips.jenkins.helpers.VersionCalculator
 
+/**
+ * Runs the declarative pipeline for a java repository.
+ *
+ * It loads project-pipeline-config.yaml as type java, builds the agent pod with agentPodYaml, and
+ * runs the stages that pipeline-steps turns on: checkout and version, chart render, the Trivy
+ * secret and Dockerfile scans in parallel with the opengrep scan, build, unit test, Helm test,
+ * image build, Trivy image scan, chart package and upload, Trivy chart scan, Helm clean install or
+ * Helm install, Argo deploy, and release. Most stages run on the generic agent merged with the
+ * library pod. Image build runs on the builder agent and the Helm installs on the deployer agent.
+ * Build and unit test run build-command and test-command in the jdk container. The Helm installs
+ * never run on main or in a release run, and Argo deploy runs only on a main push or in a release
+ * run. A main push whose last commit is "release: VERSION" is marked NOT_BUILT and skips every
+ * stage. Files under .pipeline/reports are archived. The build times out after 60 minutes and
+ * builds do not run concurrently.
+ *
+ * The RELEASE_VERSION parameter (X.Y.Z, main only) starts a release run through releasePipeline.
+ *
+ * @throws error (fails the build) when RELEASE_VERSION is set on a branch other than main or on a
+ *     pull request, or when gradle.properties has no X.Y.Z version on a main push. Each step raises its
+ *     own errors.
+ */
 def call() {
     def cfg = loadProjectConfig(type: 'java')
     cfg.podYaml = agentPodYaml(cfg)

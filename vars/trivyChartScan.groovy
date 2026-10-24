@@ -1,6 +1,19 @@
 import dev.raulstechtips.jenkins.helpers.ShellQuote
 import dev.raulstechtips.jenkins.helpers.RegistryCatalog
 
+/**
+ * Scans the uploaded chart for misconfigurations.
+ *
+ * In the helm container it logs in to the first publish target, pulls the chart at cfg.version into
+ * .pipeline/pulled, and renders it into .pipeline/render-uploaded with the default values and with
+ * each charts/ci/NAME-values.yaml file. It then runs trivyConfigScan on each render.
+ *
+ * @param cfg the loaded config. Reads publish-targets, project-name, project-namespace, version and
+ *     trivy-fail-on.
+ * @throws error (fails the build) when the pull or a render fails, or a finding matches
+ *     trivy-fail-on
+ * @throws IllegalArgumentException when the first publish target is not in registries.yaml
+ */
 def call(Map cfg) {
     Map registries = readYaml(text: libraryResource('dev/raulstechtips/jenkins/registries.yaml'))
     String targetName = cfg['publish-targets'][0]

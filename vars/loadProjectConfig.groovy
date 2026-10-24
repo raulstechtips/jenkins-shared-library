@@ -1,5 +1,17 @@
 import dev.raulstechtips.jenkins.helpers.ConfigValidator
 
+/**
+ * Reads and validates project-pipeline-config.yaml from the repo root.
+ *
+ * It reads the file with readTrusted, parses it with readYaml and validates it with
+ * ConfigValidator. It then sets type, and sets chartPresent to true when charts/Chart.yaml can be
+ * read with readTrusted. It needs no container, so the pipelines call it before any agent starts.
+ *
+ * @param args a map with type, 'cluster' or 'java'
+ * @return the validated config, with type and chartPresent added
+ * @throws error (fails the build) when the file is missing, is not valid YAML, or fails validation.
+ *     A validation error lists every problem.
+ */
 def call(Map args) {
     String text
     try {

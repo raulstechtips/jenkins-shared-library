@@ -1,6 +1,18 @@
 import dev.raulstechtips.jenkins.helpers.ShellQuote
 import dev.raulstechtips.jenkins.helpers.FindingsEvaluator
 
+/**
+ * Runs trivy config on one file or directory and fails on findings in trivy-fail-on.
+ *
+ * It runs in the trivy container, uses .trivyignore.yaml or .trivyignore when present, writes
+ * .pipeline/reports/trivy-config-LABEL.json, and logs the count for each severity.
+ *
+ * @param target the file or directory to scan
+ * @param label the name used in the report file and the log
+ * @param cfg the loaded config. Reads trivy-fail-on.
+ * @throws error (fails the build) when trivy fails or a finding matches trivy-fail-on
+ * @throws IllegalArgumentException when the report is empty or not valid JSON
+ */
 def call(String target, String label, Map cfg) {
     String report = ".pipeline/reports/trivy-config-${label}.json"
     container('trivy') {

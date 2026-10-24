@@ -20,6 +20,17 @@ class FindingsEvaluator implements Serializable {
 
     private static final long serialVersionUID = 1L
 
+    /**
+     * Counts the findings in a Trivy JSON report and checks them against the fail list.
+     *
+     * It counts vulnerabilities, misconfigurations with status FAIL, and secrets, by severity. A
+     * missing or unknown severity counts as UNKNOWN.
+     *
+     * @param json the report text
+     * @param failOn the severities that fail the build. Null or empty never fails.
+     * @return the counts, secrets and fail summary described on the class
+     * @throws IllegalArgumentException when the report is empty or is not valid JSON
+     */
     @NonCPS
     Map evaluateTrivy(String json, List failOn) {
         Map counts = emptyCounts(['CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'UNKNOWN'])
@@ -51,6 +62,18 @@ class FindingsEvaluator implements Serializable {
         return summary(counts, secrets, failOn)
     }
 
+    /**
+     * Counts the results in an opengrep JSON report by extra.severity and checks them against the
+     * fail list.
+     *
+     * A result with a severity other than ERROR, WARNING or INFO is not counted. secrets is always
+     * 0.
+     *
+     * @param json the report text
+     * @param failOn the severities that fail the build. Null or empty never fails.
+     * @return the counts, secrets and fail summary described on the class
+     * @throws IllegalArgumentException when the report is empty or is not valid JSON
+     */
     @NonCPS
     Map evaluateOpengrep(String json, List failOn) {
         Map counts = emptyCounts(['ERROR', 'WARNING', 'INFO'])

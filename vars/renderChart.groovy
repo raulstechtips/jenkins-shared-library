@@ -1,5 +1,16 @@
 import dev.raulstechtips.jenkins.helpers.ShellQuote
 
+/**
+ * Renders the chart into .pipeline/render/ for the later checks and scans.
+ *
+ * In the helm container it builds the chart dependencies and renders default.yaml with the default
+ * values and ci-NAME.yaml for each charts/ci/NAME-values.yaml file. The namespace is
+ * project-namespace, or project-name when that is not set. When it is done it writes
+ * .pipeline/render/.complete. It does nothing when the repo has no chart.
+ *
+ * @param cfg the loaded config. Reads chartPresent, project-name and project-namespace.
+ * @throws error (fails the build) when a helm command fails
+ */
 def call(Map cfg) {
     if (!cfg.chartPresent) {
         return
