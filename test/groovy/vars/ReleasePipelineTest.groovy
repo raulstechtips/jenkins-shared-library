@@ -1,6 +1,7 @@
 package vars
 
 import com.lesfurets.jenkins.unit.BasePipelineTest
+import java.nio.file.Files
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -288,6 +289,46 @@ class ReleasePipelineTest extends BasePipelineTest {
     }
 
     @Test
+    void finishKeepsHostilePushOperandsAsArguments() {
+        remote = 'https://github.com/raulstechtips/demo.git\n'
+        cfg.releaseVersion = '1.10.0;touch version-pwned'
+        step.finish(cfg)
+
+        Map push = commands.find { it.script.contains('git push') }
+        String script = push.script
+        File dir = Files.createTempDirectory('release-push-test').toFile()
+        try {
+            File bin = new File(dir, 'bin')
+            assertTrue(bin.mkdir())
+            File argvFile = new File(dir, 'argv')
+            File git = new File(bin, 'git')
+            git.text = '#!/bin/sh\nprintf "%s\\0" "$@" > "$ARGV_FILE"\n'
+            assertTrue(git.setExecutable(true))
+            ProcessBuilder builder = new ProcessBuilder('/bin/sh', '-c', script)
+                .directory(dir).redirectErrorStream(true)
+            builder.environment().putAll(push.environment)
+            builder.environment().REPO_SLUG = 'a/b;touch x'
+            builder.environment().V = '1.10.0;touch version-pwned'
+            builder.environment().PATH = bin.path
+            builder.environment().ARGV_FILE = argvFile.path
+            Process process = builder.start()
+            assertTrue(process.waitFor(10, java.util.concurrent.TimeUnit.SECONDS))
+            assertEquals(0, process.exitValue())
+            assertEquals([
+                'push', '--atomic',
+                'https://x-access-token:' + token + '@github.com/a/b;touch x.git',
+                'HEAD:refs/heads/main',
+                'refs/tags/1.10.0;touch version-pwned',
+                ''
+            ], new String(argvFile.bytes, 'UTF-8').split('\u0000', -1).toList())
+            assertFalse(new File(dir, 'x.git').exists())
+            assertFalse(new File(dir, 'version-pwned').exists())
+        } finally {
+            dir.deleteDir()
+        }
+    }
+
+    @Test
     void mainMovedMakesFinishFailOnNonzeroPush() {
         pushStatus = 1
         assertThrows(IllegalStateException) { step.finish(cfg) }
@@ -323,7 +364,7 @@ class ReleasePipelineTest extends BasePipelineTest {
         def pushes = commands.findAll { it.script.contains('git push') }
         assertEquals(1, pushes.size())
         String script = pushes[0].script
-        assertTrue(script.contains('git push --atomic https://x-access-token:${GH_TOKEN}@github.com/${REPO_SLUG}.git HEAD:refs/heads/main refs/tags/${V}'))
+        assertTrue(script.contains('git push --atomic "https://x-access-token:${GH_TOKEN}@github.com/${REPO_SLUG}.git" "HEAD:refs/heads/main" "refs/tags/${V}"'))
         assertEquals(slug, pushes[0].environment.REPO_SLUG)
         assertEquals('1.10.0', pushes[0].environment.V)
         assertEquals(1, credentials.size())

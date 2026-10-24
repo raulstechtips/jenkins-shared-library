@@ -82,7 +82,7 @@ void finish(Map cfg) {
             withCredentials([usernamePassword(credentialsId: 'github-app',
                 usernameVariable: 'GH_USER', passwordVariable: 'GH_TOKEN')]) {
                 sh '''set +x
-git push --atomic https://x-access-token:${GH_TOKEN}@github.com/${REPO_SLUG}.git HEAD:refs/heads/main refs/tags/${V}'''
+git push --atomic "https://x-access-token:${GH_TOKEN}@github.com/${REPO_SLUG}.git" "HEAD:refs/heads/main" "refs/tags/${V}"'''
             }
         }
     }

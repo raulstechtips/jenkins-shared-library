@@ -13,8 +13,12 @@ class ShellQuoteTest {
             File script = new File(dir, 'run.sh')
             script.text = 'set -eu\nprintf \'%s\\0\' ' + ShellQuote.quote(value) + ' marker\n'
             Process p = new ProcessBuilder('/bin/sh', script.name).directory(dir).redirectErrorStream(true).start()
+            boolean finished = p.waitFor(30, TimeUnit.SECONDS)
+            if (!finished) {
+                p.destroyForcibly()
+            }
+            assertTrue(finished, 'quoted shell process did not finish within 30 seconds')
             byte[] out = p.inputStream.bytes
-            assertTrue(p.waitFor(30, TimeUnit.SECONDS))
             return [exit: p.exitValue(), args: new String(out, 'UTF-8').split('\u0000', -1).toList(), files: dir.list().toList()]
         } finally {
             dir.deleteDir()
