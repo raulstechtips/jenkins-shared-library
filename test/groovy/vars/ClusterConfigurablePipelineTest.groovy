@@ -138,6 +138,10 @@ class ClusterConfigurablePipelineTest extends DeclarativePipelineTest {
         assertEquals('1.2.1-main-0067101-13', binding.getVariable('currentBuild').displayName)
         assertEquals(['project-pipeline-config.yaml', 'charts/Chart.yaml',
             'dev/raulstechtips/jenkins/tools.yaml', 'pipeline', 'checkout'], events)
+        assertTrue(helper.callStack.any { it.methodName == 'echo' &&
+            it.args[0].toString() == 'Steps for this build (main): render, early-checks, ' +
+                'trivy-secret-scan, trivy-dockerfile-scan, opengrep-scan, helm-test, ' +
+                'helm-package-upload, trivy-chart-scan, argo-deploy' })
         assertAgentStructure()
         assertFalse(agentEntries().any { it.contains('builder') || it.contains('deployer') })
         assertArchive()
@@ -157,6 +161,8 @@ class ClusterConfigurablePipelineTest extends DeclarativePipelineTest {
         assertEquals(['Checkout'], leafStages())
         assertTrue(calls.empty)
         assertEquals('NOT_BUILT', binding.getVariable('currentBuild').result)
+        assertTrue(helper.callStack.any { it.methodName == 'echo' &&
+            it.args[0].toString() == 'Steps for this build (main): ' })
         assertTrue(binding.getVariable('currentBuild').description.contains('1.3.0'))
         assertFalse(agentEntries().any { it.contains('builder') || it.contains('deployer') })
         assertArchive()

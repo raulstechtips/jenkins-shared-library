@@ -1,3 +1,4 @@
+import dev.raulstechtips.jenkins.helpers.PipelineSteps
 import dev.raulstechtips.jenkins.helpers.RegistryCatalog
 import dev.raulstechtips.jenkins.helpers.SemVer
 import dev.raulstechtips.jenkins.helpers.VersionCalculator
@@ -32,6 +33,9 @@ def call() {
     if (cfg.releaseVersion && (env.BRANCH_NAME != 'main' || env.CHANGE_ID)) {
         error('RELEASE_VERSION is only allowed on the main job.')
     }
+
+    cfg.buildKind = PipelineSteps.buildKind(env.BRANCH_NAME, env.CHANGE_ID, cfg.releaseVersion)
+    cfg.nonMainBranch = env.BRANCH_NAME != 'main'
 
     pipeline {
         agent none
@@ -75,6 +79,13 @@ def call() {
                                         currentBuild.description = "Release commit ${version}: already built by the release run."
                                     }
                                 }
+                                echo "Steps for this build (${cfg.buildKind}): " + PipelineSteps.plan(cfg, [
+                                    'render', 'early-checks', 'trivy-scan',
+                                    'opengrep-scan', 'build', 'unit-test',
+                                    'helm-test', 'build-docker-image', 'trivy-image-scan',
+                                    'helm-package-upload', 'trivy-chart-scan', 'helm-clean-install',
+                                    'helm-install', 'argo-deploy', 'release'
+                                ]).join(', ')
                                 if (!cfg.skipAll) {
                                     cfg.version = computeVersion(cfg)
                                     currentBuild.displayName = cfg.version
@@ -87,12 +98,12 @@ def call() {
                     }
                     stage('Render') {
                         when {
-                            expression { !cfg.skipAll && cfg.chartPresent }
+                            expression { PipelineSteps.shouldRun(cfg, 'render') }
                         }
                         steps {
                             renderChart(cfg)
                             script {
-                                if (cfg['pipeline-steps']['trivy-scan']) {
+                                if (PipelineSteps.shouldRun(cfg, 'trivy-scan')) {
                                     cfg.upstreamImages = trivyImageScan.upstreamImages(cfg)
                                 }
                             }
@@ -100,12 +111,12 @@ def call() {
                     }
                     stage('Early checks') {
                         when {
-                            expression { !cfg.skipAll }
+                            expression { PipelineSteps.shouldRun(cfg, 'early-checks') }
                         }
                         parallel {
                             stage('Trivy scan') {
                                 when {
-                                    expression { !cfg.skipAll && cfg['pipeline-steps']['trivy-scan'] }
+                                    expression { PipelineSteps.shouldRun(cfg, 'trivy-scan') }
                                 }
                                 steps {
                                     trivySecretScan(cfg)
@@ -114,7 +125,7 @@ def call() {
                             }
                             stage('Opengrep scan') {
                                 when {
-                                    expression { !cfg.skipAll && cfg['pipeline-steps']['opengrep-scan'] }
+                                    expression { PipelineSteps.shouldRun(cfg, 'opengrep-scan') }
                                 }
                                 steps {
                                     opengrepScan(cfg)
@@ -124,7 +135,7 @@ def call() {
                     }
                     stage('Build') {
                         when {
-                            expression { !cfg.skipAll && cfg['pipeline-steps']['build'] }
+                            expression { PipelineSteps.shouldRun(cfg, 'build') }
                         }
                         steps {
                             runBuildCommand(cfg, 'jdk')
@@ -132,7 +143,7 @@ def call() {
                     }
                     stage('Unit test') {
                         when {
-                            expression { !cfg.skipAll && cfg['pipeline-steps']['unit-test'] }
+                            expression { PipelineSteps.shouldRun(cfg, 'unit-test') }
                         }
                         steps {
                             runTestCommand(cfg, 'jdk')
@@ -140,7 +151,7 @@ def call() {
                     }
                     stage('Helm test') {
                         when {
-                            expression { !cfg.skipAll && cfg['pipeline-steps']['helm-test'] }
+                            expression { PipelineSteps.shouldRun(cfg, 'helm-test') }
                         }
                         steps {
                             helmTest(cfg)
@@ -149,7 +160,7 @@ def call() {
                     stage('Build image') {
                         when {
                             beforeAgent true
-                            expression { !cfg.skipAll && cfg['pipeline-steps']['build-docker-image'] }
+                            expression { PipelineSteps.shouldRun(cfg, 'build-docker-image') }
                         }
                         agent {
                             kubernetes {
@@ -164,10 +175,7 @@ def call() {
                     }
                     stage('Trivy image scan') {
                         when {
-                            expression {
-                                !cfg.skipAll && cfg['pipeline-steps']['trivy-scan'] &&
-                                    (cfg.digest || cfg.upstreamImages)
-                            }
+                            expression { PipelineSteps.shouldRun(cfg, 'trivy-image-scan') }
                         }
                         steps {
                             script {
@@ -184,7 +192,7 @@ def call() {
                     }
                     stage('Package and upload chart') {
                         when {
-                            expression { !cfg.skipAll && cfg['pipeline-steps']['helm-package-upload'] }
+                            expression { PipelineSteps.shouldRun(cfg, 'helm-package-upload') }
                         }
                         steps {
                             helmPackageUpload(cfg, cfg.digest)
@@ -192,10 +200,7 @@ def call() {
                     }
                     stage('Trivy chart scan') {
                         when {
-                            expression {
-                                !cfg.skipAll && cfg['pipeline-steps']['trivy-scan'] &&
-                                    cfg['pipeline-steps']['helm-package-upload']
-                            }
+                            expression { PipelineSteps.shouldRun(cfg, 'trivy-chart-scan') }
                         }
                         steps {
                             trivyChartScan(cfg)
@@ -204,10 +209,7 @@ def call() {
                     stage('Helm clean install') {
                         when {
                             beforeAgent true
-                            expression {
-                                !cfg.skipAll && cfg['pipeline-steps']['helm-clean-install'] &&
-                                    env.BRANCH_NAME != 'main' && !cfg.releaseVersion
-                            }
+                            expression { PipelineSteps.shouldRun(cfg, 'helm-clean-install') }
                         }
                         agent {
                             kubernetes {
@@ -221,11 +223,7 @@ def call() {
                     stage('Helm install') {
                         when {
                             beforeAgent true
-                            expression {
-                                !cfg.skipAll && cfg['pipeline-steps']['helm-install'] &&
-                                    !cfg['pipeline-steps']['helm-clean-install'] &&
-                                    env.BRANCH_NAME != 'main' && !cfg.releaseVersion
-                            }
+                            expression { PipelineSteps.shouldRun(cfg, 'helm-install') }
                         }
                         agent {
                             kubernetes {
@@ -238,10 +236,7 @@ def call() {
                     }
                     stage('Argo deploy') {
                         when {
-                            expression {
-                                !cfg.skipAll && cfg['pipeline-steps']['argo-deploy'] &&
-                                    ((env.BRANCH_NAME == 'main' && !env.CHANGE_ID) || cfg.releaseVersion)
-                            }
+                            expression { PipelineSteps.shouldRun(cfg, 'argo-deploy') }
                         }
                         steps {
                             argoDeploy(cfg)
@@ -249,7 +244,7 @@ def call() {
                     }
                     stage('Release') {
                         when {
-                            expression { !cfg.skipAll && cfg.releaseVersion }
+                            expression { PipelineSteps.shouldRun(cfg, 'release') }
                         }
                         steps {
                             script {

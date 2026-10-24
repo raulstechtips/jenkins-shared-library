@@ -149,6 +149,9 @@ class JavaConfigurablePipelineTest extends DeclarativePipelineTest {
         assertEquals('jdk', callNamed('runTestCommand').argument)
         assertEquals(['project-pipeline-config.yaml', 'charts/Chart.yaml',
             'dev/raulstechtips/jenkins/tools.yaml', 'pipeline', 'checkout'], events)
+        assertTrue(helper.callStack.any { it.methodName == 'echo' &&
+            it.args[0].toString() == 'Steps for this build (main): early-checks, trivy-scan, ' +
+                'opengrep-scan, build, unit-test' })
         assertAgentStructure()
         assertFalse(agentEntries().any { it.contains('builder') || it.contains('deployer') })
         assertArchive()
@@ -225,6 +228,8 @@ class JavaConfigurablePipelineTest extends DeclarativePipelineTest {
         assertEquals(['Checkout'], leafStages())
         assertTrue(calls.empty)
         assertEquals('NOT_BUILT', binding.getVariable('currentBuild').result)
+        assertTrue(helper.callStack.any { it.methodName == 'echo' &&
+            it.args[0].toString() == 'Steps for this build (main): ' })
         assertEquals('Release commit 1.0.0: already built by the release run.',
             binding.getVariable('currentBuild').description.toString())
         assertArchive()

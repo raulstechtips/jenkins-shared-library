@@ -351,7 +351,7 @@ Never put a secret in a Groovy string.
 1. Add one var file, `vars/<stepName>.groovy`, with a `call(Map cfg)` method.
 2. Add its test, `test/groovy/vars/<StepName>Test.groovy`. Every var must have a test with this name.
 3. Add the flag or key to `ConfigSchema` in `src/dev/raulstechtips/jenkins/config/ConfigSchema.groovy`. Add any cross-key rule to `ConfigValidator`, with a test.
-4. Call the step from the pipeline vars in a stage with a `when` that includes `!cfg.skipAll`.
+4. Add or reuse a step id in `PipelineSteps.RULES` in `src/dev/raulstechtips/jenkins/helpers/PipelineSteps.groovy`. Each immutable row can use `flag`, `alsoFlag`, `unlessFlag`, `on` (build kinds) and `needs` (a named precondition). Add its truth-table cases to `PipelineStepsTest`. Call the step from a declared stage with `when { expression { PipelineSteps.shouldRun(cfg, '<step-id>') } }`. The helper checks `skipAll`. Keep `beforeAgent true` on stages with their own agent. Add the id to the pipeline's Checkout `plan` list in stage order. The plan echo uses the inputs available at Checkout; later stages check the rules again with their current inputs.
 5. Document the key in section 3 and the flag in section 4 of this README.
 6. Add a bullet to `CHANGELOG.md` under `[Unreleased]`.
 
