@@ -5,6 +5,14 @@ import dev.raulstechtips.jenkins.shell.ShellQuote
 import java.security.MessageDigest
 
 def call(Map cfg, String builtImageRef) {
+    List upstream = cfg.containsKey('upstreamImages') ? cfg.upstreamImages : upstreamImages(cfg)
+    if (builtImageRef) {
+        scanImage(builtImageRef, cfg, cfg['publish-targets'][0])
+    }
+    upstream.each { String ref -> scanImage(ref, cfg, null) }
+}
+
+List upstreamImages(Map cfg) {
     Map registries = readYaml(text: libraryResource('dev/raulstechtips/jenkins/registries.yaml'))
     RegistryCatalog catalog = new RegistryCatalog(registries)
     List prefixes = registries.keySet().collect { catalog.target(it)['image-prefix'] }
@@ -23,10 +31,7 @@ def call(Map cfg, String builtImageRef) {
             }
         }
     }
-    if (builtImageRef) {
-        scanImage(builtImageRef, cfg, cfg['publish-targets'][0])
-    }
-    upstream.each { String ref -> scanImage(ref, cfg, null) }
+    return upstream
 }
 
 private void scanImage(String ref, Map cfg, String target) {

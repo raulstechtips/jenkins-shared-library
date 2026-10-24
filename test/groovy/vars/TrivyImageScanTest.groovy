@@ -29,6 +29,59 @@ class TrivyImageScanTest extends TrivyTestSupport {
     }
 
     @Test
+    void exposesFilteredDiscoveryWithoutScanningAndReusesItOnce() {
+        reportFixture = 'trivy-image'
+        files['.pipeline/render/*.yaml'] = ['.pipeline/render/default.yaml']
+        def scanner = loadScript('vars/trivyImageScan.groovy')
+
+        cfg.upstreamImages = scanner.upstreamImages(cfg)
+
+        assertEquals(['quay.io/example/service:stable', 'docker.io/library/alpine:stable'],
+            cfg.upstreamImages)
+        assertTrue(scans('image').empty)
+        assertTrue(reads.empty)
+        assertTrue(logins.empty)
+        assertEquals(1, searches.size())
+        assertEquals(1, shells.count { it.script.startsWith('yq eval-all') })
+
+        scanner.call(cfg, builtRef())
+
+        assertEquals(1, searches.size())
+        assertEquals(1, shells.count { it.script.startsWith('yq eval-all') })
+        assertScanCommands('image', 3)
+        assertEquals([true, false, false], scans('image')*.credentials)
+        assertTrue(scans('image')[1].script.endsWith("'quay.io/example/service:stable'"))
+        assertTrue(scans('image')[2].script.endsWith("'docker.io/library/alpine:stable'"))
+    }
+
+    @Test
+    void cachedEmptyInventoryDoesNotRediscoverImages() {
+        cfg.upstreamImages = []
+        // Files now contain images, but this invocation must consume the captured inventory.
+        files['.pipeline/render/*.yaml'] = ['.pipeline/render/default.yaml']
+
+        loadScript('vars/trivyImageScan.groovy').call(cfg, null)
+
+        assertTrue(searches.empty)
+        assertTrue(shells.empty)
+        assertTrue(reads.empty)
+    }
+
+    @Test
+    void cachedEmptyInventoryStillScansBuiltImageWithoutDiscovery() {
+        reportFixture = 'trivy-image'
+        cfg.upstreamImages = []
+        files['.pipeline/render/*.yaml'] = ['.pipeline/render/default.yaml']
+
+        loadScript('vars/trivyImageScan.groovy').call(cfg, builtRef())
+
+        assertTrue(searches.empty)
+        assertFalse(shells.any { it.script.startsWith('yq eval-all') })
+        assertScanCommands('image')
+        assertEquals(['ghcr-push'], logins)
+    }
+
+    @Test
     void builtRefIncludesDigestAndUsesFirstTargetsCredentialsOnly() {
         reportFixture = 'trivy-image'
         cfg['publish-targets'] = ['harbor', 'ghcr']
