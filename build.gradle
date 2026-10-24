@@ -27,6 +27,7 @@ sourceSets {
 dependencies {
     // The controller runs Groovy 2.4 and JenkinsPipelineUnit 1.29 declares 2.4.21.
     implementation 'org.codehaus.groovy:groovy-all:2.4.21'
+    compileOnly 'com.cloudbees:groovy-cps:4177.vb_203fe395445'
     testImplementation 'com.lesfurets:jenkins-pipeline-unit:1.29'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.14.4'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
