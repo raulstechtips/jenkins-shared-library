@@ -29,6 +29,7 @@ dependencies {
     implementation 'org.codehaus.groovy:groovy-all:2.4.21'
     compileOnly 'com.cloudbees:groovy-cps:4177.vb_203fe395445'
     testImplementation 'com.lesfurets:jenkins-pipeline-unit:1.29'
+    testImplementation 'org.yaml:snakeyaml:2.5'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.14.4'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
