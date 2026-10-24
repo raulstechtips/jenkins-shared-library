@@ -7,7 +7,9 @@ import dev.raulstechtips.jenkins.helpers.RegistryCatalog
  * It checks out the repo, writes a Kaniko registry config with the credentials of each target, and
  * runs /kaniko/executor with one destination per target, tagged IMAGE-PREFIX/NAME:VERSION from
  * docker-image and the build version. It runs in the kaniko container, so the pipelines call it on
- * the builder agent. The registry config is deleted afterwards, also when the build fails.
+ * the builder agent. Kaniko runs as root, so after a successful build it makes .pipeline and the
+ * digest file readable for the agent user that reads it. The registry config is deleted afterwards, also when
+ * the build fails.
  *
  * @param cfg the loaded config. Reads publish-targets, docker-image and version.
  * @return the pushed image digest, sha256: followed by 64 lowercase hex characters
@@ -36,6 +38,7 @@ def call(Map cfg) {
             withEnv(buildEnv) {
                 publish(targets, 0, command)
             }
+            sh 'chmod -R a+rX .pipeline'
         } finally {
             sh 'set +x\nrm -f /kaniko/.docker/config.json'
         }

@@ -99,6 +99,9 @@ class BuildDockerImageTest extends BasePipelineTest {
             '--digest-file', '.pipeline/image.digest'], PublishingShellProbe.argv(executor, 'kaniko'))
         assertFalse(commands.any { it.text.contains('latest') })
         assertTrue(scopes.empty)
+        int chmod = commands.findIndexOf { it.text == 'chmod -R a+rX .pipeline' }
+        assertTrue(chmod > commands.indexOf(executor), 'Kaniko writes the digest as root; make it readable after the build')
+        assertEquals('kaniko', commands[chmod].container)
     }
 
     @Test
