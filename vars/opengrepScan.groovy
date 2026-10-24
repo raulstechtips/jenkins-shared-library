@@ -1,5 +1,6 @@
 import com.cloudbees.groovy.cps.NonCPS
 import dev.raulstechtips.jenkins.scan.FindingsEvaluator
+import dev.raulstechtips.jenkins.shell.ShellQuote
 
 def call(Map cfg) {
     Map rules = readYaml(text: libraryResource('dev/raulstechtips/jenkins/opengrep-rules.yaml'))
@@ -24,22 +25,22 @@ def call(Map cfg) {
     container('tools') {
         sh('set -eu\n' +
             'mkdir -p .pipeline/bin .pipeline/reports\n' +
-            'curl -fsSL -o ' + q(bin) + ' ' + q(pins.url) + '\n' +
-            'echo ' + q(pins.sha256 + '  ' + bin) + ' | sha256sum -c -\n' +
-            'chmod +x ' + q(bin) + '\n' +
-            'rm -rf ' + q(dir) + '\n' +
-            'git init ' + q(dir) + '\n' +
-            'git -C ' + q(dir) + ' fetch --depth 1 ' + q(pins.repo) + ' ' + q(pins.commit) + '\n' +
-            'git -C ' + q(dir) + ' checkout FETCH_HEAD\n')
+            'curl -fsSL -o ' + ShellQuote.quote(bin) + ' ' + ShellQuote.quote(pins.url) + '\n' +
+            'echo ' + ShellQuote.quote(pins.sha256 + '  ' + bin) + ' | sha256sum -c -\n' +
+            'chmod +x ' + ShellQuote.quote(bin) + '\n' +
+            'rm -rf ' + ShellQuote.quote(dir) + '\n' +
+            'git init ' + ShellQuote.quote(dir) + '\n' +
+            'git -C ' + ShellQuote.quote(dir) + ' fetch --depth 1 ' + ShellQuote.quote(pins.repo) + ' ' + ShellQuote.quote(pins.commit) + '\n' +
+            'git -C ' + ShellQuote.quote(dir) + ' checkout FETCH_HEAD\n')
     }
 
     String configs = ''
     for (String folder : folders) {
-        configs += ' --config ' + q(dir + '/' + folder)
+        configs += ' --config ' + ShellQuote.quote(dir + '/' + folder)
     }
     container('shell') {
         sh('set -eu\n' +
-            q(bin) + ' scan' + configs +
+            ShellQuote.quote(bin) + ' scan' + configs +
             ' --json --output .pipeline/reports/opengrep.json --exclude charts --exclude .pipeline .\n')
     }
 
@@ -101,10 +102,4 @@ private Map validate(Map rules, Map tools) {
 @NonCPS
 private boolean matches(String value, String regex) {
     return value != null && value ==~ regex
-}
-
-// Always POSIX single-quoted; an embedded ' becomes '\''.
-@NonCPS
-private String q(String value) {
-    return "'" + value.replace("'", "'\\''") + "'"
 }

@@ -1,5 +1,6 @@
 package dev.raulstechtips.jenkins.deploy
 
+import dev.raulstechtips.jenkins.shell.ShellQuote
 import java.nio.file.Files
 import org.junit.jupiter.api.Assumptions
 import org.junit.jupiter.api.Test
@@ -36,10 +37,9 @@ class HelmInstallCommandsTest {
 
     @Test
     void shellQuoteWrapsAndEscapesSingleQuotes() {
-        HelmInstallCommands h = new HelmInstallCommands()
-        assertEquals("'plain'", h.shellQuote('plain'))
-        assertEquals("''", h.shellQuote(''))
-        assertEquals("'it'\\''s'", h.shellQuote("it's"))
+        assertEquals("'plain'", ShellQuote.quote('plain'))
+        assertEquals("''", ShellQuote.quote(''))
+        assertEquals("'it'\\''s'", ShellQuote.quote("it's"))
     }
 
     @Test

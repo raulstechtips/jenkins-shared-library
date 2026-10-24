@@ -1,6 +1,7 @@
 import com.cloudbees.groovy.cps.NonCPS
 import dev.raulstechtips.jenkins.registry.RegistryCatalog
 import dev.raulstechtips.jenkins.scan.FindingsEvaluator
+import dev.raulstechtips.jenkins.shell.ShellQuote
 import java.security.MessageDigest
 
 def call(Map cfg, String builtImageRef) {
@@ -13,7 +14,7 @@ def call(Map cfg, String builtImageRef) {
         String images
         container('tools') {
             images = sh(script: 'yq eval-all \'.. | select(has("image")) | .image | select(tag == "!!str")\' ' +
-                rendered.collect { quote(it) }.join(' '), returnStdout: true)
+                rendered.collect { ShellQuote.quote(it) }.join(' '), returnStdout: true)
         }
         images.readLines().each { String line ->
             String ref = line.trim()
@@ -34,8 +35,8 @@ private void scanImage(String ref, Map cfg, String target) {
         sh 'mkdir -p .pipeline/reports'
         String ignore = fileExists('.trivyignore.yaml') ? ' --ignorefile .trivyignore.yaml' :
             (fileExists('.trivyignore') ? ' --ignorefile .trivyignore' : '')
-        String command = 'trivy image --scanners vuln --format json --output ' + quote(report) +
-            ' --exit-code 0' + ignore + ' ' + quote(ref)
+        String command = 'trivy image --scanners vuln --format json --output ' + ShellQuote.quote(report) +
+            ' --exit-code 0' + ignore + ' ' + ShellQuote.quote(ref)
         if (target) {
             withRegistryLogin(target) {
                 sh 'set +x\nTRIVY_USERNAME="$REG_USER" TRIVY_PASSWORD="$REG_PASS" ' + command
@@ -56,9 +57,4 @@ private String slug(String ref) {
     String safe = ref.replaceAll('[^A-Za-z0-9._-]', '-').take(96)
     String hash = MessageDigest.getInstance('SHA-256').digest(ref.getBytes('UTF-8')).encodeHex().toString()
     return safe + '-' + hash
-}
-
-@NonCPS
-private String quote(String value) {
-    return "'" + value.replace("'", "'\\''") + "'"
 }

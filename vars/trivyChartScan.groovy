@@ -1,4 +1,4 @@
-import com.cloudbees.groovy.cps.NonCPS
+import dev.raulstechtips.jenkins.shell.ShellQuote
 import dev.raulstechtips.jenkins.registry.RegistryCatalog
 
 def call(Map cfg) {
@@ -17,19 +17,14 @@ def call(Map cfg) {
     container('helm') {
         sh 'mkdir -p .pipeline/pulled .pipeline/render-uploaded'
         withRegistryLogin(targetName) {
-            sh 'set +x\nprintf \'%s\' "$REG_PASS" | helm registry login ' + quote(target.host) +
-                ' -u "$REG_USER" --password-stdin\nhelm pull ' + quote(target['chart-repo'] + '/' + chart) +
-                ' --version ' + quote(cfg.version) + ' --untar --untardir .pipeline/pulled'
+            sh 'set +x\nprintf \'%s\' "$REG_PASS" | helm registry login ' + ShellQuote.quote(target.host) +
+                ' -u "$REG_USER" --password-stdin\nhelm pull ' + ShellQuote.quote(target['chart-repo'] + '/' + chart) +
+                ' --version ' + ShellQuote.quote(cfg.version) + ' --untar --untardir .pipeline/pulled'
         }
         renders.each { Map render ->
-            sh 'helm template ' + quote(cfg['project-name']) + ' ' + quote(pulled) + ' -n ' + quote(namespace) +
-                (render.values ? ' -f ' + quote(render.values) : '') + ' > ' + quote(render.path)
+            sh 'helm template ' + ShellQuote.quote(cfg['project-name']) + ' ' + ShellQuote.quote(pulled) + ' -n ' + ShellQuote.quote(namespace) +
+                (render.values ? ' -f ' + ShellQuote.quote(render.values) : '') + ' > ' + ShellQuote.quote(render.path)
         }
     }
     renders.each { Map render -> trivyConfigScan(render.path, render.label, cfg) }
-}
-
-@NonCPS
-private String quote(String value) {
-    return "'" + value.replace("'", "'\\''") + "'"
 }

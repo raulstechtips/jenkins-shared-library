@@ -1,6 +1,7 @@
 package dev.raulstechtips.jenkins.deploy
 
 import com.cloudbees.groovy.cps.NonCPS
+import dev.raulstechtips.jenkins.shell.ShellQuote
 
 /** Builds the ordered shell commands for helmInstall and helmCleanInstall. Pure: no steps. */
 class HelmInstallCommands implements Serializable {
@@ -16,20 +17,20 @@ class HelmInstallCommands implements Serializable {
                 throw new IllegalArgumentException("Invalid image digest '${digest}'")
             }
             String tag = "${cfg.version}@${digest}"
-            commands << ("TAG=${shellQuote(tag)} yq -i ${shellQuote(tagPath + ' = strenv(TAG)')} charts/values.yaml".toString())
+            commands << ("TAG=${ShellQuote.quote(tag)} yq -i ${ShellQuote.quote(tagPath + ' = strenv(TAG)')} charts/values.yaml".toString())
         }
         List dependencies = (chart != null && chart['dependencies']) ? (chart['dependencies'] as List) : []
         for (int i = 0; i < dependencies.size(); i++) {
             String repository = ((Map) dependencies[i])['repository']
             if (repository != null && repository.startsWith('https://')) {
-                commands << ("helm repo add dep${i} ${shellQuote(repository)}".toString())
+                commands << ("helm repo add dep${i} ${ShellQuote.quote(repository)}".toString())
             }
         }
         commands << 'helm dependency build charts'
-        StringBuilder upgrade = new StringBuilder("helm upgrade --install ${shellQuote(name)} charts -n ${shellQuote(namespace)}")
+        StringBuilder upgrade = new StringBuilder("helm upgrade --install ${ShellQuote.quote(name)} charts -n ${ShellQuote.quote(namespace)}")
         List overrides = cfg['helm-overrides'] ? (cfg['helm-overrides'] as List) : []
         for (int i = 0; i < overrides.size(); i++) {
-            upgrade.append(' -f ').append(shellQuote(overrides[i].toString()))
+            upgrade.append(' -f ').append(ShellQuote.quote(overrides[i].toString()))
         }
         upgrade.append(' --wait --timeout 10m')
         commands << upgrade.toString()
@@ -39,15 +40,9 @@ class HelmInstallCommands implements Serializable {
     @NonCPS
     List<String> cleanInstall(Map cfg, Map chart, String digest) {
         List<String> commands = []
-        commands << ("helm uninstall ${shellQuote(required(cfg, 'project-name'))} -n ${shellQuote(required(cfg, 'project-namespace'))} --wait --ignore-not-found".toString())
+        commands << ("helm uninstall ${ShellQuote.quote(required(cfg, 'project-name'))} -n ${ShellQuote.quote(required(cfg, 'project-namespace'))} --wait --ignore-not-found".toString())
         commands.addAll(install(cfg, chart, digest))
         return commands
-    }
-
-    /** POSIX single-quotes one argument; each embedded single quote becomes '\\''. */
-    @NonCPS
-    String shellQuote(String value) {
-        return "'" + value.replace("'", "'\\''") + "'"
     }
 
     @NonCPS
