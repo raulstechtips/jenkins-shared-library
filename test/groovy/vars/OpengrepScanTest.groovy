@@ -228,6 +228,8 @@ class OpengrepScanTest extends BasePipelineTest {
 
         assertTrue(scanCommand().contains("'.pipeline/bin/opengrep' scan --config '.pipeline/opengrep-rules/bash' " +
             '--json --output .pipeline/reports/opengrep.json --exclude charts --exclude .pipeline .'), scanCommand())
+        assertTrue(scanCommand().contains('mkdir -p .pipeline/home\nHOME="$PWD/.pipeline/home" \'.pipeline/bin/opengrep\' scan'),
+            'the scan needs a writable HOME for the self-unpacking binary: ' + scanCommand())
         assertTrue(inContainer('tools').every { !it.script.contains('opengrep scan') })
     }
 
