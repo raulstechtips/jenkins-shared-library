@@ -11,9 +11,11 @@ import dev.raulstechtips.jenkins.helpers.SemVer
  * deploy, and release. Most stages run on the generic agent merged with the library pod. Image
  * build runs on the builder agent and the Helm installs on the deployer agent. Unit test runs
  * test-command in the shell container. The Helm installs never run on main or in a release run, and
- * Argo deploy runs only on a main push or in a release run. A main push whose last commit is
- * "release: VERSION" is marked NOT_BUILT and skips every stage. Files under .pipeline/reports are
- * archived. The build times out after 60 minutes and builds do not run concurrently.
+ * Argo deploy runs only on a main push or in a release run. On a non-PR main build with
+ * RELEASE_VERSION empty, Checkout compares the last commit subject with "release: " plus the valid
+ * version from charts/Chart.yaml. An exact match marks the build NOT_BUILT and skips every stage
+ * after Checkout. Files under .pipeline/reports are archived. The build times out after 60 minutes
+ * and builds do not run concurrently.
  *
  * The RELEASE_VERSION parameter (X.Y.Z, main only) starts a release run through releasePipeline.
  *

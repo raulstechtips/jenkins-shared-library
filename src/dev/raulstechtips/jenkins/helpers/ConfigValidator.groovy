@@ -7,7 +7,7 @@ import dev.raulstechtips.jenkins.config.ConfigSchema
  * Checks a parsed project-pipeline-config.yaml against ConfigSchema and fills in the defaults.
  *
  * It collects every error it finds and reports them together, so one run shows all problems. An
- * unknown key gets a "Did you mean" hint from NearestKey.
+ * unknown key gets a "Did you mean" hint when NearestKey finds a sibling within three edits.
  */
 class ConfigValidator implements Serializable {
     /**

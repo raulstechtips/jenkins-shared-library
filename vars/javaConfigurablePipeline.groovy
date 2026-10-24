@@ -13,9 +13,10 @@ import dev.raulstechtips.jenkins.helpers.VersionCalculator
  * library pod. Image build runs on the builder agent and the Helm installs on the deployer agent.
  * Build and unit test run build-command and test-command in the jdk container. The Helm installs
  * never run on main or in a release run, and Argo deploy runs only on a main push or in a release
- * run. A main push whose last commit is "release: VERSION" is marked NOT_BUILT and skips every
- * stage. Files under .pipeline/reports are archived. The build times out after 60 minutes and
- * builds do not run concurrently.
+ * run. On a non-PR main build with RELEASE_VERSION empty, Checkout compares the last commit subject
+ * with "release: " plus the valid version from gradle.properties. An exact match marks the build
+ * NOT_BUILT and skips every stage after Checkout. Files under .pipeline/reports are archived. The
+ * build times out after 60 minutes and builds do not run concurrently.
  *
  * The RELEASE_VERSION parameter (X.Y.Z, main only) starts a release run through releasePipeline.
  *
