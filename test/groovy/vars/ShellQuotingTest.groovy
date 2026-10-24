@@ -50,8 +50,10 @@ kubeconform() {
     record kubeconform "$@"
 }
 '''
+            // kubeconformCheck calls the image binary /kubeconform; route it to the stub function.
+            List probed = commands.collect { String c -> c.startsWith('/kubeconform ') ? c.substring(1) : c }
             ProcessBuilder builder = new ProcessBuilder('/bin/sh', '-e', '-c',
-                stubs + '\n' + commands.join('\n'))
+                stubs + '\n' + probed.join('\n'))
             builder.directory(workspace)
             builder.environment().put('ARGV_LOG', log.absolutePath)
             builder.redirectErrorStream(true)

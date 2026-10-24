@@ -27,12 +27,13 @@ class KubeconformCheckTest extends BasePipelineTest {
         }
         helper.registerAllowedMethod('sh', [String]) { String command -> commands.add(command) }
     }
+    // The pinned kubeconform image ships the binary at /kubeconform and has no PATH entry for it.
     @Test void validatesEveryRenderWithExactSchemasAndUnionSkipList() {
         loadScript('vars/kubeconformCheck.groovy').call([chartPresent: true])
         assertEquals(['kubeconform'], containers)
         assertEquals([
-            "kubeconform -strict -summary -schema-location default -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' -skip InfisicalSecret,InfisicalStaticSecret,InfisicalPushSecret,apiextensions.k8s.io/v1/CustomResourceDefinition '.pipeline/render/default.yaml'",
-            "kubeconform -strict -summary -schema-location default -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' -skip InfisicalSecret,InfisicalStaticSecret,InfisicalPushSecret,apiextensions.k8s.io/v1/CustomResourceDefinition '.pipeline/render/ci-all-on-values.yaml'"
+            "/kubeconform -strict -summary -schema-location default -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' -skip InfisicalSecret,InfisicalStaticSecret,InfisicalPushSecret,apiextensions.k8s.io/v1/CustomResourceDefinition '.pipeline/render/default.yaml'",
+            "/kubeconform -strict -summary -schema-location default -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' -skip InfisicalSecret,InfisicalStaticSecret,InfisicalPushSecret,apiextensions.k8s.io/v1/CustomResourceDefinition '.pipeline/render/ci-all-on-values.yaml'"
         ], commands)
     }
     @Test void emptyRenderFolderDoesNotRunShell() {
