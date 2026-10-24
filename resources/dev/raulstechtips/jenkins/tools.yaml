@@ -1,5 +1,6 @@
 # Pinned tool images and binaries. Image digests are the multi-arch index digests,
-# resolved 2026-10-24T13:09:05Z with `docker buildx imagetools inspect <repo>:<tag>`.
+# resolved 2026-10-24T13:09:05Z with `docker buildx imagetools inspect <repo>:<tag>`
+# (jdk re-resolved 2026-10-24T13:21:38Z).
 tools:
   image: alpine/k8s:1.30.14@sha256:3c6d1e613d94f03d63a6213b8687c7d4e5b9154903327aa8f0b5d628d7ab010b
   version: 1.30.14
@@ -17,9 +18,9 @@ trivy:
   version: 0.70.0
   digest: sha256:be1190afcb28352bfddc4ddeb71470835d16462af68d310f9f4bca710961a41e
 jdk:
-  image: eclipse-temurin:21.0.12_8-jdk@sha256:92a2a4d7a928d057e7bd999c418d66c26a34eb9a0442f3ab67721c3f88110b2d
-  version: 21.0.12_8-jdk
-  digest: sha256:92a2a4d7a928d057e7bd999c418d66c26a34eb9a0442f3ab67721c3f88110b2d
+  image: eclipse-temurin:21.0.12.1_1-jdk@sha256:23cc5734ff46e776f51ce66eb9ee08444fd47caabec0a95b7eb6e94be2d3696d
+  version: 21.0.12.1_1-jdk
+  digest: sha256:23cc5734ff46e776f51ce66eb9ee08444fd47caabec0a95b7eb6e94be2d3696d
 shell:
   image: debian:stable-slim@sha256:a717a33469731894e77e912ea7d714e27c2dc38ee6554fd1a3102e92999cfc66
   version: stable-slim
