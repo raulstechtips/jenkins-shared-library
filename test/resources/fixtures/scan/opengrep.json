@@ -1,0 +1,18 @@
+{
+  "errors": [],
+  "results": [
+    {
+      "check_id": "rules.bash.curl.security.curl-pipe-bash",
+      "path": "bad.sh",
+      "start": {
+        "line": 2
+      },
+      "end": {
+        "line": 2
+      },
+      "extra": {
+        "severity": "WARNING"
+      }
+    }
+  ]
+}

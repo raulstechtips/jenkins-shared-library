@@ -1,0 +1,694 @@
+{
+  "SchemaVersion": 2,
+  "ArtifactName": "/work/cfg",
+  "ArtifactType": "filesystem",
+  "Results": [
+    {
+      "Target": "default.yaml",
+      "Class": "config",
+      "Type": "kubernetes",
+      "Misconfigurations": [
+        {
+          "ID": "KSV-0011",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0011",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0011",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0011",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0011",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0011",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0011",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0011",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0011",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0011",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0011",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0011",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0011",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0011",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0011",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0015",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0015",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0015",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0015",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0015",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0015",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0015",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0015",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0015",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0015",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0015",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0015",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0015",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0015",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0015",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0016",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0016",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0016",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0016",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0016",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0016",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0016",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0016",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0016",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0016",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0016",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0016",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0016",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0016",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0016",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0018",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0018",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0018",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0018",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0018",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0018",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0018",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0018",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0018",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0018",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0018",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0018",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0018",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0018",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0018",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0020",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0020",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0020",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0020",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0020",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0020",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0020",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0020",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0020",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0020",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0020",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0020",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0020",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0020",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0020",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0020",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0020",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0021",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0021",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0021",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0021",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0021",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0021",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0021",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0021",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0021",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0021",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0021",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0021",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0021",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0021",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0021",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0021",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0021",
+          "Severity": "LOW",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0041",
+          "Severity": "CRITICAL",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0041",
+          "Severity": "CRITICAL",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0044",
+          "Severity": "CRITICAL",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0046",
+          "Severity": "CRITICAL",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0046",
+          "Severity": "CRITICAL",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0048",
+          "Severity": "MEDIUM",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0049",
+          "Severity": "MEDIUM",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0049",
+          "Severity": "MEDIUM",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0113",
+          "Severity": "MEDIUM",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0113",
+          "Severity": "MEDIUM",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0113",
+          "Severity": "MEDIUM",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0113",
+          "Severity": "MEDIUM",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0113",
+          "Severity": "MEDIUM",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0113",
+          "Severity": "MEDIUM",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0113",
+          "Severity": "MEDIUM",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0113",
+          "Severity": "MEDIUM",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0118",
+          "Severity": "HIGH",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0118",
+          "Severity": "HIGH",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0118",
+          "Severity": "HIGH",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0118",
+          "Severity": "HIGH",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0118",
+          "Severity": "HIGH",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0118",
+          "Severity": "HIGH",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0118",
+          "Severity": "HIGH",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0118",
+          "Severity": "HIGH",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0118",
+          "Severity": "HIGH",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0125",
+          "Severity": "MEDIUM",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0125",
+          "Severity": "MEDIUM",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0125",
+          "Severity": "MEDIUM",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0125",
+          "Severity": "MEDIUM",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0125",
+          "Severity": "MEDIUM",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0125",
+          "Severity": "MEDIUM",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0125",
+          "Severity": "MEDIUM",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0125",
+          "Severity": "MEDIUM",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0125",
+          "Severity": "MEDIUM",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0125",
+          "Severity": "MEDIUM",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0125",
+          "Severity": "MEDIUM",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0125",
+          "Severity": "MEDIUM",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0125",
+          "Severity": "MEDIUM",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0125",
+          "Severity": "MEDIUM",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0125",
+          "Severity": "MEDIUM",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0125",
+          "Severity": "MEDIUM",
+          "Status": "FAIL"
+        },
+        {
+          "ID": "KSV-0125",
+          "Severity": "MEDIUM",
+          "Status": "FAIL"
+        }
+      ]
+    }
+  ]
+}

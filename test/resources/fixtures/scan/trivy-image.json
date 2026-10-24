@@ -1,0 +1,5967 @@
+{
+  "SchemaVersion": 2,
+  "ArtifactName": "quay.io/argoproj/argocd:v3.0.0",
+  "ArtifactType": "container_image",
+  "Results": [
+    {
+      "Target": "quay.io/argoproj/argocd:v3.0.0 (ubuntu 24.04)",
+      "Class": "os-pkgs",
+      "Type": "ubuntu",
+      "Vulnerabilities": [
+        {
+          "VulnerabilityID": "CVE-2026-13595",
+          "PkgName": "bsdutils",
+          "InstalledVersion": "1:2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-27456",
+          "PkgName": "bsdutils",
+          "InstalledVersion": "1:2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-53612",
+          "PkgName": "bsdutils",
+          "InstalledVersion": "1:2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-53613",
+          "PkgName": "bsdutils",
+          "InstalledVersion": "1:2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-53614",
+          "PkgName": "bsdutils",
+          "InstalledVersion": "1:2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-53615",
+          "PkgName": "bsdutils",
+          "InstalledVersion": "1:2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-5278",
+          "PkgName": "coreutils",
+          "InstalledVersion": "9.4-3ubuntu6",
+          "FixedVersion": "9.4-3ubuntu6.3",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-102473",
+          "PkgName": "dash",
+          "InstalledVersion": "0.5.12-6ubuntu5",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-102474",
+          "PkgName": "dash",
+          "InstalledVersion": "0.5.12-6ubuntu5",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-53910",
+          "PkgName": "diffutils",
+          "InstalledVersion": "1:3.10-1build1",
+          "FixedVersion": "1:3.10-1ubuntu0.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-68973",
+          "PkgName": "dirmngr",
+          "InstalledVersion": "2.4.4-2ubuntu17.2",
+          "FixedVersion": "2.4.4-2ubuntu17.4",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-57062",
+          "PkgName": "dirmngr",
+          "InstalledVersion": "2.4.4-2ubuntu17.2",
+          "FixedVersion": "2.4.4-2ubuntu17.6",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-2219",
+          "PkgName": "dpkg",
+          "InstalledVersion": "1.22.6ubuntu6.1",
+          "FixedVersion": "1.22.6ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-6297",
+          "PkgName": "dpkg",
+          "InstalledVersion": "1.22.6ubuntu6.1",
+          "FixedVersion": "1.22.6ubuntu6.5",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-48384",
+          "PkgName": "git",
+          "InstalledVersion": "1:2.43.0-1ubuntu7.2",
+          "FixedVersion": "1:2.43.0-1ubuntu7.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2024-52005",
+          "PkgName": "git",
+          "InstalledVersion": "1:2.43.0-1ubuntu7.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-27613",
+          "PkgName": "git",
+          "InstalledVersion": "1:2.43.0-1ubuntu7.2",
+          "FixedVersion": "1:2.43.0-1ubuntu7.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-27614",
+          "PkgName": "git",
+          "InstalledVersion": "1:2.43.0-1ubuntu7.2",
+          "FixedVersion": "1:2.43.0-1ubuntu7.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-46835",
+          "PkgName": "git",
+          "InstalledVersion": "1:2.43.0-1ubuntu7.2",
+          "FixedVersion": "1:2.43.0-1ubuntu7.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-48385",
+          "PkgName": "git",
+          "InstalledVersion": "1:2.43.0-1ubuntu7.2",
+          "FixedVersion": "1:2.43.0-1ubuntu7.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-48386",
+          "PkgName": "git",
+          "InstalledVersion": "1:2.43.0-1ubuntu7.2",
+          "FixedVersion": "1:2.43.0-1ubuntu7.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2024-53263",
+          "PkgName": "git-lfs",
+          "InstalledVersion": "3.4.1-1ubuntu0.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-26625",
+          "PkgName": "git-lfs",
+          "InstalledVersion": "3.4.1-1ubuntu0.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-48384",
+          "PkgName": "git-man",
+          "InstalledVersion": "1:2.43.0-1ubuntu7.2",
+          "FixedVersion": "1:2.43.0-1ubuntu7.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2024-52005",
+          "PkgName": "git-man",
+          "InstalledVersion": "1:2.43.0-1ubuntu7.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-27613",
+          "PkgName": "git-man",
+          "InstalledVersion": "1:2.43.0-1ubuntu7.2",
+          "FixedVersion": "1:2.43.0-1ubuntu7.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-27614",
+          "PkgName": "git-man",
+          "InstalledVersion": "1:2.43.0-1ubuntu7.2",
+          "FixedVersion": "1:2.43.0-1ubuntu7.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-46835",
+          "PkgName": "git-man",
+          "InstalledVersion": "1:2.43.0-1ubuntu7.2",
+          "FixedVersion": "1:2.43.0-1ubuntu7.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-48385",
+          "PkgName": "git-man",
+          "InstalledVersion": "1:2.43.0-1ubuntu7.2",
+          "FixedVersion": "1:2.43.0-1ubuntu7.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-48386",
+          "PkgName": "git-man",
+          "InstalledVersion": "1:2.43.0-1ubuntu7.2",
+          "FixedVersion": "1:2.43.0-1ubuntu7.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-68973",
+          "PkgName": "gpg",
+          "InstalledVersion": "2.4.4-2ubuntu17.2",
+          "FixedVersion": "2.4.4-2ubuntu17.4",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-57062",
+          "PkgName": "gpg",
+          "InstalledVersion": "2.4.4-2ubuntu17.2",
+          "FixedVersion": "2.4.4-2ubuntu17.6",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-68973",
+          "PkgName": "gpg-agent",
+          "InstalledVersion": "2.4.4-2ubuntu17.2",
+          "FixedVersion": "2.4.4-2ubuntu17.4",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-57062",
+          "PkgName": "gpg-agent",
+          "InstalledVersion": "2.4.4-2ubuntu17.2",
+          "FixedVersion": "2.4.4-2ubuntu17.6",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-68973",
+          "PkgName": "gpgconf",
+          "InstalledVersion": "2.4.4-2ubuntu17.2",
+          "FixedVersion": "2.4.4-2ubuntu17.4",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-57062",
+          "PkgName": "gpgconf",
+          "InstalledVersion": "2.4.4-2ubuntu17.2",
+          "FixedVersion": "2.4.4-2ubuntu17.6",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-68973",
+          "PkgName": "gpgv",
+          "InstalledVersion": "2.4.4-2ubuntu17.2",
+          "FixedVersion": "2.4.4-2ubuntu17.4",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-57062",
+          "PkgName": "gpgv",
+          "InstalledVersion": "2.4.4-2ubuntu17.2",
+          "FixedVersion": "2.4.4-2ubuntu17.6",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-41991",
+          "PkgName": "gzip",
+          "InstalledVersion": "1.12-1ubuntu3",
+          "FixedVersion": "1.12-1ubuntu3.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-41992",
+          "PkgName": "gzip",
+          "InstalledVersion": "1.12-1ubuntu3",
+          "FixedVersion": "1.12-1ubuntu3.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-3576",
+          "PkgName": "krb5-locales",
+          "InstalledVersion": "1.20.1-6ubuntu2.5",
+          "FixedVersion": "1.20.1-6ubuntu2.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-11850",
+          "PkgName": "krb5-locales",
+          "InstalledVersion": "1.20.1-6ubuntu2.5",
+          "FixedVersion": "1.20.1-6ubuntu2.7",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-40355",
+          "PkgName": "krb5-locales",
+          "InstalledVersion": "1.20.1-6ubuntu2.5",
+          "FixedVersion": "1.20.1-6ubuntu2.7",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-40356",
+          "PkgName": "krb5-locales",
+          "InstalledVersion": "1.20.1-6ubuntu2.5",
+          "FixedVersion": "1.20.1-6ubuntu2.7",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-54371",
+          "PkgName": "libattr1",
+          "InstalledVersion": "1:2.5.2-1build1.1",
+          "FixedVersion": "1:2.5.2-1ubuntu0.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-13595",
+          "PkgName": "libblkid1",
+          "InstalledVersion": "2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-27456",
+          "PkgName": "libblkid1",
+          "InstalledVersion": "2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-53612",
+          "PkgName": "libblkid1",
+          "InstalledVersion": "2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-53613",
+          "PkgName": "libblkid1",
+          "InstalledVersion": "2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-53614",
+          "PkgName": "libblkid1",
+          "InstalledVersion": "2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-53615",
+          "PkgName": "libblkid1",
+          "InstalledVersion": "2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42250",
+          "PkgName": "libbz2-1.0",
+          "InstalledVersion": "1.0.8-5.1build0.1",
+          "FixedVersion": "1.0.8-5.1ubuntu0.1",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-15281",
+          "PkgName": "libc-bin",
+          "InstalledVersion": "2.39-0ubuntu8.4",
+          "FixedVersion": "2.39-0ubuntu8.7",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-5702",
+          "PkgName": "libc-bin",
+          "InstalledVersion": "2.39-0ubuntu8.4",
+          "FixedVersion": "2.39-0ubuntu8.5",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-8058",
+          "PkgName": "libc-bin",
+          "InstalledVersion": "2.39-0ubuntu8.4",
+          "FixedVersion": "2.39-0ubuntu8.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-0861",
+          "PkgName": "libc-bin",
+          "InstalledVersion": "2.39-0ubuntu8.4",
+          "FixedVersion": "2.39-0ubuntu8.7",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-0915",
+          "PkgName": "libc-bin",
+          "InstalledVersion": "2.39-0ubuntu8.4",
+          "FixedVersion": "2.39-0ubuntu8.7",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-18374",
+          "PkgName": "libc-bin",
+          "InstalledVersion": "2.39-0ubuntu8.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-19499",
+          "PkgName": "libc-bin",
+          "InstalledVersion": "2.39-0ubuntu8.4",
+          "FixedVersion": "2.39-0ubuntu8.9",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-19542",
+          "PkgName": "libc-bin",
+          "InstalledVersion": "2.39-0ubuntu8.4",
+          "FixedVersion": "2.39-0ubuntu8.9",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-4046",
+          "PkgName": "libc-bin",
+          "InstalledVersion": "2.39-0ubuntu8.4",
+          "FixedVersion": "2.39-0ubuntu8.8",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-4437",
+          "PkgName": "libc-bin",
+          "InstalledVersion": "2.39-0ubuntu8.4",
+          "FixedVersion": "2.39-0ubuntu8.8",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-4438",
+          "PkgName": "libc-bin",
+          "InstalledVersion": "2.39-0ubuntu8.4",
+          "FixedVersion": "2.39-0ubuntu8.8",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-5435",
+          "PkgName": "libc-bin",
+          "InstalledVersion": "2.39-0ubuntu8.4",
+          "FixedVersion": "2.39-0ubuntu8.8",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-5450",
+          "PkgName": "libc-bin",
+          "InstalledVersion": "2.39-0ubuntu8.4",
+          "FixedVersion": "2.39-0ubuntu8.8",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-5928",
+          "PkgName": "libc-bin",
+          "InstalledVersion": "2.39-0ubuntu8.4",
+          "FixedVersion": "2.39-0ubuntu8.8",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-6238",
+          "PkgName": "libc-bin",
+          "InstalledVersion": "2.39-0ubuntu8.4",
+          "FixedVersion": "2.39-0ubuntu8.8",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-6368",
+          "PkgName": "libc-bin",
+          "InstalledVersion": "2.39-0ubuntu8.4",
+          "FixedVersion": "2.39-0ubuntu8.9",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-6791",
+          "PkgName": "libc-bin",
+          "InstalledVersion": "2.39-0ubuntu8.4",
+          "FixedVersion": "2.39-0ubuntu8.9",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-77117",
+          "PkgName": "libc-bin",
+          "InstalledVersion": "2.39-0ubuntu8.4",
+          "FixedVersion": "2.39-0ubuntu8.9",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-80489",
+          "PkgName": "libc-bin",
+          "InstalledVersion": "2.39-0ubuntu8.4",
+          "FixedVersion": "2.39-0ubuntu8.9",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-89092",
+          "PkgName": "libc-bin",
+          "InstalledVersion": "2.39-0ubuntu8.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-15281",
+          "PkgName": "libc6",
+          "InstalledVersion": "2.39-0ubuntu8.4",
+          "FixedVersion": "2.39-0ubuntu8.7",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-5702",
+          "PkgName": "libc6",
+          "InstalledVersion": "2.39-0ubuntu8.4",
+          "FixedVersion": "2.39-0ubuntu8.5",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-8058",
+          "PkgName": "libc6",
+          "InstalledVersion": "2.39-0ubuntu8.4",
+          "FixedVersion": "2.39-0ubuntu8.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-0861",
+          "PkgName": "libc6",
+          "InstalledVersion": "2.39-0ubuntu8.4",
+          "FixedVersion": "2.39-0ubuntu8.7",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-0915",
+          "PkgName": "libc6",
+          "InstalledVersion": "2.39-0ubuntu8.4",
+          "FixedVersion": "2.39-0ubuntu8.7",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-18374",
+          "PkgName": "libc6",
+          "InstalledVersion": "2.39-0ubuntu8.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-19499",
+          "PkgName": "libc6",
+          "InstalledVersion": "2.39-0ubuntu8.4",
+          "FixedVersion": "2.39-0ubuntu8.9",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-19542",
+          "PkgName": "libc6",
+          "InstalledVersion": "2.39-0ubuntu8.4",
+          "FixedVersion": "2.39-0ubuntu8.9",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-4046",
+          "PkgName": "libc6",
+          "InstalledVersion": "2.39-0ubuntu8.4",
+          "FixedVersion": "2.39-0ubuntu8.8",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-4437",
+          "PkgName": "libc6",
+          "InstalledVersion": "2.39-0ubuntu8.4",
+          "FixedVersion": "2.39-0ubuntu8.8",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-4438",
+          "PkgName": "libc6",
+          "InstalledVersion": "2.39-0ubuntu8.4",
+          "FixedVersion": "2.39-0ubuntu8.8",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-5435",
+          "PkgName": "libc6",
+          "InstalledVersion": "2.39-0ubuntu8.4",
+          "FixedVersion": "2.39-0ubuntu8.8",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-5450",
+          "PkgName": "libc6",
+          "InstalledVersion": "2.39-0ubuntu8.4",
+          "FixedVersion": "2.39-0ubuntu8.8",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-5928",
+          "PkgName": "libc6",
+          "InstalledVersion": "2.39-0ubuntu8.4",
+          "FixedVersion": "2.39-0ubuntu8.8",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-6238",
+          "PkgName": "libc6",
+          "InstalledVersion": "2.39-0ubuntu8.4",
+          "FixedVersion": "2.39-0ubuntu8.8",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-6368",
+          "PkgName": "libc6",
+          "InstalledVersion": "2.39-0ubuntu8.4",
+          "FixedVersion": "2.39-0ubuntu8.9",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-6791",
+          "PkgName": "libc6",
+          "InstalledVersion": "2.39-0ubuntu8.4",
+          "FixedVersion": "2.39-0ubuntu8.9",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-77117",
+          "PkgName": "libc6",
+          "InstalledVersion": "2.39-0ubuntu8.4",
+          "FixedVersion": "2.39-0ubuntu8.9",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-80489",
+          "PkgName": "libc6",
+          "InstalledVersion": "2.39-0ubuntu8.4",
+          "FixedVersion": "2.39-0ubuntu8.9",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-89092",
+          "PkgName": "libc6",
+          "InstalledVersion": "2.39-0ubuntu8.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-4878",
+          "PkgName": "libcap2",
+          "InstalledVersion": "1:2.66-5ubuntu2.2",
+          "FixedVersion": "1:2.66-5ubuntu2.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-14017",
+          "PkgName": "libcurl3t64-gnutls",
+          "InstalledVersion": "8.5.0-2ubuntu10.6",
+          "FixedVersion": "8.5.0-2ubuntu10.7",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-11856",
+          "PkgName": "libcurl3t64-gnutls",
+          "InstalledVersion": "8.5.0-2ubuntu10.6",
+          "FixedVersion": "8.5.0-2ubuntu10.12",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-13608",
+          "PkgName": "libcurl3t64-gnutls",
+          "InstalledVersion": "8.5.0-2ubuntu10.6",
+          "FixedVersion": "8.5.0-2ubuntu10.15",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-18924",
+          "PkgName": "libcurl3t64-gnutls",
+          "InstalledVersion": "8.5.0-2ubuntu10.6",
+          "FixedVersion": "8.5.0-2ubuntu10.15",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-1965",
+          "PkgName": "libcurl3t64-gnutls",
+          "InstalledVersion": "8.5.0-2ubuntu10.6",
+          "FixedVersion": "8.5.0-2ubuntu10.8",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-3783",
+          "PkgName": "libcurl3t64-gnutls",
+          "InstalledVersion": "8.5.0-2ubuntu10.6",
+          "FixedVersion": "8.5.0-2ubuntu10.8",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-5545",
+          "PkgName": "libcurl3t64-gnutls",
+          "InstalledVersion": "8.5.0-2ubuntu10.6",
+          "FixedVersion": "8.5.0-2ubuntu10.9",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-6253",
+          "PkgName": "libcurl3t64-gnutls",
+          "InstalledVersion": "8.5.0-2ubuntu10.6",
+          "FixedVersion": "8.5.0-2ubuntu10.9",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-6429",
+          "PkgName": "libcurl3t64-gnutls",
+          "InstalledVersion": "8.5.0-2ubuntu10.6",
+          "FixedVersion": "8.5.0-2ubuntu10.9",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-7168",
+          "PkgName": "libcurl3t64-gnutls",
+          "InstalledVersion": "8.5.0-2ubuntu10.6",
+          "FixedVersion": "8.5.0-2ubuntu10.9",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-80230",
+          "PkgName": "libcurl3t64-gnutls",
+          "InstalledVersion": "8.5.0-2ubuntu10.6",
+          "FixedVersion": "8.5.0-2ubuntu10.15",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-82209",
+          "PkgName": "libcurl3t64-gnutls",
+          "InstalledVersion": "8.5.0-2ubuntu10.6",
+          "FixedVersion": "8.5.0-2ubuntu10.15",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-8925",
+          "PkgName": "libcurl3t64-gnutls",
+          "InstalledVersion": "8.5.0-2ubuntu10.6",
+          "FixedVersion": "8.5.0-2ubuntu10.10",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-8927",
+          "PkgName": "libcurl3t64-gnutls",
+          "InstalledVersion": "8.5.0-2ubuntu10.6",
+          "FixedVersion": "8.5.0-2ubuntu10.10",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-0167",
+          "PkgName": "libcurl3t64-gnutls",
+          "InstalledVersion": "8.5.0-2ubuntu10.6",
+          "FixedVersion": "8.5.0-2ubuntu10.8",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-10148",
+          "PkgName": "libcurl3t64-gnutls",
+          "InstalledVersion": "8.5.0-2ubuntu10.6",
+          "FixedVersion": "8.5.0-2ubuntu10.7",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-14524",
+          "PkgName": "libcurl3t64-gnutls",
+          "InstalledVersion": "8.5.0-2ubuntu10.6",
+          "FixedVersion": "8.5.0-2ubuntu10.7",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-14819",
+          "PkgName": "libcurl3t64-gnutls",
+          "InstalledVersion": "8.5.0-2ubuntu10.6",
+          "FixedVersion": "8.5.0-2ubuntu10.7",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-15079",
+          "PkgName": "libcurl3t64-gnutls",
+          "InstalledVersion": "8.5.0-2ubuntu10.6",
+          "FixedVersion": "8.5.0-2ubuntu10.7",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-15224",
+          "PkgName": "libcurl3t64-gnutls",
+          "InstalledVersion": "8.5.0-2ubuntu10.6",
+          "FixedVersion": "8.5.0-2ubuntu10.7",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-10536",
+          "PkgName": "libcurl3t64-gnutls",
+          "InstalledVersion": "8.5.0-2ubuntu10.6",
+          "FixedVersion": "8.5.0-2ubuntu10.11",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-3784",
+          "PkgName": "libcurl3t64-gnutls",
+          "InstalledVersion": "8.5.0-2ubuntu10.6",
+          "FixedVersion": "8.5.0-2ubuntu10.8",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-4873",
+          "PkgName": "libcurl3t64-gnutls",
+          "InstalledVersion": "8.5.0-2ubuntu10.6",
+          "FixedVersion": "8.5.0-2ubuntu10.9",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-5773",
+          "PkgName": "libcurl3t64-gnutls",
+          "InstalledVersion": "8.5.0-2ubuntu10.6",
+          "FixedVersion": "8.5.0-2ubuntu10.9",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-6276",
+          "PkgName": "libcurl3t64-gnutls",
+          "InstalledVersion": "8.5.0-2ubuntu10.6",
+          "FixedVersion": "8.5.0-2ubuntu10.9",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-8286",
+          "PkgName": "libcurl3t64-gnutls",
+          "InstalledVersion": "8.5.0-2ubuntu10.6",
+          "FixedVersion": "8.5.0-2ubuntu10.10",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-8458",
+          "PkgName": "libcurl3t64-gnutls",
+          "InstalledVersion": "8.5.0-2ubuntu10.6",
+          "FixedVersion": "8.5.0-2ubuntu10.10",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-86409",
+          "PkgName": "libcurl3t64-gnutls",
+          "InstalledVersion": "8.5.0-2ubuntu10.6",
+          "FixedVersion": "8.5.0-2ubuntu10.16",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-86414",
+          "PkgName": "libcurl3t64-gnutls",
+          "InstalledVersion": "8.5.0-2ubuntu10.6",
+          "FixedVersion": "8.5.0-2ubuntu10.16",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-87862",
+          "PkgName": "libcurl3t64-gnutls",
+          "InstalledVersion": "8.5.0-2ubuntu10.6",
+          "FixedVersion": "8.5.0-2ubuntu10.16",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-87863",
+          "PkgName": "libcurl3t64-gnutls",
+          "InstalledVersion": "8.5.0-2ubuntu10.6",
+          "FixedVersion": "8.5.0-2ubuntu10.16",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-87864",
+          "PkgName": "libcurl3t64-gnutls",
+          "InstalledVersion": "8.5.0-2ubuntu10.6",
+          "FixedVersion": "8.5.0-2ubuntu10.16",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-8924",
+          "PkgName": "libcurl3t64-gnutls",
+          "InstalledVersion": "8.5.0-2ubuntu10.6",
+          "FixedVersion": "8.5.0-2ubuntu10.10",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-8932",
+          "PkgName": "libcurl3t64-gnutls",
+          "InstalledVersion": "8.5.0-2ubuntu10.6",
+          "FixedVersion": "8.5.0-2ubuntu10.13",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-92388",
+          "PkgName": "libcurl3t64-gnutls",
+          "InstalledVersion": "8.5.0-2ubuntu10.6",
+          "FixedVersion": "8.5.0-2ubuntu10.16",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-92389",
+          "PkgName": "libcurl3t64-gnutls",
+          "InstalledVersion": "8.5.0-2ubuntu10.6",
+          "FixedVersion": "8.5.0-2ubuntu10.16",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-92391",
+          "PkgName": "libcurl3t64-gnutls",
+          "InstalledVersion": "8.5.0-2ubuntu10.6",
+          "FixedVersion": "8.5.0-2ubuntu10.16",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-94266",
+          "PkgName": "libcurl3t64-gnutls",
+          "InstalledVersion": "8.5.0-2ubuntu10.6",
+          "FixedVersion": "8.5.0-2ubuntu10.16",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-9547",
+          "PkgName": "libcurl3t64-gnutls",
+          "InstalledVersion": "8.5.0-2ubuntu10.6",
+          "FixedVersion": "8.5.0-2ubuntu10.10",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-59375",
+          "PkgName": "libexpat1",
+          "InstalledVersion": "2.6.1-2ubuntu0.3",
+          "FixedVersion": "2.6.1-2ubuntu0.5",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-66382",
+          "PkgName": "libexpat1",
+          "InstalledVersion": "2.6.1-2ubuntu0.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-24515",
+          "PkgName": "libexpat1",
+          "InstalledVersion": "2.6.1-2ubuntu0.3",
+          "FixedVersion": "2.6.1-2ubuntu0.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-25210",
+          "PkgName": "libexpat1",
+          "InstalledVersion": "2.6.1-2ubuntu0.3",
+          "FixedVersion": "2.6.1-2ubuntu0.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-32776",
+          "PkgName": "libexpat1",
+          "InstalledVersion": "2.6.1-2ubuntu0.3",
+          "FixedVersion": "2.6.1-2ubuntu0.5",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-32777",
+          "PkgName": "libexpat1",
+          "InstalledVersion": "2.6.1-2ubuntu0.3",
+          "FixedVersion": "2.6.1-2ubuntu0.5",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-32778",
+          "PkgName": "libexpat1",
+          "InstalledVersion": "2.6.1-2ubuntu0.3",
+          "FixedVersion": "2.6.1-2ubuntu0.5",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-41080",
+          "PkgName": "libexpat1",
+          "InstalledVersion": "2.6.1-2ubuntu0.3",
+          "FixedVersion": "2.6.1-2ubuntu0.5",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-45186",
+          "PkgName": "libexpat1",
+          "InstalledVersion": "2.6.1-2ubuntu0.3",
+          "FixedVersion": "2.6.1-2ubuntu0.5",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-50219",
+          "PkgName": "libexpat1",
+          "InstalledVersion": "2.6.1-2ubuntu0.3",
+          "FixedVersion": "2.6.1-2ubuntu0.5",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56131",
+          "PkgName": "libexpat1",
+          "InstalledVersion": "2.6.1-2ubuntu0.3",
+          "FixedVersion": "2.6.1-2ubuntu0.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56132",
+          "PkgName": "libexpat1",
+          "InstalledVersion": "2.6.1-2ubuntu0.3",
+          "FixedVersion": "2.6.1-2ubuntu0.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56403",
+          "PkgName": "libexpat1",
+          "InstalledVersion": "2.6.1-2ubuntu0.3",
+          "FixedVersion": "2.6.1-2ubuntu0.5",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56404",
+          "PkgName": "libexpat1",
+          "InstalledVersion": "2.6.1-2ubuntu0.3",
+          "FixedVersion": "2.6.1-2ubuntu0.5",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56405",
+          "PkgName": "libexpat1",
+          "InstalledVersion": "2.6.1-2ubuntu0.3",
+          "FixedVersion": "2.6.1-2ubuntu0.5",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56406",
+          "PkgName": "libexpat1",
+          "InstalledVersion": "2.6.1-2ubuntu0.3",
+          "FixedVersion": "2.6.1-2ubuntu0.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56407",
+          "PkgName": "libexpat1",
+          "InstalledVersion": "2.6.1-2ubuntu0.3",
+          "FixedVersion": "2.6.1-2ubuntu0.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56408",
+          "PkgName": "libexpat1",
+          "InstalledVersion": "2.6.1-2ubuntu0.3",
+          "FixedVersion": "2.6.1-2ubuntu0.5",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56409",
+          "PkgName": "libexpat1",
+          "InstalledVersion": "2.6.1-2ubuntu0.3",
+          "FixedVersion": "2.6.1-2ubuntu0.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56410",
+          "PkgName": "libexpat1",
+          "InstalledVersion": "2.6.1-2ubuntu0.3",
+          "FixedVersion": "2.6.1-2ubuntu0.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56411",
+          "PkgName": "libexpat1",
+          "InstalledVersion": "2.6.1-2ubuntu0.3",
+          "FixedVersion": "2.6.1-2ubuntu0.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56412",
+          "PkgName": "libexpat1",
+          "InstalledVersion": "2.6.1-2ubuntu0.3",
+          "FixedVersion": "2.6.1-2ubuntu0.5",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-66046",
+          "PkgName": "libexpat1",
+          "InstalledVersion": "2.6.1-2ubuntu0.3",
+          "FixedVersion": "2.6.1-2ubuntu0.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-72522",
+          "PkgName": "libexpat1",
+          "InstalledVersion": "2.6.1-2ubuntu0.3",
+          "FixedVersion": "2.6.1-2ubuntu0.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-76641",
+          "PkgName": "libexpat1",
+          "InstalledVersion": "2.6.1-2ubuntu0.3",
+          "FixedVersion": "2.6.1-2ubuntu0.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-76957",
+          "PkgName": "libexpat1",
+          "InstalledVersion": "2.6.1-2ubuntu0.3",
+          "FixedVersion": "2.6.1-2ubuntu0.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-41989",
+          "PkgName": "libgcrypt20",
+          "InstalledVersion": "1.10.3-2build1",
+          "FixedVersion": "1.10.3-2ubuntu0.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2024-2236",
+          "PkgName": "libgcrypt20",
+          "InstalledVersion": "1.10.3-2build1",
+          "FixedVersion": "1.10.3-2ubuntu0.2",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-14831",
+          "PkgName": "libgnutls30t64",
+          "InstalledVersion": "3.8.3-1.1ubuntu3.3",
+          "FixedVersion": "3.8.3-1.1ubuntu3.5",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-32988",
+          "PkgName": "libgnutls30t64",
+          "InstalledVersion": "3.8.3-1.1ubuntu3.3",
+          "FixedVersion": "3.8.3-1.1ubuntu3.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-32989",
+          "PkgName": "libgnutls30t64",
+          "InstalledVersion": "3.8.3-1.1ubuntu3.3",
+          "FixedVersion": "3.8.3-1.1ubuntu3.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-32990",
+          "PkgName": "libgnutls30t64",
+          "InstalledVersion": "3.8.3-1.1ubuntu3.3",
+          "FixedVersion": "3.8.3-1.1ubuntu3.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-6395",
+          "PkgName": "libgnutls30t64",
+          "InstalledVersion": "3.8.3-1.1ubuntu3.3",
+          "FixedVersion": "3.8.3-1.1ubuntu3.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-33845",
+          "PkgName": "libgnutls30t64",
+          "InstalledVersion": "3.8.3-1.1ubuntu3.3",
+          "FixedVersion": "3.8.3-1.1ubuntu3.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-33846",
+          "PkgName": "libgnutls30t64",
+          "InstalledVersion": "3.8.3-1.1ubuntu3.3",
+          "FixedVersion": "3.8.3-1.1ubuntu3.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-3832",
+          "PkgName": "libgnutls30t64",
+          "InstalledVersion": "3.8.3-1.1ubuntu3.3",
+          "FixedVersion": "3.8.3-1.1ubuntu3.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-3833",
+          "PkgName": "libgnutls30t64",
+          "InstalledVersion": "3.8.3-1.1ubuntu3.3",
+          "FixedVersion": "3.8.3-1.1ubuntu3.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42009",
+          "PkgName": "libgnutls30t64",
+          "InstalledVersion": "3.8.3-1.1ubuntu3.3",
+          "FixedVersion": "3.8.3-1.1ubuntu3.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42010",
+          "PkgName": "libgnutls30t64",
+          "InstalledVersion": "3.8.3-1.1ubuntu3.3",
+          "FixedVersion": "3.8.3-1.1ubuntu3.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42011",
+          "PkgName": "libgnutls30t64",
+          "InstalledVersion": "3.8.3-1.1ubuntu3.3",
+          "FixedVersion": "3.8.3-1.1ubuntu3.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42012",
+          "PkgName": "libgnutls30t64",
+          "InstalledVersion": "3.8.3-1.1ubuntu3.3",
+          "FixedVersion": "3.8.3-1.1ubuntu3.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42013",
+          "PkgName": "libgnutls30t64",
+          "InstalledVersion": "3.8.3-1.1ubuntu3.3",
+          "FixedVersion": "3.8.3-1.1ubuntu3.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42014",
+          "PkgName": "libgnutls30t64",
+          "InstalledVersion": "3.8.3-1.1ubuntu3.3",
+          "FixedVersion": "3.8.3-1.1ubuntu3.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42015",
+          "PkgName": "libgnutls30t64",
+          "InstalledVersion": "3.8.3-1.1ubuntu3.3",
+          "FixedVersion": "3.8.3-1.1ubuntu3.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-5260",
+          "PkgName": "libgnutls30t64",
+          "InstalledVersion": "3.8.3-1.1ubuntu3.3",
+          "FixedVersion": "3.8.3-1.1ubuntu3.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-5419",
+          "PkgName": "libgnutls30t64",
+          "InstalledVersion": "3.8.3-1.1ubuntu3.3",
+          "FixedVersion": "3.8.3-1.1ubuntu3.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-67693",
+          "PkgName": "libgnutls30t64",
+          "InstalledVersion": "3.8.3-1.1ubuntu3.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-88647",
+          "PkgName": "libgnutls30t64",
+          "InstalledVersion": "3.8.3-1.1ubuntu3.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-88648",
+          "PkgName": "libgnutls30t64",
+          "InstalledVersion": "3.8.3-1.1ubuntu3.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-95184",
+          "PkgName": "libgnutls30t64",
+          "InstalledVersion": "3.8.3-1.1ubuntu3.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-95209",
+          "PkgName": "libgnutls30t64",
+          "InstalledVersion": "3.8.3-1.1ubuntu3.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-95210",
+          "PkgName": "libgnutls30t64",
+          "InstalledVersion": "3.8.3-1.1ubuntu3.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-9820",
+          "PkgName": "libgnutls30t64",
+          "InstalledVersion": "3.8.3-1.1ubuntu3.3",
+          "FixedVersion": "3.8.3-1.1ubuntu3.5",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-3576",
+          "PkgName": "libgssapi-krb5-2",
+          "InstalledVersion": "1.20.1-6ubuntu2.5",
+          "FixedVersion": "1.20.1-6ubuntu2.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-11850",
+          "PkgName": "libgssapi-krb5-2",
+          "InstalledVersion": "1.20.1-6ubuntu2.5",
+          "FixedVersion": "1.20.1-6ubuntu2.7",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-40355",
+          "PkgName": "libgssapi-krb5-2",
+          "InstalledVersion": "1.20.1-6ubuntu2.5",
+          "FixedVersion": "1.20.1-6ubuntu2.7",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-40356",
+          "PkgName": "libgssapi-krb5-2",
+          "InstalledVersion": "1.20.1-6ubuntu2.5",
+          "FixedVersion": "1.20.1-6ubuntu2.7",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-3576",
+          "PkgName": "libk5crypto3",
+          "InstalledVersion": "1.20.1-6ubuntu2.5",
+          "FixedVersion": "1.20.1-6ubuntu2.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-11850",
+          "PkgName": "libk5crypto3",
+          "InstalledVersion": "1.20.1-6ubuntu2.5",
+          "FixedVersion": "1.20.1-6ubuntu2.7",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-40355",
+          "PkgName": "libk5crypto3",
+          "InstalledVersion": "1.20.1-6ubuntu2.5",
+          "FixedVersion": "1.20.1-6ubuntu2.7",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-40356",
+          "PkgName": "libk5crypto3",
+          "InstalledVersion": "1.20.1-6ubuntu2.5",
+          "FixedVersion": "1.20.1-6ubuntu2.7",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-3576",
+          "PkgName": "libkrb5-3",
+          "InstalledVersion": "1.20.1-6ubuntu2.5",
+          "FixedVersion": "1.20.1-6ubuntu2.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-11850",
+          "PkgName": "libkrb5-3",
+          "InstalledVersion": "1.20.1-6ubuntu2.5",
+          "FixedVersion": "1.20.1-6ubuntu2.7",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-40355",
+          "PkgName": "libkrb5-3",
+          "InstalledVersion": "1.20.1-6ubuntu2.5",
+          "FixedVersion": "1.20.1-6ubuntu2.7",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-40356",
+          "PkgName": "libkrb5-3",
+          "InstalledVersion": "1.20.1-6ubuntu2.5",
+          "FixedVersion": "1.20.1-6ubuntu2.7",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-3576",
+          "PkgName": "libkrb5support0",
+          "InstalledVersion": "1.20.1-6ubuntu2.5",
+          "FixedVersion": "1.20.1-6ubuntu2.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-11850",
+          "PkgName": "libkrb5support0",
+          "InstalledVersion": "1.20.1-6ubuntu2.5",
+          "FixedVersion": "1.20.1-6ubuntu2.7",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-40355",
+          "PkgName": "libkrb5support0",
+          "InstalledVersion": "1.20.1-6ubuntu2.5",
+          "FixedVersion": "1.20.1-6ubuntu2.7",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-40356",
+          "PkgName": "libkrb5support0",
+          "InstalledVersion": "1.20.1-6ubuntu2.5",
+          "FixedVersion": "1.20.1-6ubuntu2.7",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-34743",
+          "PkgName": "liblzma5",
+          "InstalledVersion": "5.6.1+really5.4.5-1ubuntu0.2",
+          "FixedVersion": "5.6.1+really5.4.5-1ubuntu0.3",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-13595",
+          "PkgName": "libmount1",
+          "InstalledVersion": "2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-27456",
+          "PkgName": "libmount1",
+          "InstalledVersion": "2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-53612",
+          "PkgName": "libmount1",
+          "InstalledVersion": "2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-53613",
+          "PkgName": "libmount1",
+          "InstalledVersion": "2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-53614",
+          "PkgName": "libmount1",
+          "InstalledVersion": "2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-53615",
+          "PkgName": "libmount1",
+          "InstalledVersion": "2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-6141",
+          "PkgName": "libncursesw6",
+          "InstalledVersion": "6.4+20240113-1ubuntu2",
+          "FixedVersion": "6.4+20240113-1ubuntu2.2",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-69720",
+          "PkgName": "libncursesw6",
+          "InstalledVersion": "6.4+20240113-1ubuntu2",
+          "FixedVersion": "6.4+20240113-1ubuntu2.1",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-27135",
+          "PkgName": "libnghttp2-14",
+          "InstalledVersion": "1.59.0-1ubuntu0.2",
+          "FixedVersion": "1.59.0-1ubuntu0.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-58055",
+          "PkgName": "libnghttp2-14",
+          "InstalledVersion": "1.59.0-1ubuntu0.2",
+          "FixedVersion": "1.59.0-1ubuntu0.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-13757",
+          "PkgName": "libp11-kit0",
+          "InstalledVersion": "0.25.3-4ubuntu2.1",
+          "FixedVersion": "0.25.3-4ubuntu2.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-18938",
+          "PkgName": "libp11-kit0",
+          "InstalledVersion": "0.25.3-4ubuntu2.1",
+          "FixedVersion": "0.25.3-4ubuntu2.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2024-10963",
+          "PkgName": "libpam-modules",
+          "InstalledVersion": "1.5.3-5ubuntu5.1",
+          "FixedVersion": "1.5.3-5ubuntu5.5",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-6020",
+          "PkgName": "libpam-modules",
+          "InstalledVersion": "1.5.3-5ubuntu5.1",
+          "FixedVersion": "1.5.3-5ubuntu5.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-54411",
+          "PkgName": "libpam-modules",
+          "InstalledVersion": "1.5.3-5ubuntu5.1",
+          "FixedVersion": "1.5.3-5ubuntu5.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2024-10963",
+          "PkgName": "libpam-modules-bin",
+          "InstalledVersion": "1.5.3-5ubuntu5.1",
+          "FixedVersion": "1.5.3-5ubuntu5.5",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-6020",
+          "PkgName": "libpam-modules-bin",
+          "InstalledVersion": "1.5.3-5ubuntu5.1",
+          "FixedVersion": "1.5.3-5ubuntu5.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-54411",
+          "PkgName": "libpam-modules-bin",
+          "InstalledVersion": "1.5.3-5ubuntu5.1",
+          "FixedVersion": "1.5.3-5ubuntu5.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2024-10963",
+          "PkgName": "libpam-runtime",
+          "InstalledVersion": "1.5.3-5ubuntu5.1",
+          "FixedVersion": "1.5.3-5ubuntu5.5",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-6020",
+          "PkgName": "libpam-runtime",
+          "InstalledVersion": "1.5.3-5ubuntu5.1",
+          "FixedVersion": "1.5.3-5ubuntu5.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-54411",
+          "PkgName": "libpam-runtime",
+          "InstalledVersion": "1.5.3-5ubuntu5.1",
+          "FixedVersion": "1.5.3-5ubuntu5.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2024-10963",
+          "PkgName": "libpam0g",
+          "InstalledVersion": "1.5.3-5ubuntu5.1",
+          "FixedVersion": "1.5.3-5ubuntu5.5",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-6020",
+          "PkgName": "libpam0g",
+          "InstalledVersion": "1.5.3-5ubuntu5.1",
+          "FixedVersion": "1.5.3-5ubuntu5.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-54411",
+          "PkgName": "libpam0g",
+          "InstalledVersion": "1.5.3-5ubuntu5.1",
+          "FixedVersion": "1.5.3-5ubuntu5.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-103111",
+          "PkgName": "libpcre2-8-0",
+          "InstalledVersion": "10.42-4ubuntu2.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-86145",
+          "PkgName": "libpcre2-8-0",
+          "InstalledVersion": "10.42-4ubuntu2.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-89156",
+          "PkgName": "libpcre2-8-0",
+          "InstalledVersion": "10.42-4ubuntu2.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-89157",
+          "PkgName": "libpcre2-8-0",
+          "InstalledVersion": "10.42-4ubuntu2.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-89158",
+          "PkgName": "libpcre2-8-0",
+          "InstalledVersion": "10.42-4ubuntu2.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-89160",
+          "PkgName": "libpcre2-8-0",
+          "InstalledVersion": "10.42-4ubuntu2.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-89161",
+          "PkgName": "libpcre2-8-0",
+          "InstalledVersion": "10.42-4ubuntu2.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-15649",
+          "PkgName": "libperl5.38t64",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-40909",
+          "PkgName": "libperl5.38t64",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-12087",
+          "PkgName": "libperl5.38t64",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-13221",
+          "PkgName": "libperl5.38t64",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-15534",
+          "PkgName": "libperl5.38t64",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-19487",
+          "PkgName": "libperl5.38t64",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42496",
+          "PkgName": "libperl5.38t64",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42497",
+          "PkgName": "libperl5.38t64",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-48959",
+          "PkgName": "libperl5.38t64",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-48962",
+          "PkgName": "libperl5.38t64",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-57432",
+          "PkgName": "libperl5.38t64",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-57433",
+          "PkgName": "libperl5.38t64",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-7017",
+          "PkgName": "libperl5.38t64",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-8376",
+          "PkgName": "libperl5.38t64",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-9538",
+          "PkgName": "libperl5.38t64",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-107161",
+          "PkgName": "libsasl2-2",
+          "InstalledVersion": "2.1.28+dfsg1-5ubuntu3.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-107161",
+          "PkgName": "libsasl2-modules",
+          "InstalledVersion": "2.1.28+dfsg1-5ubuntu3.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-107161",
+          "PkgName": "libsasl2-modules-db",
+          "InstalledVersion": "2.1.28+dfsg1-5ubuntu3.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-13595",
+          "PkgName": "libsmartcols1",
+          "InstalledVersion": "2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-27456",
+          "PkgName": "libsmartcols1",
+          "InstalledVersion": "2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-53612",
+          "PkgName": "libsmartcols1",
+          "InstalledVersion": "2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-53613",
+          "PkgName": "libsmartcols1",
+          "InstalledVersion": "2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-53614",
+          "PkgName": "libsmartcols1",
+          "InstalledVersion": "2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-53615",
+          "PkgName": "libsmartcols1",
+          "InstalledVersion": "2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-29087",
+          "PkgName": "libsqlite3-0",
+          "InstalledVersion": "3.45.1-1ubuntu2.1",
+          "FixedVersion": "3.45.1-1ubuntu2.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-29088",
+          "PkgName": "libsqlite3-0",
+          "InstalledVersion": "3.45.1-1ubuntu2.1",
+          "FixedVersion": "3.45.1-1ubuntu2.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-3277",
+          "PkgName": "libsqlite3-0",
+          "InstalledVersion": "3.45.1-1ubuntu2.1",
+          "FixedVersion": "3.45.1-1ubuntu2.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-6965",
+          "PkgName": "libsqlite3-0",
+          "InstalledVersion": "3.45.1-1ubuntu2.1",
+          "FixedVersion": "3.45.1-1ubuntu2.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-7709",
+          "PkgName": "libsqlite3-0",
+          "InstalledVersion": "3.45.1-1ubuntu2.1",
+          "FixedVersion": "3.45.1-1ubuntu2.5",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-11822",
+          "PkgName": "libsqlite3-0",
+          "InstalledVersion": "3.45.1-1ubuntu2.1",
+          "FixedVersion": "3.45.1-1ubuntu2.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-11824",
+          "PkgName": "libsqlite3-0",
+          "InstalledVersion": "3.45.1-1ubuntu2.1",
+          "FixedVersion": "3.45.1-1ubuntu2.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39113",
+          "PkgName": "libsqlite3-0",
+          "InstalledVersion": "3.45.1-1ubuntu2.1",
+          "FixedVersion": "3.45.1-1ubuntu2.8",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-50812",
+          "PkgName": "libsqlite3-0",
+          "InstalledVersion": "3.45.1-1ubuntu2.1",
+          "FixedVersion": "3.45.1-1ubuntu2.7",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-50813",
+          "PkgName": "libsqlite3-0",
+          "InstalledVersion": "3.45.1-1ubuntu2.1",
+          "FixedVersion": "3.45.1-1ubuntu2.7",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-4877",
+          "PkgName": "libssh-4",
+          "InstalledVersion": "0.10.6-2build2",
+          "FixedVersion": "0.10.6-2ubuntu0.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-4878",
+          "PkgName": "libssh-4",
+          "InstalledVersion": "0.10.6-2build2",
+          "FixedVersion": "0.10.6-2ubuntu0.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-5318",
+          "PkgName": "libssh-4",
+          "InstalledVersion": "0.10.6-2build2",
+          "FixedVersion": "0.10.6-2ubuntu0.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-5351",
+          "PkgName": "libssh-4",
+          "InstalledVersion": "0.10.6-2build2",
+          "FixedVersion": "0.10.6-2ubuntu0.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-5372",
+          "PkgName": "libssh-4",
+          "InstalledVersion": "0.10.6-2build2",
+          "FixedVersion": "0.10.6-2ubuntu0.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-5987",
+          "PkgName": "libssh-4",
+          "InstalledVersion": "0.10.6-2build2",
+          "FixedVersion": "0.10.6-2ubuntu0.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-0964",
+          "PkgName": "libssh-4",
+          "InstalledVersion": "0.10.6-2build2",
+          "FixedVersion": "0.10.6-2ubuntu0.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-0967",
+          "PkgName": "libssh-4",
+          "InstalledVersion": "0.10.6-2build2",
+          "FixedVersion": "0.10.6-2ubuntu0.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-0968",
+          "PkgName": "libssh-4",
+          "InstalledVersion": "0.10.6-2build2",
+          "FixedVersion": "0.10.6-2ubuntu0.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-3731",
+          "PkgName": "libssh-4",
+          "InstalledVersion": "0.10.6-2build2",
+          "FixedVersion": "0.10.6-2ubuntu0.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-59843",
+          "PkgName": "libssh-4",
+          "InstalledVersion": "0.10.6-2build2",
+          "FixedVersion": "0.10.6-2ubuntu0.5",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-59845",
+          "PkgName": "libssh-4",
+          "InstalledVersion": "0.10.6-2build2",
+          "FixedVersion": "0.10.6-2ubuntu0.5",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-59846",
+          "PkgName": "libssh-4",
+          "InstalledVersion": "0.10.6-2build2",
+          "FixedVersion": "0.10.6-2ubuntu0.5",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-59847",
+          "PkgName": "libssh-4",
+          "InstalledVersion": "0.10.6-2build2",
+          "FixedVersion": "0.10.6-2ubuntu0.5",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-59848",
+          "PkgName": "libssh-4",
+          "InstalledVersion": "0.10.6-2build2",
+          "FixedVersion": "0.10.6-2ubuntu0.5",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-59850",
+          "PkgName": "libssh-4",
+          "InstalledVersion": "0.10.6-2build2",
+          "FixedVersion": "0.10.6-2ubuntu0.5",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-8114",
+          "PkgName": "libssh-4",
+          "InstalledVersion": "0.10.6-2build2",
+          "FixedVersion": "0.10.6-2ubuntu0.2",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-8277",
+          "PkgName": "libssh-4",
+          "InstalledVersion": "0.10.6-2build2",
+          "FixedVersion": "0.10.6-2ubuntu0.3",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-0965",
+          "PkgName": "libssh-4",
+          "InstalledVersion": "0.10.6-2build2",
+          "FixedVersion": "0.10.6-2ubuntu0.3",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-0966",
+          "PkgName": "libssh-4",
+          "InstalledVersion": "0.10.6-2build2",
+          "FixedVersion": "0.10.6-2ubuntu0.3",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-45447",
+          "PkgName": "libssl3t64",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.11",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-84782",
+          "PkgName": "libssl3t64",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.16",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-15467",
+          "PkgName": "libssl3t64",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.7",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-9230",
+          "PkgName": "libssl3t64",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-31790",
+          "PkgName": "libssl3t64",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.9",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-34182",
+          "PkgName": "libssl3t64",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.11",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-45445",
+          "PkgName": "libssl3t64",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.11",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-63072",
+          "PkgName": "libssl3t64",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.15",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-63076",
+          "PkgName": "libssl3t64",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.15",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-68160",
+          "PkgName": "libssl3t64",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.7",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-69418",
+          "PkgName": "libssl3t64",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.7",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-69419",
+          "PkgName": "libssl3t64",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.7",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-69420",
+          "PkgName": "libssl3t64",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.7",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-69421",
+          "PkgName": "libssl3t64",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.7",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-22795",
+          "PkgName": "libssl3t64",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.7",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-22796",
+          "PkgName": "libssl3t64",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.7",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-28387",
+          "PkgName": "libssl3t64",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.9",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-28388",
+          "PkgName": "libssl3t64",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.9",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-28389",
+          "PkgName": "libssl3t64",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.9",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-28390",
+          "PkgName": "libssl3t64",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.9",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-31789",
+          "PkgName": "libssl3t64",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.9",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-34180",
+          "PkgName": "libssl3t64",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.11",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-35189",
+          "PkgName": "libssl3t64",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.16",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42766",
+          "PkgName": "libssl3t64",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.11",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42767",
+          "PkgName": "libssl3t64",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.11",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42770",
+          "PkgName": "libssl3t64",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.11",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-45446",
+          "PkgName": "libssl3t64",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.11",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-54872",
+          "PkgName": "libssl3t64",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.16",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-54874",
+          "PkgName": "libssl3t64",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.15",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-63074",
+          "PkgName": "libssl3t64",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.15",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-7383",
+          "PkgName": "libssl3t64",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.11",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-75803",
+          "PkgName": "libssl3t64",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.15",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-75805",
+          "PkgName": "libssl3t64",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.16",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-75806",
+          "PkgName": "libssl3t64",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.16",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-77696",
+          "PkgName": "libssl3t64",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.16",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-9076",
+          "PkgName": "libssl3t64",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.11",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-4598",
+          "PkgName": "libsystemd0",
+          "InstalledVersion": "255.4-1ubuntu8.6",
+          "FixedVersion": "255.4-1ubuntu8.8",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-15059",
+          "PkgName": "libsystemd0",
+          "InstalledVersion": "255.4-1ubuntu8.6",
+          "FixedVersion": "255.4-1ubuntu8.17",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-16742",
+          "PkgName": "libsystemd0",
+          "InstalledVersion": "255.4-1ubuntu8.6",
+          "FixedVersion": "255.4-1ubuntu8.17",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-29111",
+          "PkgName": "libsystemd0",
+          "InstalledVersion": "255.4-1ubuntu8.6",
+          "FixedVersion": "255.4-1ubuntu8.14",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-40225",
+          "PkgName": "libsystemd0",
+          "InstalledVersion": "255.4-1ubuntu8.6",
+          "FixedVersion": "255.4-1ubuntu8.14",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-40226",
+          "PkgName": "libsystemd0",
+          "InstalledVersion": "255.4-1ubuntu8.6",
+          "FixedVersion": "255.4-1ubuntu8.16",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-40228",
+          "PkgName": "libsystemd0",
+          "InstalledVersion": "255.4-1ubuntu8.6",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-13151",
+          "PkgName": "libtasn1-6",
+          "InstalledVersion": "4.19.0-3ubuntu0.24.04.1",
+          "FixedVersion": "4.19.0-3ubuntu0.24.04.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-6141",
+          "PkgName": "libtinfo6",
+          "InstalledVersion": "6.4+20240113-1ubuntu2",
+          "FixedVersion": "6.4+20240113-1ubuntu2.2",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-69720",
+          "PkgName": "libtinfo6",
+          "InstalledVersion": "6.4+20240113-1ubuntu2",
+          "FixedVersion": "6.4+20240113-1ubuntu2.1",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-4598",
+          "PkgName": "libudev1",
+          "InstalledVersion": "255.4-1ubuntu8.6",
+          "FixedVersion": "255.4-1ubuntu8.8",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-15059",
+          "PkgName": "libudev1",
+          "InstalledVersion": "255.4-1ubuntu8.6",
+          "FixedVersion": "255.4-1ubuntu8.17",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-16742",
+          "PkgName": "libudev1",
+          "InstalledVersion": "255.4-1ubuntu8.6",
+          "FixedVersion": "255.4-1ubuntu8.17",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-29111",
+          "PkgName": "libudev1",
+          "InstalledVersion": "255.4-1ubuntu8.6",
+          "FixedVersion": "255.4-1ubuntu8.14",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-40225",
+          "PkgName": "libudev1",
+          "InstalledVersion": "255.4-1ubuntu8.6",
+          "FixedVersion": "255.4-1ubuntu8.14",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-40226",
+          "PkgName": "libudev1",
+          "InstalledVersion": "255.4-1ubuntu8.6",
+          "FixedVersion": "255.4-1ubuntu8.16",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-40228",
+          "PkgName": "libudev1",
+          "InstalledVersion": "255.4-1ubuntu8.6",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-13595",
+          "PkgName": "libuuid1",
+          "InstalledVersion": "2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-27456",
+          "PkgName": "libuuid1",
+          "InstalledVersion": "2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-53612",
+          "PkgName": "libuuid1",
+          "InstalledVersion": "2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-53613",
+          "PkgName": "libuuid1",
+          "InstalledVersion": "2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-53614",
+          "PkgName": "libuuid1",
+          "InstalledVersion": "2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-53615",
+          "PkgName": "libuuid1",
+          "InstalledVersion": "2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-88806",
+          "PkgName": "libx11-6",
+          "InstalledVersion": "2:1.8.7-1build1",
+          "FixedVersion": "2:1.8.7-1ubuntu0.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-94283",
+          "PkgName": "libx11-6",
+          "InstalledVersion": "2:1.8.7-1build1",
+          "FixedVersion": "2:1.8.7-1ubuntu0.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-94284",
+          "PkgName": "libx11-6",
+          "InstalledVersion": "2:1.8.7-1build1",
+          "FixedVersion": "2:1.8.7-1ubuntu0.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-94285",
+          "PkgName": "libx11-6",
+          "InstalledVersion": "2:1.8.7-1build1",
+          "FixedVersion": "2:1.8.7-1ubuntu0.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-88806",
+          "PkgName": "libx11-data",
+          "InstalledVersion": "2:1.8.7-1build1",
+          "FixedVersion": "2:1.8.7-1ubuntu0.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-94283",
+          "PkgName": "libx11-data",
+          "InstalledVersion": "2:1.8.7-1build1",
+          "FixedVersion": "2:1.8.7-1ubuntu0.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-94284",
+          "PkgName": "libx11-data",
+          "InstalledVersion": "2:1.8.7-1build1",
+          "FixedVersion": "2:1.8.7-1ubuntu0.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-94285",
+          "PkgName": "libx11-data",
+          "InstalledVersion": "2:1.8.7-1build1",
+          "FixedVersion": "2:1.8.7-1ubuntu0.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2024-56433",
+          "PkgName": "login",
+          "InstalledVersion": "1:4.13+dfsg1-4ubuntu3.2",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-13595",
+          "PkgName": "mount",
+          "InstalledVersion": "2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-27456",
+          "PkgName": "mount",
+          "InstalledVersion": "2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-53612",
+          "PkgName": "mount",
+          "InstalledVersion": "2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-53613",
+          "PkgName": "mount",
+          "InstalledVersion": "2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-53614",
+          "PkgName": "mount",
+          "InstalledVersion": "2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-53615",
+          "PkgName": "mount",
+          "InstalledVersion": "2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-6141",
+          "PkgName": "ncurses-base",
+          "InstalledVersion": "6.4+20240113-1ubuntu2",
+          "FixedVersion": "6.4+20240113-1ubuntu2.2",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-69720",
+          "PkgName": "ncurses-base",
+          "InstalledVersion": "6.4+20240113-1ubuntu2",
+          "FixedVersion": "6.4+20240113-1ubuntu2.1",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-6141",
+          "PkgName": "ncurses-bin",
+          "InstalledVersion": "6.4+20240113-1ubuntu2",
+          "FixedVersion": "6.4+20240113-1ubuntu2.2",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-69720",
+          "PkgName": "ncurses-bin",
+          "InstalledVersion": "6.4+20240113-1ubuntu2",
+          "FixedVersion": "6.4+20240113-1ubuntu2.1",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-106552",
+          "PkgName": "openssh-client",
+          "InstalledVersion": "1:9.6p1-3ubuntu13.11",
+          "FixedVersion": "1:9.6p1-3ubuntu13.20",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-106553",
+          "PkgName": "openssh-client",
+          "InstalledVersion": "1:9.6p1-3ubuntu13.11",
+          "FixedVersion": "1:9.6p1-3ubuntu13.20",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-106555",
+          "PkgName": "openssh-client",
+          "InstalledVersion": "1:9.6p1-3ubuntu13.11",
+          "FixedVersion": "1:9.6p1-3ubuntu13.20",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-106582",
+          "PkgName": "openssh-client",
+          "InstalledVersion": "1:9.6p1-3ubuntu13.11",
+          "FixedVersion": "1:9.6p1-3ubuntu13.20",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-106583",
+          "PkgName": "openssh-client",
+          "InstalledVersion": "1:9.6p1-3ubuntu13.11",
+          "FixedVersion": "1:9.6p1-3ubuntu13.20",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-106584",
+          "PkgName": "openssh-client",
+          "InstalledVersion": "1:9.6p1-3ubuntu13.11",
+          "FixedVersion": "1:9.6p1-3ubuntu13.20",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-106585",
+          "PkgName": "openssh-client",
+          "InstalledVersion": "1:9.6p1-3ubuntu13.11",
+          "FixedVersion": "1:9.6p1-3ubuntu13.20",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-106586",
+          "PkgName": "openssh-client",
+          "InstalledVersion": "1:9.6p1-3ubuntu13.11",
+          "FixedVersion": "1:9.6p1-3ubuntu13.20",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-106587",
+          "PkgName": "openssh-client",
+          "InstalledVersion": "1:9.6p1-3ubuntu13.11",
+          "FixedVersion": "1:9.6p1-3ubuntu13.20",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-3497",
+          "PkgName": "openssh-client",
+          "InstalledVersion": "1:9.6p1-3ubuntu13.11",
+          "FixedVersion": "1:9.6p1-3ubuntu13.15",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-35385",
+          "PkgName": "openssh-client",
+          "InstalledVersion": "1:9.6p1-3ubuntu13.11",
+          "FixedVersion": "1:9.6p1-3ubuntu13.16",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-35386",
+          "PkgName": "openssh-client",
+          "InstalledVersion": "1:9.6p1-3ubuntu13.11",
+          "FixedVersion": "1:9.6p1-3ubuntu13.16",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-35387",
+          "PkgName": "openssh-client",
+          "InstalledVersion": "1:9.6p1-3ubuntu13.11",
+          "FixedVersion": "1:9.6p1-3ubuntu13.16",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-35388",
+          "PkgName": "openssh-client",
+          "InstalledVersion": "1:9.6p1-3ubuntu13.11",
+          "FixedVersion": "1:9.6p1-3ubuntu13.16",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-35414",
+          "PkgName": "openssh-client",
+          "InstalledVersion": "1:9.6p1-3ubuntu13.11",
+          "FixedVersion": "1:9.6p1-3ubuntu13.16",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-59995",
+          "PkgName": "openssh-client",
+          "InstalledVersion": "1:9.6p1-3ubuntu13.11",
+          "FixedVersion": "1:9.6p1-3ubuntu13.18",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-59996",
+          "PkgName": "openssh-client",
+          "InstalledVersion": "1:9.6p1-3ubuntu13.11",
+          "FixedVersion": "1:9.6p1-3ubuntu13.18",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-59997",
+          "PkgName": "openssh-client",
+          "InstalledVersion": "1:9.6p1-3ubuntu13.11",
+          "FixedVersion": "1:9.6p1-3ubuntu13.18",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-59998",
+          "PkgName": "openssh-client",
+          "InstalledVersion": "1:9.6p1-3ubuntu13.11",
+          "FixedVersion": "1:9.6p1-3ubuntu13.18",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-59999",
+          "PkgName": "openssh-client",
+          "InstalledVersion": "1:9.6p1-3ubuntu13.11",
+          "FixedVersion": "1:9.6p1-3ubuntu13.18",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-60000",
+          "PkgName": "openssh-client",
+          "InstalledVersion": "1:9.6p1-3ubuntu13.11",
+          "FixedVersion": "1:9.6p1-3ubuntu13.18",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-60001",
+          "PkgName": "openssh-client",
+          "InstalledVersion": "1:9.6p1-3ubuntu13.11",
+          "FixedVersion": "1:9.6p1-3ubuntu13.18",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-60002",
+          "PkgName": "openssh-client",
+          "InstalledVersion": "1:9.6p1-3ubuntu13.11",
+          "FixedVersion": "1:9.6p1-3ubuntu13.18",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-73281",
+          "PkgName": "openssh-client",
+          "InstalledVersion": "1:9.6p1-3ubuntu13.11",
+          "FixedVersion": "1:9.6p1-3ubuntu13.19",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-73282",
+          "PkgName": "openssh-client",
+          "InstalledVersion": "1:9.6p1-3ubuntu13.11",
+          "FixedVersion": "1:9.6p1-3ubuntu13.19",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-73283",
+          "PkgName": "openssh-client",
+          "InstalledVersion": "1:9.6p1-3ubuntu13.11",
+          "FixedVersion": "1:9.6p1-3ubuntu13.19",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-61984",
+          "PkgName": "openssh-client",
+          "InstalledVersion": "1:9.6p1-3ubuntu13.11",
+          "FixedVersion": "1:9.6p1-3ubuntu13.15",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-61985",
+          "PkgName": "openssh-client",
+          "InstalledVersion": "1:9.6p1-3ubuntu13.11",
+          "FixedVersion": "1:9.6p1-3ubuntu13.15",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-45447",
+          "PkgName": "openssl",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.11",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-84782",
+          "PkgName": "openssl",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.16",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-15467",
+          "PkgName": "openssl",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.7",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-9230",
+          "PkgName": "openssl",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-31790",
+          "PkgName": "openssl",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.9",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-34182",
+          "PkgName": "openssl",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.11",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-45445",
+          "PkgName": "openssl",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.11",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-63072",
+          "PkgName": "openssl",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.15",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-63076",
+          "PkgName": "openssl",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.15",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-68160",
+          "PkgName": "openssl",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.7",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-69418",
+          "PkgName": "openssl",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.7",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-69419",
+          "PkgName": "openssl",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.7",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-69420",
+          "PkgName": "openssl",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.7",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-69421",
+          "PkgName": "openssl",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.7",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-22795",
+          "PkgName": "openssl",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.7",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-22796",
+          "PkgName": "openssl",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.7",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-28387",
+          "PkgName": "openssl",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.9",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-28388",
+          "PkgName": "openssl",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.9",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-28389",
+          "PkgName": "openssl",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.9",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-28390",
+          "PkgName": "openssl",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.9",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-31789",
+          "PkgName": "openssl",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.9",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-34180",
+          "PkgName": "openssl",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.11",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-35189",
+          "PkgName": "openssl",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.16",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42766",
+          "PkgName": "openssl",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.11",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42767",
+          "PkgName": "openssl",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.11",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42770",
+          "PkgName": "openssl",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.11",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-45446",
+          "PkgName": "openssl",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.11",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-54872",
+          "PkgName": "openssl",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.16",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-54874",
+          "PkgName": "openssl",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.15",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-63074",
+          "PkgName": "openssl",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.15",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-7383",
+          "PkgName": "openssl",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.11",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-75803",
+          "PkgName": "openssl",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.15",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-75805",
+          "PkgName": "openssl",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.16",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-75806",
+          "PkgName": "openssl",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.16",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-77696",
+          "PkgName": "openssl",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.16",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-9076",
+          "PkgName": "openssl",
+          "InstalledVersion": "3.0.13-0ubuntu3.5",
+          "FixedVersion": "3.0.13-0ubuntu3.11",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2024-56433",
+          "PkgName": "passwd",
+          "InstalledVersion": "1:4.13+dfsg1-4ubuntu3.2",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2018-6952",
+          "PkgName": "patch",
+          "InstalledVersion": "2.7.6-7build3",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2019-20633",
+          "PkgName": "patch",
+          "InstalledVersion": "2.7.6-7build3",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2021-45261",
+          "PkgName": "patch",
+          "InstalledVersion": "2.7.6-7build3",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56288",
+          "PkgName": "patch",
+          "InstalledVersion": "2.7.6-7build3",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56289",
+          "PkgName": "patch",
+          "InstalledVersion": "2.7.6-7build3",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-15649",
+          "PkgName": "perl",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-40909",
+          "PkgName": "perl",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-12087",
+          "PkgName": "perl",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-13221",
+          "PkgName": "perl",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-15534",
+          "PkgName": "perl",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-19487",
+          "PkgName": "perl",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42496",
+          "PkgName": "perl",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42497",
+          "PkgName": "perl",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-48959",
+          "PkgName": "perl",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-48962",
+          "PkgName": "perl",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-57432",
+          "PkgName": "perl",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-57433",
+          "PkgName": "perl",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-7017",
+          "PkgName": "perl",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-8376",
+          "PkgName": "perl",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-9538",
+          "PkgName": "perl",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-15649",
+          "PkgName": "perl-base",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-40909",
+          "PkgName": "perl-base",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-12087",
+          "PkgName": "perl-base",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-13221",
+          "PkgName": "perl-base",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-15534",
+          "PkgName": "perl-base",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-19487",
+          "PkgName": "perl-base",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42496",
+          "PkgName": "perl-base",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42497",
+          "PkgName": "perl-base",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-48959",
+          "PkgName": "perl-base",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-48962",
+          "PkgName": "perl-base",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-57432",
+          "PkgName": "perl-base",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-57433",
+          "PkgName": "perl-base",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-7017",
+          "PkgName": "perl-base",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-8376",
+          "PkgName": "perl-base",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-9538",
+          "PkgName": "perl-base",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-15649",
+          "PkgName": "perl-modules-5.38",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-40909",
+          "PkgName": "perl-modules-5.38",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-12087",
+          "PkgName": "perl-modules-5.38",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-13221",
+          "PkgName": "perl-modules-5.38",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-15534",
+          "PkgName": "perl-modules-5.38",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-19487",
+          "PkgName": "perl-modules-5.38",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42496",
+          "PkgName": "perl-modules-5.38",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42497",
+          "PkgName": "perl-modules-5.38",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-48959",
+          "PkgName": "perl-modules-5.38",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-48962",
+          "PkgName": "perl-modules-5.38",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-57432",
+          "PkgName": "perl-modules-5.38",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-57433",
+          "PkgName": "perl-modules-5.38",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-7017",
+          "PkgName": "perl-modules-5.38",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-8376",
+          "PkgName": "perl-modules-5.38",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-9538",
+          "PkgName": "perl-modules-5.38",
+          "InstalledVersion": "5.38.2-3.2ubuntu0.1",
+          "FixedVersion": "5.38.2-3.2ubuntu0.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-5958",
+          "PkgName": "sed",
+          "InstalledVersion": "4.9-2build1",
+          "FixedVersion": "4.9-2ubuntu0.24.04.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-45582",
+          "PkgName": "tar",
+          "InstalledVersion": "1.35+dfsg-3build1",
+          "FixedVersion": "1.35+dfsg-3ubuntu0.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-18477",
+          "PkgName": "tar",
+          "InstalledVersion": "1.35+dfsg-3build1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-18508",
+          "PkgName": "tar",
+          "InstalledVersion": "1.35+dfsg-3build1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-5704",
+          "PkgName": "tar",
+          "InstalledVersion": "1.35+dfsg-3build1",
+          "FixedVersion": "1.35+dfsg-3ubuntu0.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-13595",
+          "PkgName": "util-linux",
+          "InstalledVersion": "2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-27456",
+          "PkgName": "util-linux",
+          "InstalledVersion": "2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-53612",
+          "PkgName": "util-linux",
+          "InstalledVersion": "2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-53613",
+          "PkgName": "util-linux",
+          "InstalledVersion": "2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-53614",
+          "PkgName": "util-linux",
+          "InstalledVersion": "2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-53615",
+          "PkgName": "util-linux",
+          "InstalledVersion": "2.39.3-9ubuntu6.2",
+          "FixedVersion": "2.39.3-9ubuntu6.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-85091",
+          "PkgName": "zlib1g",
+          "InstalledVersion": "1:1.3.dfsg-3.1ubuntu2.1",
+          "FixedVersion": "1:1.3.dfsg-3.1ubuntu2.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-27171",
+          "PkgName": "zlib1g",
+          "InstalledVersion": "1:1.3.dfsg-3.1ubuntu2.1",
+          "FixedVersion": "1:1.3.dfsg-3.1ubuntu2.2",
+          "Severity": "LOW"
+        }
+      ]
+    },
+    {
+      "Target": "usr/local/bin/argocd",
+      "Class": "lang-pkgs",
+      "Type": "gobinary",
+      "Vulnerabilities": [
+        {
+          "VulnerabilityID": "CVE-2025-47933",
+          "PkgName": "github.com/argoproj/argo-cd/v3",
+          "InstalledVersion": "3.0.0",
+          "FixedVersion": "3.0.4",
+          "Severity": "CRITICAL"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-55190",
+          "PkgName": "github.com/argoproj/argo-cd/v3",
+          "InstalledVersion": "3.0.0",
+          "FixedVersion": "3.0.14, 3.1.2",
+          "Severity": "CRITICAL"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-77459",
+          "PkgName": "github.com/argoproj/argo-cd/v3",
+          "InstalledVersion": "3.0.0",
+          "FixedVersion": "3.3.15, 3.4.10, 3.5.4, 3.6.0-rc2",
+          "Severity": "CRITICAL"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-59531",
+          "PkgName": "github.com/argoproj/argo-cd/v3",
+          "InstalledVersion": "3.0.0",
+          "FixedVersion": "3.2.0-rc2, 3.1.8, 3.0.19",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-59537",
+          "PkgName": "github.com/argoproj/argo-cd/v3",
+          "InstalledVersion": "3.0.0",
+          "FixedVersion": "3.2.0-rc2, 3.1.8, 3.0.19",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-59538",
+          "PkgName": "github.com/argoproj/argo-cd/v3",
+          "InstalledVersion": "3.0.0",
+          "FixedVersion": "3.2.0-rc2, 3.1.8, 3.0.19",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-45738",
+          "PkgName": "github.com/argoproj/argo-cd/v3",
+          "InstalledVersion": "3.0.0",
+          "FixedVersion": "3.2.12, 3.3.10, 3.4.2",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-55797",
+          "PkgName": "github.com/argoproj/argo-cd/v3",
+          "InstalledVersion": "3.0.0",
+          "FixedVersion": "3.3.15, 3.4.10, 3.5.4, 3.6.0-rc2",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-55191",
+          "PkgName": "github.com/argoproj/argo-cd/v3",
+          "InstalledVersion": "3.0.0",
+          "FixedVersion": "3.2.0-rc2, 3.1.8, 3.0.19",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-8556",
+          "PkgName": "github.com/cloudflare/circl",
+          "InstalledVersion": "v1.6.0",
+          "FixedVersion": "1.6.1",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-1229",
+          "PkgName": "github.com/cloudflare/circl",
+          "InstalledVersion": "v1.6.0",
+          "FixedVersion": "1.6.3",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-29786",
+          "PkgName": "github.com/expr-lang/expr",
+          "InstalledVersion": "v1.16.9",
+          "FixedVersion": "1.17.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-68156",
+          "PkgName": "github.com/expr-lang/expr",
+          "InstalledVersion": "v1.16.9",
+          "FixedVersion": "1.17.7",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-44973",
+          "PkgName": "github.com/go-git/go-billy/v5",
+          "InstalledVersion": "v5.6.2",
+          "FixedVersion": "5.9.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-44740",
+          "PkgName": "github.com/go-git/go-billy/v5",
+          "InstalledVersion": "v5.6.2",
+          "FixedVersion": "5.9.0",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-45022",
+          "PkgName": "github.com/go-git/go-git/v5",
+          "InstalledVersion": "v5.14.0",
+          "FixedVersion": "5.19.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-71556",
+          "PkgName": "github.com/go-git/go-git/v5",
+          "InstalledVersion": "v5.14.0",
+          "FixedVersion": "5.19.2",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-25934",
+          "PkgName": "github.com/go-git/go-git/v5",
+          "InstalledVersion": "v5.14.0",
+          "FixedVersion": "5.16.5",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-34165",
+          "PkgName": "github.com/go-git/go-git/v5",
+          "InstalledVersion": "v5.14.0",
+          "FixedVersion": "5.17.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-41506",
+          "PkgName": "github.com/go-git/go-git/v5",
+          "InstalledVersion": "v5.14.0",
+          "FixedVersion": "5.18.0",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-45571",
+          "PkgName": "github.com/go-git/go-git/v5",
+          "InstalledVersion": "v5.14.0",
+          "FixedVersion": "5.19.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-71557",
+          "PkgName": "github.com/go-git/go-git/v5",
+          "InstalledVersion": "v5.14.0",
+          "FixedVersion": "5.19.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "GHSA-w5pp-99ch-qj29",
+          "PkgName": "github.com/go-git/go-git/v5",
+          "InstalledVersion": "v5.14.0",
+          "FixedVersion": "5.19.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-33762",
+          "PkgName": "github.com/go-git/go-git/v5",
+          "InstalledVersion": "v5.14.0",
+          "FixedVersion": "5.17.1",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-45570",
+          "PkgName": "github.com/go-git/go-git/v5",
+          "InstalledVersion": "v5.14.0",
+          "FixedVersion": "5.19.1",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-34986",
+          "PkgName": "github.com/go-jose/go-jose/v4",
+          "InstalledVersion": "v4.0.5",
+          "FixedVersion": "4.1.4",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-63209",
+          "PkgName": "github.com/klauspost/compress",
+          "InstalledVersion": "v1.17.11",
+          "FixedVersion": "1.18.7",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-35469",
+          "PkgName": "github.com/moby/spdystream",
+          "InstalledVersion": "v0.5.0",
+          "FixedVersion": "0.5.1",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-29923",
+          "PkgName": "github.com/redis/go-redis/v9",
+          "InstalledVersion": "v9.7.1",
+          "FixedVersion": "9.7.3, 9.6.3, 9.5.5",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "GHSA-gxhx-2686-5h9g",
+          "PkgName": "github.com/slack-go/slack",
+          "InstalledVersion": "v0.16.0",
+          "FixedVersion": "0.23.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-2303",
+          "PkgName": "go.mongodb.org/mongo-driver",
+          "InstalledVersion": "v1.17.1",
+          "FixedVersion": "1.17.7",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-81870",
+          "PkgName": "go.opentelemetry.io/otel/exporters/otlp/otlptrace",
+          "InstalledVersion": "v1.32.0",
+          "FixedVersion": "1.45.0",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-81870",
+          "PkgName": "go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc",
+          "InstalledVersion": "v1.32.0",
+          "FixedVersion": "1.45.0",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-24051",
+          "PkgName": "go.opentelemetry.io/otel/sdk",
+          "InstalledVersion": "v1.34.0",
+          "FixedVersion": "1.40.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39883",
+          "PkgName": "go.opentelemetry.io/otel/sdk",
+          "InstalledVersion": "v1.34.0",
+          "FixedVersion": "1.43.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-81870",
+          "PkgName": "go.opentelemetry.io/otel/sdk",
+          "InstalledVersion": "v1.34.0",
+          "FixedVersion": "1.45.0",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-47913",
+          "PkgName": "golang.org/x/crypto",
+          "InstalledVersion": "v0.36.0",
+          "FixedVersion": "0.43.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39828",
+          "PkgName": "golang.org/x/crypto",
+          "InstalledVersion": "v0.36.0",
+          "FixedVersion": "0.52.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39829",
+          "PkgName": "golang.org/x/crypto",
+          "InstalledVersion": "v0.36.0",
+          "FixedVersion": "0.52.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39830",
+          "PkgName": "golang.org/x/crypto",
+          "InstalledVersion": "v0.36.0",
+          "FixedVersion": "0.52.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39831",
+          "PkgName": "golang.org/x/crypto",
+          "InstalledVersion": "v0.36.0",
+          "FixedVersion": "0.52.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39832",
+          "PkgName": "golang.org/x/crypto",
+          "InstalledVersion": "v0.36.0",
+          "FixedVersion": "0.52.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39835",
+          "PkgName": "golang.org/x/crypto",
+          "InstalledVersion": "v0.36.0",
+          "FixedVersion": "0.52.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42508",
+          "PkgName": "golang.org/x/crypto",
+          "InstalledVersion": "v0.36.0",
+          "FixedVersion": "0.52.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-46595",
+          "PkgName": "golang.org/x/crypto",
+          "InstalledVersion": "v0.36.0",
+          "FixedVersion": "0.52.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-46597",
+          "PkgName": "golang.org/x/crypto",
+          "InstalledVersion": "v0.36.0",
+          "FixedVersion": "0.52.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56854",
+          "PkgName": "golang.org/x/crypto",
+          "InstalledVersion": "v0.36.0",
+          "FixedVersion": "0.55.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-47914",
+          "PkgName": "golang.org/x/crypto",
+          "InstalledVersion": "v0.36.0",
+          "FixedVersion": "0.45.0",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-58181",
+          "PkgName": "golang.org/x/crypto",
+          "InstalledVersion": "v0.36.0",
+          "FixedVersion": "0.45.0",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39827",
+          "PkgName": "golang.org/x/crypto",
+          "InstalledVersion": "v0.36.0",
+          "FixedVersion": "0.52.0",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39833",
+          "PkgName": "golang.org/x/crypto",
+          "InstalledVersion": "v0.36.0",
+          "FixedVersion": "0.52.0",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39834",
+          "PkgName": "golang.org/x/crypto",
+          "InstalledVersion": "v0.36.0",
+          "FixedVersion": "0.52.0",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-46598",
+          "PkgName": "golang.org/x/crypto",
+          "InstalledVersion": "v0.36.0",
+          "FixedVersion": "0.52.0",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56855",
+          "PkgName": "golang.org/x/crypto",
+          "InstalledVersion": "v0.36.0",
+          "FixedVersion": "0.56.0",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-78662",
+          "PkgName": "golang.org/x/crypto",
+          "InstalledVersion": "v0.36.0",
+          "FixedVersion": "0.56.0",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "GO-2026-5932",
+          "PkgName": "golang.org/x/crypto",
+          "InstalledVersion": "v0.36.0",
+          "Severity": "UNKNOWN"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-25681",
+          "PkgName": "golang.org/x/net",
+          "InstalledVersion": "v0.37.0",
+          "FixedVersion": "0.55.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-27136",
+          "PkgName": "golang.org/x/net",
+          "InstalledVersion": "v0.37.0",
+          "FixedVersion": "0.55.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-33814",
+          "PkgName": "golang.org/x/net",
+          "InstalledVersion": "v0.37.0",
+          "FixedVersion": "0.53.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39821",
+          "PkgName": "golang.org/x/net",
+          "InstalledVersion": "v0.37.0",
+          "FixedVersion": "0.55.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-46600",
+          "PkgName": "golang.org/x/net",
+          "InstalledVersion": "v0.37.0",
+          "FixedVersion": "0.56.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-78669",
+          "PkgName": "golang.org/x/net",
+          "InstalledVersion": "v0.37.0",
+          "FixedVersion": "0.60.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-22872",
+          "PkgName": "golang.org/x/net",
+          "InstalledVersion": "v0.37.0",
+          "FixedVersion": "0.38.0",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-47911",
+          "PkgName": "golang.org/x/net",
+          "InstalledVersion": "v0.37.0",
+          "FixedVersion": "0.45.0",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-58190",
+          "PkgName": "golang.org/x/net",
+          "InstalledVersion": "v0.37.0",
+          "FixedVersion": "0.45.0",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-25680",
+          "PkgName": "golang.org/x/net",
+          "InstalledVersion": "v0.37.0",
+          "FixedVersion": "0.55.0",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42502",
+          "PkgName": "golang.org/x/net",
+          "InstalledVersion": "v0.37.0",
+          "FixedVersion": "0.55.0",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42506",
+          "PkgName": "golang.org/x/net",
+          "InstalledVersion": "v0.37.0",
+          "FixedVersion": "0.55.0",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-78659",
+          "PkgName": "golang.org/x/net",
+          "InstalledVersion": "v0.37.0",
+          "FixedVersion": "0.60.0",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-78660",
+          "PkgName": "golang.org/x/net",
+          "InstalledVersion": "v0.37.0",
+          "FixedVersion": "0.60.0",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-78663",
+          "PkgName": "golang.org/x/net",
+          "InstalledVersion": "v0.37.0",
+          "FixedVersion": "0.60.0",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-97032",
+          "PkgName": "golang.org/x/net",
+          "InstalledVersion": "v0.37.0",
+          "FixedVersion": "0.60.0",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39824",
+          "PkgName": "golang.org/x/sys",
+          "InstalledVersion": "v0.31.0",
+          "FixedVersion": "0.44.0",
+          "Severity": "UNKNOWN"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56851",
+          "PkgName": "golang.org/x/text",
+          "InstalledVersion": "v0.23.0",
+          "FixedVersion": "0.41.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56852",
+          "PkgName": "golang.org/x/text",
+          "InstalledVersion": "v0.23.0",
+          "FixedVersion": "0.39.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-33186",
+          "PkgName": "google.golang.org/grpc",
+          "InstalledVersion": "v1.71.0",
+          "FixedVersion": "1.79.3",
+          "Severity": "CRITICAL"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-84304",
+          "PkgName": "google.golang.org/grpc",
+          "InstalledVersion": "v1.71.0",
+          "FixedVersion": "1.83.1",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-84445",
+          "PkgName": "google.golang.org/grpc",
+          "InstalledVersion": "v1.71.0",
+          "FixedVersion": "1.82.2, 1.83.2, 1.84.0-dev.0.20260825144003-d5a41119e0e3, 1.85.0-dev.0.20260825072537-93e31b48545e",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "GHSA-hrxh-6v49-42gf",
+          "PkgName": "google.golang.org/grpc",
+          "InstalledVersion": "v1.71.0",
+          "FixedVersion": "1.82.1",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-84303",
+          "PkgName": "google.golang.org/grpc",
+          "InstalledVersion": "v1.71.0",
+          "FixedVersion": "1.83.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-13281",
+          "PkgName": "k8s.io/kubernetes",
+          "InstalledVersion": "v1.32.2",
+          "FixedVersion": "1.32.10, 1.33.6, 1.34.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-1767",
+          "PkgName": "k8s.io/kubernetes",
+          "InstalledVersion": "v1.32.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-5187",
+          "PkgName": "k8s.io/kubernetes",
+          "InstalledVersion": "v1.32.2",
+          "FixedVersion": "1.31.12, 1.32.8, 1.33.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-4563",
+          "PkgName": "k8s.io/kubernetes",
+          "InstalledVersion": "v1.32.2",
+          "FixedVersion": "1.32.6, 1.33.2",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-50151",
+          "PkgName": "oras.land/oras-go/v2",
+          "InstalledVersion": "v2.5.0",
+          "FixedVersion": "2.6.1",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-50163",
+          "PkgName": "oras.land/oras-go/v2",
+          "InstalledVersion": "v2.5.0",
+          "FixedVersion": "2.6.2",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-85731",
+          "PkgName": "oras.land/oras-go/v2",
+          "InstalledVersion": "v2.5.0",
+          "FixedVersion": "2.6.2",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-50162",
+          "PkgName": "oras.land/oras-go/v2",
+          "InstalledVersion": "v2.5.0",
+          "FixedVersion": "2.6.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-85732",
+          "PkgName": "oras.land/oras-go/v2",
+          "InstalledVersion": "v2.5.0",
+          "FixedVersion": "2.6.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "GHSA-vh4v-2xq2-g5cg",
+          "PkgName": "oras.land/oras-go/v2",
+          "InstalledVersion": "v2.5.0",
+          "FixedVersion": "2.6.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-48978",
+          "PkgName": "oras.land/oras-go/v2",
+          "InstalledVersion": "v2.5.0",
+          "FixedVersion": "2.6.1",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-68121",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.24.13, 1.25.7, 1.26.0-rc.3",
+          "Severity": "CRITICAL"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-22874",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.24.4",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-61726",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.24.12, 1.25.6",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-61729",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.24.11, 1.25.5",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-111943",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.26.10, 1.27.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-25679",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.25.8, 1.26.1",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-27145",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.25.11, 1.26.4",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-32280",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.25.9, 1.26.2",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-32281",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.25.9, 1.26.2",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-32283",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.25.9, 1.26.2",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-33811",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.25.10, 1.26.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-33814",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.25.10, 1.26.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-33818",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.25.13, 1.26.6, 1.27.0-rc.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39820",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.25.10, 1.26.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39821",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.25.13, 1.26.6, 1.27.0-rc.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39822",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.25.12, 1.26.5, 1.27.0-rc.2",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39836",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.25.10, 1.26.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42499",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.25.10, 1.26.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42504",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.25.11, 1.26.4",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56853",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.25.13, 1.26.6, 1.27.0-rc.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56858",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.25.13, 1.26.6, 1.27.0-rc.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56859",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.25.13, 1.26.6, 1.27.0-rc.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56860",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.25.13, 1.26.6, 1.27.0-rc.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56862",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.25.13, 1.26.6, 1.27.0-rc.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-78667",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.26.9, 1.27.2",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-78669",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.26.9, 1.27.2",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-97031",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.26.9, 1.27.2",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-0913",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.23.10, 1.24.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-22871",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.23.8, 1.24.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-22873",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.23.9, 1.24.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-4673",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.23.10, 1.24.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-47906",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.23.12, 1.24.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-47907",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.23.12, 1.24.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-47912",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.24.8, 1.25.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-58183",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.24.8, 1.25.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-58185",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.24.8, 1.25.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-58187",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.24.9, 1.25.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-58188",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.24.8, 1.25.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-58189",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.24.8, 1.25.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-61723",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.24.8, 1.25.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-61724",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.24.8, 1.25.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-61725",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.24.8, 1.25.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-61727",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.24.11, 1.25.5",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-61728",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.24.12, 1.25.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-61730",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.24.12, 1.25.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-27142",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.25.8, 1.26.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-32282",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.25.9, 1.26.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-32288",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.25.9, 1.26.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-32289",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.25.9, 1.26.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39823",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.25.10, 1.26.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39825",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.25.10, 1.26.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39826",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.25.10, 1.26.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42505",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.25.12, 1.26.5, 1.27.0-rc.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42507",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.25.11, 1.26.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56866",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.26.9, 1.27.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-78659",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.26.9, 1.27.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-78660",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.26.9, 1.27.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-78663",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.26.9, 1.27.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-94439",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.26.9, 1.27.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-94440",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.26.9, 1.27.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-94448",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.26.9, 1.27.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-97030",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.26.9, 1.27.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-97032",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.26.9, 1.27.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-58186",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.24.8, 1.25.2",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-27139",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.25.8, 1.26.1",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56857",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.24.1",
+          "FixedVersion": "1.26.9, 1.27.2",
+          "Severity": "LOW"
+        }
+      ]
+    },
+    {
+      "Target": "usr/local/bin/helm",
+      "Class": "lang-pkgs",
+      "Type": "gobinary",
+      "Vulnerabilities": [
+        {
+          "VulnerabilityID": "CVE-2024-25621",
+          "PkgName": "github.com/containerd/containerd",
+          "InstalledVersion": "v1.7.24",
+          "FixedVersion": "1.7.29",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-53488",
+          "PkgName": "github.com/containerd/containerd",
+          "InstalledVersion": "v1.7.24",
+          "FixedVersion": "1.7.33",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2024-40635",
+          "PkgName": "github.com/containerd/containerd",
+          "InstalledVersion": "v1.7.24",
+          "FixedVersion": "1.7.27, 1.6.38",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-64329",
+          "PkgName": "github.com/containerd/containerd",
+          "InstalledVersion": "v1.7.24",
+          "FixedVersion": "1.7.29",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-47262",
+          "PkgName": "github.com/containerd/containerd",
+          "InstalledVersion": "v1.7.24",
+          "FixedVersion": "1.7.33",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-53493",
+          "PkgName": "github.com/containerd/containerd",
+          "InstalledVersion": "v1.7.24",
+          "FixedVersion": "1.7.36",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-53495",
+          "PkgName": "github.com/containerd/containerd",
+          "InstalledVersion": "v1.7.24",
+          "FixedVersion": "1.7.35",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-95838",
+          "PkgName": "github.com/containerd/containerd",
+          "InstalledVersion": "v1.7.24",
+          "FixedVersion": "1.7.35",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-15558",
+          "PkgName": "github.com/docker/cli",
+          "InstalledVersion": "v25.0.1+incompatible",
+          "FixedVersion": "29.2.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-85747",
+          "PkgName": "github.com/docker/distribution",
+          "InstalledVersion": "v2.8.3+incompatible",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-41567",
+          "PkgName": "github.com/docker/docker",
+          "InstalledVersion": "v25.0.6+incompatible",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42306",
+          "PkgName": "github.com/docker/docker",
+          "InstalledVersion": "v25.0.6+incompatible",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-33997",
+          "PkgName": "github.com/docker/docker",
+          "InstalledVersion": "v25.0.6+incompatible",
+          "FixedVersion": "29.3.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-41568",
+          "PkgName": "github.com/docker/docker",
+          "InstalledVersion": "v25.0.6+incompatible",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-54410",
+          "PkgName": "github.com/docker/docker",
+          "InstalledVersion": "v25.0.6+incompatible",
+          "FixedVersion": "25.0.13, 28.0.0",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "GHSA-w67g-5rqw-f597",
+          "PkgName": "github.com/gorilla/websocket",
+          "InstalledVersion": "v1.5.0",
+          "FixedVersion": "1.5.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-63209",
+          "PkgName": "github.com/klauspost/compress",
+          "InstalledVersion": "v1.16.7",
+          "FixedVersion": "1.18.7",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-35469",
+          "PkgName": "github.com/moby/spdystream",
+          "InstalledVersion": "v0.5.0",
+          "FixedVersion": "0.5.1",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-22869",
+          "PkgName": "golang.org/x/crypto",
+          "InstalledVersion": "v0.31.0",
+          "FixedVersion": "0.35.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-47913",
+          "PkgName": "golang.org/x/crypto",
+          "InstalledVersion": "v0.31.0",
+          "FixedVersion": "0.43.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39828",
+          "PkgName": "golang.org/x/crypto",
+          "InstalledVersion": "v0.31.0",
+          "FixedVersion": "0.52.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39829",
+          "PkgName": "golang.org/x/crypto",
+          "InstalledVersion": "v0.31.0",
+          "FixedVersion": "0.52.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39830",
+          "PkgName": "golang.org/x/crypto",
+          "InstalledVersion": "v0.31.0",
+          "FixedVersion": "0.52.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39831",
+          "PkgName": "golang.org/x/crypto",
+          "InstalledVersion": "v0.31.0",
+          "FixedVersion": "0.52.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39832",
+          "PkgName": "golang.org/x/crypto",
+          "InstalledVersion": "v0.31.0",
+          "FixedVersion": "0.52.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39835",
+          "PkgName": "golang.org/x/crypto",
+          "InstalledVersion": "v0.31.0",
+          "FixedVersion": "0.52.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42508",
+          "PkgName": "golang.org/x/crypto",
+          "InstalledVersion": "v0.31.0",
+          "FixedVersion": "0.52.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-46595",
+          "PkgName": "golang.org/x/crypto",
+          "InstalledVersion": "v0.31.0",
+          "FixedVersion": "0.52.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-46597",
+          "PkgName": "golang.org/x/crypto",
+          "InstalledVersion": "v0.31.0",
+          "FixedVersion": "0.52.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56854",
+          "PkgName": "golang.org/x/crypto",
+          "InstalledVersion": "v0.31.0",
+          "FixedVersion": "0.55.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-47914",
+          "PkgName": "golang.org/x/crypto",
+          "InstalledVersion": "v0.31.0",
+          "FixedVersion": "0.45.0",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-58181",
+          "PkgName": "golang.org/x/crypto",
+          "InstalledVersion": "v0.31.0",
+          "FixedVersion": "0.45.0",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39827",
+          "PkgName": "golang.org/x/crypto",
+          "InstalledVersion": "v0.31.0",
+          "FixedVersion": "0.52.0",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39833",
+          "PkgName": "golang.org/x/crypto",
+          "InstalledVersion": "v0.31.0",
+          "FixedVersion": "0.52.0",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39834",
+          "PkgName": "golang.org/x/crypto",
+          "InstalledVersion": "v0.31.0",
+          "FixedVersion": "0.52.0",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-46598",
+          "PkgName": "golang.org/x/crypto",
+          "InstalledVersion": "v0.31.0",
+          "FixedVersion": "0.52.0",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56855",
+          "PkgName": "golang.org/x/crypto",
+          "InstalledVersion": "v0.31.0",
+          "FixedVersion": "0.56.0",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-78662",
+          "PkgName": "golang.org/x/crypto",
+          "InstalledVersion": "v0.31.0",
+          "FixedVersion": "0.56.0",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "GO-2026-5932",
+          "PkgName": "golang.org/x/crypto",
+          "InstalledVersion": "v0.31.0",
+          "Severity": "UNKNOWN"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-25681",
+          "PkgName": "golang.org/x/net",
+          "InstalledVersion": "v0.33.0",
+          "FixedVersion": "0.55.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-27136",
+          "PkgName": "golang.org/x/net",
+          "InstalledVersion": "v0.33.0",
+          "FixedVersion": "0.55.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-33814",
+          "PkgName": "golang.org/x/net",
+          "InstalledVersion": "v0.33.0",
+          "FixedVersion": "0.53.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39821",
+          "PkgName": "golang.org/x/net",
+          "InstalledVersion": "v0.33.0",
+          "FixedVersion": "0.55.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-46600",
+          "PkgName": "golang.org/x/net",
+          "InstalledVersion": "v0.33.0",
+          "FixedVersion": "0.56.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-78669",
+          "PkgName": "golang.org/x/net",
+          "InstalledVersion": "v0.33.0",
+          "FixedVersion": "0.60.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-22870",
+          "PkgName": "golang.org/x/net",
+          "InstalledVersion": "v0.33.0",
+          "FixedVersion": "0.36.0",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-22872",
+          "PkgName": "golang.org/x/net",
+          "InstalledVersion": "v0.33.0",
+          "FixedVersion": "0.38.0",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-47911",
+          "PkgName": "golang.org/x/net",
+          "InstalledVersion": "v0.33.0",
+          "FixedVersion": "0.45.0",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-58190",
+          "PkgName": "golang.org/x/net",
+          "InstalledVersion": "v0.33.0",
+          "FixedVersion": "0.45.0",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-25680",
+          "PkgName": "golang.org/x/net",
+          "InstalledVersion": "v0.33.0",
+          "FixedVersion": "0.55.0",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42502",
+          "PkgName": "golang.org/x/net",
+          "InstalledVersion": "v0.33.0",
+          "FixedVersion": "0.55.0",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42506",
+          "PkgName": "golang.org/x/net",
+          "InstalledVersion": "v0.33.0",
+          "FixedVersion": "0.55.0",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-78659",
+          "PkgName": "golang.org/x/net",
+          "InstalledVersion": "v0.33.0",
+          "FixedVersion": "0.60.0",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-78660",
+          "PkgName": "golang.org/x/net",
+          "InstalledVersion": "v0.33.0",
+          "FixedVersion": "0.60.0",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-78663",
+          "PkgName": "golang.org/x/net",
+          "InstalledVersion": "v0.33.0",
+          "FixedVersion": "0.60.0",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-97032",
+          "PkgName": "golang.org/x/net",
+          "InstalledVersion": "v0.33.0",
+          "FixedVersion": "0.60.0",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-22868",
+          "PkgName": "golang.org/x/oauth2",
+          "InstalledVersion": "v0.23.0",
+          "FixedVersion": "0.27.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39824",
+          "PkgName": "golang.org/x/sys",
+          "InstalledVersion": "v0.28.0",
+          "FixedVersion": "0.44.0",
+          "Severity": "UNKNOWN"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56851",
+          "PkgName": "golang.org/x/text",
+          "InstalledVersion": "v0.21.0",
+          "FixedVersion": "0.41.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56852",
+          "PkgName": "golang.org/x/text",
+          "InstalledVersion": "v0.21.0",
+          "FixedVersion": "0.39.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-33186",
+          "PkgName": "google.golang.org/grpc",
+          "InstalledVersion": "v1.65.0",
+          "FixedVersion": "1.79.3",
+          "Severity": "CRITICAL"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-84304",
+          "PkgName": "google.golang.org/grpc",
+          "InstalledVersion": "v1.65.0",
+          "FixedVersion": "1.83.1",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-84445",
+          "PkgName": "google.golang.org/grpc",
+          "InstalledVersion": "v1.65.0",
+          "FixedVersion": "1.82.2, 1.83.2, 1.84.0-dev.0.20260825144003-d5a41119e0e3, 1.85.0-dev.0.20260825072537-93e31b48545e",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "GHSA-hrxh-6v49-42gf",
+          "PkgName": "google.golang.org/grpc",
+          "InstalledVersion": "v1.65.0",
+          "FixedVersion": "1.82.1",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-84303",
+          "PkgName": "google.golang.org/grpc",
+          "InstalledVersion": "v1.65.0",
+          "FixedVersion": "1.83.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-48978",
+          "PkgName": "oras.land/oras-go",
+          "InstalledVersion": "v1.2.5",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-68121",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.24.13, 1.25.7, 1.26.0-rc.3",
+          "Severity": "CRITICAL"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-61726",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.24.12, 1.25.6",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-61729",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.24.11, 1.25.5",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-111943",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.26.10, 1.27.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-25679",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.25.8, 1.26.1",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-27145",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.25.11, 1.26.4",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-32280",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.25.9, 1.26.2",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-32281",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.25.9, 1.26.2",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-32283",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.25.9, 1.26.2",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-33811",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.25.10, 1.26.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-33814",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.25.10, 1.26.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-33818",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.25.13, 1.26.6, 1.27.0-rc.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39820",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.25.10, 1.26.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39821",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.25.13, 1.26.6, 1.27.0-rc.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39822",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.25.12, 1.26.5, 1.27.0-rc.2",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39836",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.25.10, 1.26.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42499",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.25.10, 1.26.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42504",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.25.11, 1.26.4",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56853",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.25.13, 1.26.6, 1.27.0-rc.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56858",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.25.13, 1.26.6, 1.27.0-rc.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56859",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.25.13, 1.26.6, 1.27.0-rc.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56860",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.25.13, 1.26.6, 1.27.0-rc.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56862",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.25.13, 1.26.6, 1.27.0-rc.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-78667",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.26.9, 1.27.2",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-78669",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.26.9, 1.27.2",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-97031",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.26.9, 1.27.2",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-0913",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.23.10, 1.24.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-22866",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.22.12, 1.23.6, 1.24.0-rc.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-22870",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.23.7, 1.24.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-22871",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.23.8, 1.24.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-22873",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.23.9, 1.24.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-4673",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.23.10, 1.24.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-47906",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.23.12, 1.24.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-47907",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.23.12, 1.24.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-47912",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.24.8, 1.25.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-58183",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.24.8, 1.25.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-58185",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.24.8, 1.25.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-58187",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.24.9, 1.25.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-58188",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.24.8, 1.25.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-58189",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.24.8, 1.25.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-61723",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.24.8, 1.25.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-61724",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.24.8, 1.25.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-61725",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.24.8, 1.25.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-61727",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.24.11, 1.25.5",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-61728",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.24.12, 1.25.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-61730",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.24.12, 1.25.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-27142",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.25.8, 1.26.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-32282",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.25.9, 1.26.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-32288",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.25.9, 1.26.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-32289",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.25.9, 1.26.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39823",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.25.10, 1.26.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39825",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.25.10, 1.26.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39826",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.25.10, 1.26.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42505",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.25.12, 1.26.5, 1.27.0-rc.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42507",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.25.11, 1.26.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56866",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.26.9, 1.27.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-78659",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.26.9, 1.27.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-78660",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.26.9, 1.27.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-78663",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.26.9, 1.27.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-94439",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.26.9, 1.27.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-94440",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.26.9, 1.27.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-94448",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.26.9, 1.27.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-97030",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.26.9, 1.27.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-97032",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.26.9, 1.27.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-58186",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.24.8, 1.25.2",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-27139",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.25.8, 1.26.1",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56857",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.23.5",
+          "FixedVersion": "1.26.9, 1.27.2",
+          "Severity": "LOW"
+        }
+      ]
+    },
+    {
+      "Target": "usr/local/bin/kustomize",
+      "Class": "lang-pkgs",
+      "Type": "gobinary",
+      "Vulnerabilities": [
+        {
+          "VulnerabilityID": "CVE-2026-56851",
+          "PkgName": "golang.org/x/text",
+          "InstalledVersion": "v0.21.0",
+          "FixedVersion": "0.41.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56852",
+          "PkgName": "golang.org/x/text",
+          "InstalledVersion": "v0.21.0",
+          "FixedVersion": "0.39.0",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-68121",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.24.13, 1.25.7, 1.26.0-rc.3",
+          "Severity": "CRITICAL"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-61726",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.24.12, 1.25.6",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-61729",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.24.11, 1.25.5",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-111943",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.26.10, 1.27.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-25679",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.25.8, 1.26.1",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-27145",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.25.11, 1.26.4",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-32280",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.25.9, 1.26.2",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-32281",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.25.9, 1.26.2",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-32283",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.25.9, 1.26.2",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-33811",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.25.10, 1.26.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-33814",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.25.10, 1.26.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-33818",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.25.13, 1.26.6, 1.27.0-rc.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39820",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.25.10, 1.26.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39821",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.25.13, 1.26.6, 1.27.0-rc.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39822",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.25.12, 1.26.5, 1.27.0-rc.2",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39836",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.25.10, 1.26.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42499",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.25.10, 1.26.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42504",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.25.11, 1.26.4",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56853",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.25.13, 1.26.6, 1.27.0-rc.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56858",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.25.13, 1.26.6, 1.27.0-rc.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56859",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.25.13, 1.26.6, 1.27.0-rc.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56860",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.25.13, 1.26.6, 1.27.0-rc.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56862",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.25.13, 1.26.6, 1.27.0-rc.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-78667",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.26.9, 1.27.2",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-78669",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.26.9, 1.27.2",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-97031",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.26.9, 1.27.2",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2024-45336",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.22.11, 1.23.5, 1.24.0-rc.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-0913",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.23.10, 1.24.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-22866",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.22.12, 1.23.6, 1.24.0-rc.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-22870",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.23.7, 1.24.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-22871",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.23.8, 1.24.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-22873",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.23.9, 1.24.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-4673",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.23.10, 1.24.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-47906",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.23.12, 1.24.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-47907",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.23.12, 1.24.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-47912",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.24.8, 1.25.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-58183",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.24.8, 1.25.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-58185",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.24.8, 1.25.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-58187",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.24.9, 1.25.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-58188",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.24.8, 1.25.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-58189",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.24.8, 1.25.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-61723",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.24.8, 1.25.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-61724",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.24.8, 1.25.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-61725",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.24.8, 1.25.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-61727",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.24.11, 1.25.5",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-61728",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.24.12, 1.25.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-61730",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.24.12, 1.25.6",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-27142",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.25.8, 1.26.1",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-32282",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.25.9, 1.26.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-32288",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.25.9, 1.26.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-32289",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.25.9, 1.26.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39823",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.25.10, 1.26.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39825",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.25.10, 1.26.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-39826",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.25.10, 1.26.3",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42505",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.25.12, 1.26.5, 1.27.0-rc.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42507",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.25.11, 1.26.4",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56866",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.26.9, 1.27.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-78659",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.26.9, 1.27.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-78660",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.26.9, 1.27.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-78663",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.26.9, 1.27.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-94439",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.26.9, 1.27.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-94440",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.26.9, 1.27.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-94448",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.26.9, 1.27.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-97030",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.26.9, 1.27.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-97032",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.26.9, 1.27.2",
+          "Severity": "MEDIUM"
+        },
+        {
+          "VulnerabilityID": "CVE-2024-45341",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.22.11, 1.23.5, 1.24.0-rc.2",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-58186",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.24.8, 1.25.2",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-27139",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.25.8, 1.26.1",
+          "Severity": "LOW"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-56857",
+          "PkgName": "stdlib",
+          "InstalledVersion": "v1.22.7",
+          "FixedVersion": "1.26.9, 1.27.2",
+          "Severity": "LOW"
+        }
+      ]
+    }
+  ]
+}
