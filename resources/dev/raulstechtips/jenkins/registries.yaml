@@ -1,0 +1,10 @@
+ghcr:
+  host: ghcr.io
+  image-prefix: ghcr.io/raulstechtips
+  chart-repo: oci://ghcr.io/raulstechtips/charts
+  credentials-id: ghcr-push
+harbor:
+  host: harbor.prod.raulstechtips.dev
+  image-prefix: harbor.prod.raulstechtips.dev/raulstechtips
+  chart-repo: oci://harbor.prod.raulstechtips.dev/raulstechtips/charts
+  credentials-id: harbor-push
