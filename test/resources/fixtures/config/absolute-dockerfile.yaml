@@ -1,0 +1,4 @@
+project-config:
+  project-name: demo
+  docker-image:
+    dockerfile: /Dockerfile

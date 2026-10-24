@@ -1,0 +1,4 @@
+project-config:
+  project-name: demo
+  pipeline-steps:
+    helm-test: "true"

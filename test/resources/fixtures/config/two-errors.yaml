@@ -1,0 +1,3 @@
+project-config:
+  pipeline-steps:
+    helm-test: "true"
