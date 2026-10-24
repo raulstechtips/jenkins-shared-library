@@ -462,7 +462,7 @@ class ClusterConfigurablePipelineTest extends DeclarativePipelineTest {
         assertTrue(helper.callStack.any { it.methodName == 'timeout' &&
             it.args[0] == [time: 60, unit: 'MINUTES'] })
         assertTrue(helper.callStack.any { it.methodName == 'buildDiscarder' &&
-            it.args[0] == [numToKeep: '20', artifactNumToKeep: '10'] })
+            it.args[0] == [numToKeepStr: '20', artifactNumToKeepStr: '10'] })
         assertNotNull(declaration.params)
         assertEquals('', binding.getVariable('params').RELEASE_VERSION)
     }

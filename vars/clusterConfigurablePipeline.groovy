@@ -41,7 +41,7 @@ def call() {
             skipDefaultCheckout()
             timeout(time: 60, unit: 'MINUTES')
             disableConcurrentBuilds()
-            buildDiscarder(logRotator(numToKeep: '20', artifactNumToKeep: '10'))
+            buildDiscarder(logRotator(numToKeepStr: '20', artifactNumToKeepStr: '10'))
         }
         parameters {
             string(name: 'RELEASE_VERSION', defaultValue: '',
