@@ -58,7 +58,7 @@ class PodSpecBuilder implements Serializable {
                 securityContext: [runAsUser: 1000],
                 env: environment.collect { key, value -> [name: key, value: value] },
                 resources: [
-                    requests: [cpu: '100m', memory: '128Mi'],
+                    requests: [cpu: '10m', memory: '128Mi'],
                     limits: [memory: name in ['trivy', 'jdk'] ? '2Gi' : '1Gi']
                 ]
             ]

@@ -113,7 +113,7 @@ class PodSpecBuilderTest extends BasePipelineTest {
             }
             assertEquals(expected, container.env.collectEntries { [(it.name): it.value] })
             assertEquals(expected.size(), container.env.size())
-            assertEquals([cpu: '100m', memory: '128Mi'], container.resources.requests)
+            assertEquals([cpu: '10m', memory: '128Mi'], container.resources.requests)
             assertEquals([memory: container.name in ['trivy', 'jdk'] ? '2Gi' : '1Gi'],
                 container.resources.limits)
         }
