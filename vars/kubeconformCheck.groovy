@@ -1,4 +1,4 @@
-import dev.raulstechtips.jenkins.shell.ShellQuote
+import dev.raulstechtips.jenkins.helpers.ShellQuote
 
 def call(Map cfg) {
     if (!cfg.chartPresent) {

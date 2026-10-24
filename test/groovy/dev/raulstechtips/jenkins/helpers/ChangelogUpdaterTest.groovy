@@ -1,4 +1,4 @@
-package dev.raulstechtips.jenkins.release
+package dev.raulstechtips.jenkins.helpers
 
 import static org.junit.jupiter.api.Assertions.assertEquals
 import static org.junit.jupiter.api.Assertions.assertFalse

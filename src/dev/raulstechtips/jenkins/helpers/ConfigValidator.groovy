@@ -1,6 +1,7 @@
-package dev.raulstechtips.jenkins.config
+package dev.raulstechtips.jenkins.helpers
 
 import com.cloudbees.groovy.cps.NonCPS
+import dev.raulstechtips.jenkins.config.ConfigSchema
 
 class ConfigValidator implements Serializable {
     // Object deliberately accepts malformed YAML roots so they get validation errors.

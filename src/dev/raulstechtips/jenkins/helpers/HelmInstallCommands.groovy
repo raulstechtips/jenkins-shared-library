@@ -1,7 +1,6 @@
-package dev.raulstechtips.jenkins.deploy
+package dev.raulstechtips.jenkins.helpers
 
 import com.cloudbees.groovy.cps.NonCPS
-import dev.raulstechtips.jenkins.shell.ShellQuote
 
 /** Builds the ordered shell commands for helmInstall and helmCleanInstall. Pure: no steps. */
 class HelmInstallCommands implements Serializable {

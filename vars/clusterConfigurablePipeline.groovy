@@ -1,5 +1,5 @@
-import dev.raulstechtips.jenkins.registry.RegistryCatalog
-import dev.raulstechtips.jenkins.version.SemVer
+import dev.raulstechtips.jenkins.helpers.RegistryCatalog
+import dev.raulstechtips.jenkins.helpers.SemVer
 
 def call() {
     def cfg = loadProjectConfig(type: 'cluster')

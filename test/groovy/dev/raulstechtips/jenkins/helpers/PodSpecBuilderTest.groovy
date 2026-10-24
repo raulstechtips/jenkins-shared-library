@@ -1,4 +1,4 @@
-package dev.raulstechtips.jenkins.pod
+package dev.raulstechtips.jenkins.helpers
 
 import com.lesfurets.jenkins.unit.BasePipelineTest
 import org.junit.jupiter.api.BeforeEach

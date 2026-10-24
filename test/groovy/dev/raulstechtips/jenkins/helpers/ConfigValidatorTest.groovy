@@ -1,5 +1,6 @@
-package dev.raulstechtips.jenkins.config
+package dev.raulstechtips.jenkins.helpers
 
+import dev.raulstechtips.jenkins.config.ConfigSchema
 import org.junit.jupiter.api.Test
 import org.yaml.snakeyaml.Yaml
 

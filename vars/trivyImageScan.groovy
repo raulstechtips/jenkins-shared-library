@@ -1,7 +1,7 @@
 import com.cloudbees.groovy.cps.NonCPS
-import dev.raulstechtips.jenkins.registry.RegistryCatalog
-import dev.raulstechtips.jenkins.scan.FindingsEvaluator
-import dev.raulstechtips.jenkins.shell.ShellQuote
+import dev.raulstechtips.jenkins.helpers.RegistryCatalog
+import dev.raulstechtips.jenkins.helpers.FindingsEvaluator
+import dev.raulstechtips.jenkins.helpers.ShellQuote
 import java.security.MessageDigest
 
 def call(Map cfg, String builtImageRef) {

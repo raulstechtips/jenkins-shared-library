@@ -1,4 +1,4 @@
-package dev.raulstechtips.jenkins.scan
+package dev.raulstechtips.jenkins.helpers
 
 import com.cloudbees.groovy.cps.NonCPS
 import groovy.json.JsonSlurper

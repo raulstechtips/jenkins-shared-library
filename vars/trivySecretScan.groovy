@@ -1,4 +1,4 @@
-import dev.raulstechtips.jenkins.scan.FindingsEvaluator
+import dev.raulstechtips.jenkins.helpers.FindingsEvaluator
 
 def call(Map cfg) {
     container('trivy') {

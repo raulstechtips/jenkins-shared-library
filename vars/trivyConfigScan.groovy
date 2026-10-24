@@ -1,5 +1,5 @@
-import dev.raulstechtips.jenkins.shell.ShellQuote
-import dev.raulstechtips.jenkins.scan.FindingsEvaluator
+import dev.raulstechtips.jenkins.helpers.ShellQuote
+import dev.raulstechtips.jenkins.helpers.FindingsEvaluator
 
 def call(String target, String label, Map cfg) {
     String report = ".pipeline/reports/trivy-config-${label}.json"

@@ -1,6 +1,5 @@
-package dev.raulstechtips.jenkins.deploy
+package dev.raulstechtips.jenkins.helpers
 
-import dev.raulstechtips.jenkins.shell.ShellQuote
 import java.nio.file.Files
 import org.junit.jupiter.api.Assumptions
 import org.junit.jupiter.api.Test

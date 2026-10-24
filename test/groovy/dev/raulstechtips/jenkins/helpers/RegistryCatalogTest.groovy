@@ -1,4 +1,4 @@
-package dev.raulstechtips.jenkins.registry
+package dev.raulstechtips.jenkins.helpers
 
 import org.junit.jupiter.api.Test
 import static org.junit.jupiter.api.Assertions.*

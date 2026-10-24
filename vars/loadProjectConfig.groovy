@@ -1,4 +1,4 @@
-import dev.raulstechtips.jenkins.config.ConfigValidator
+import dev.raulstechtips.jenkins.helpers.ConfigValidator
 
 def call(Map args) {
     String text

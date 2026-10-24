@@ -1,4 +1,4 @@
-import dev.raulstechtips.jenkins.registry.RegistryCatalog
+import dev.raulstechtips.jenkins.helpers.RegistryCatalog
 
 def call(String targetName, Closure body) {
     Map registries = readYaml(text: libraryResource('dev/raulstechtips/jenkins/registries.yaml'))

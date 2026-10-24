@@ -1,4 +1,4 @@
-import dev.raulstechtips.jenkins.version.VersionCalculator
+import dev.raulstechtips.jenkins.helpers.VersionCalculator
 
 String call(Map cfg) {
     if (cfg.releaseVersion) {

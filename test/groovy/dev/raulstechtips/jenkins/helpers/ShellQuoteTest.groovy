@@ -1,4 +1,4 @@
-package dev.raulstechtips.jenkins.shell
+package dev.raulstechtips.jenkins.helpers
 
 import java.nio.file.Files
 import java.util.concurrent.TimeUnit

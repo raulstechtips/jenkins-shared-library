@@ -1,5 +1,5 @@
-import dev.raulstechtips.jenkins.shell.ShellQuote
-import dev.raulstechtips.jenkins.registry.RegistryCatalog
+import dev.raulstechtips.jenkins.helpers.ShellQuote
+import dev.raulstechtips.jenkins.helpers.RegistryCatalog
 
 def call(Map cfg) {
     Map registries = readYaml(text: libraryResource('dev/raulstechtips/jenkins/registries.yaml'))

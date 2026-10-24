@@ -1,4 +1,4 @@
-package dev.raulstechtips.jenkins.config
+package dev.raulstechtips.jenkins.helpers
 
 import com.cloudbees.groovy.cps.NonCPS
 

@@ -1,4 +1,4 @@
-package dev.raulstechtips.jenkins.pod
+package dev.raulstechtips.jenkins.helpers
 
 import com.cloudbees.groovy.cps.NonCPS
 import groovy.json.JsonOutput

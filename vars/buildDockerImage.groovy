@@ -1,5 +1,5 @@
 import com.cloudbees.groovy.cps.NonCPS
-import dev.raulstechtips.jenkins.registry.RegistryCatalog
+import dev.raulstechtips.jenkins.helpers.RegistryCatalog
 
 def call(Map cfg) {
     checkout scm

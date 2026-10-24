@@ -365,7 +365,7 @@ Follow these code rules:
 
 Each value from the config, a file, tool output or an API goes into `sh` as one POSIX single-quoted word.
 This includes paths, names, namespaces, image refs, versions and `yq` paths.
-Use `ShellQuote.quote(value)` from `dev.raulstechtips.jenkins.shell.ShellQuote`.
+Use `ShellQuote.quote(value)` from `dev.raulstechtips.jenkins.helpers.ShellQuote`.
 It writes each embedded `'` as `'\''`.
 A null value makes it throw an error.
 You can also pass the value with `withEnv` and use `"$VAR"` in a single-quoted script.

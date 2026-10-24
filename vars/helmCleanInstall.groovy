@@ -1,4 +1,4 @@
-import dev.raulstechtips.jenkins.deploy.HelmInstallCommands
+import dev.raulstechtips.jenkins.helpers.HelmInstallCommands
 
 def call(Map cfg, String digest = null) {
     checkout scm

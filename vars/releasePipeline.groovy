@@ -1,7 +1,7 @@
 import com.cloudbees.groovy.cps.NonCPS
-import dev.raulstechtips.jenkins.release.ChangelogUpdater
-import dev.raulstechtips.jenkins.version.SemVer
-import dev.raulstechtips.jenkins.version.VersionCalculator
+import dev.raulstechtips.jenkins.helpers.ChangelogUpdater
+import dev.raulstechtips.jenkins.helpers.SemVer
+import dev.raulstechtips.jenkins.helpers.VersionCalculator
 
 void prepare(Map cfg) {
     container('tools') {

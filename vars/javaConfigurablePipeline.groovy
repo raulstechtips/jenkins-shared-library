@@ -1,6 +1,6 @@
-import dev.raulstechtips.jenkins.registry.RegistryCatalog
-import dev.raulstechtips.jenkins.version.SemVer
-import dev.raulstechtips.jenkins.version.VersionCalculator
+import dev.raulstechtips.jenkins.helpers.RegistryCatalog
+import dev.raulstechtips.jenkins.helpers.SemVer
+import dev.raulstechtips.jenkins.helpers.VersionCalculator
 
 def call() {
     def cfg = loadProjectConfig(type: 'java')
