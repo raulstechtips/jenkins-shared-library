@@ -1,0 +1,21 @@
+kind: Deployment
+spec:
+  template:
+    spec:
+      containers:
+        - image: quay.io/example/service:stable
+        - image: docker.io/library/alpine:stable
+        - image: ghcr.io/raulstechtips/demo:next
+        - image: harbor.prod.raulstechtips.dev/raulstechtips/demo:next
+        - image: ""
+        - image:
+            repository: example/service
+            tag: stable
+---
+kind: Job
+spec:
+  template:
+    spec:
+      containers:
+        - image: quay.io/example/service:stable
+        - image: "---"
