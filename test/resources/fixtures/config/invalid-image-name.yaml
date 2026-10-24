@@ -1,0 +1,7 @@
+project-config:
+  project-name: demo
+  publish-targets: [ghcr]
+  docker-image:
+    name: Demo/Image
+  pipeline-steps:
+    build-docker-image: true

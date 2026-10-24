@@ -1,0 +1,3 @@
+project-config:
+  project-name: demo
+  opengrep-fail-on: [HIGH]

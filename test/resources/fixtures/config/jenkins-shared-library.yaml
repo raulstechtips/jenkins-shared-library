@@ -1,0 +1,10 @@
+project-config:
+  project-name: jenkins-shared-library
+  project-description: "Jenkins shared library of CI/CD steps"
+  build-command: "./gradlew build -x test"
+  test-command: "./gradlew test"
+  pipeline-steps:
+    trivy-scan: true
+    opengrep-scan: true
+    build: true
+    unit-test: true

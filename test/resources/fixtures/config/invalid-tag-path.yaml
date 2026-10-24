@@ -1,0 +1,6 @@
+project-config:
+  project-name: demo
+  publish-targets: [ghcr]
+  helm-image-tag-path: image.tag
+  pipeline-steps:
+    build-docker-image: true

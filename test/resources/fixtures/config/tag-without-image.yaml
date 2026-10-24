@@ -1,0 +1,3 @@
+project-config:
+  project-name: demo
+  helm-image-tag-path: .image.tag

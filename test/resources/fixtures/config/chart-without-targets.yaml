@@ -1,0 +1,5 @@
+project-config:
+  project-name: demo
+  publish-targets: []
+  pipeline-steps:
+    helm-package-upload: true

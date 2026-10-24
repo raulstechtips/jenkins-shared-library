@@ -1,0 +1,24 @@
+# Newest commit on main of opengrep/opengrep-rules at 2026-10-24T13:09:05Z.
+repo: https://github.com/opengrep/opengrep-rules.git
+commit: f1d2b562b414783763fd02a6ed2736eaed622efa
+# Rules folder -> file globs that select it. Only folders present at the pinned commit.
+languages:
+  bash:
+    - '**/*.sh'
+  dockerfile:
+    - '**/Dockerfile'
+    - '**/*.Dockerfile'
+    - '**/Dockerfile.*'
+  yaml:
+    - '**/*.yaml'
+    - '**/*.yml'
+  python:
+    - '**/*.py'
+  java:
+    - '**/*.java'
+  javascript:
+    - '**/*.js'
+  typescript:
+    - '**/*.ts'
+  go:
+    - '**/*.go'
