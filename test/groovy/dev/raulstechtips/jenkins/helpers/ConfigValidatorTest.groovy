@@ -17,7 +17,7 @@ class ConfigValidatorTest {
         Object raw = fixture(name)
         Map cfg = ConfigValidator.validate(raw, type)
         Set expected = ['project-name', 'project-description', 'project-namespace',
-            'publish-targets', 'test-command', 'helm-overrides', 'trivy-fail-on',
+            'publish-targets', 'test-command', 'helm-overrides', 'argo-deploy-targets', 'trivy-fail-on',
             'opengrep-fail-on', 'helm-image-tag-path', 'docker-image', 'pipeline-steps'] as Set
         if (type == 'java') {
             expected.add('build-command')
@@ -168,6 +168,35 @@ class ConfigValidatorTest {
         assertEquals(['charts/values.yaml', 'charts/ci/all-on-values.yaml'], cfg['helm-overrides'])
         assertEquals(['ghcr', 'harbor'], cfg['publish-targets'])
     }
+    @Test void acceptsArgoDeployTargetsInOrder() {
+        Map cfg = ConfigValidator.validate(['project-config': ['project-name': 'gha-runners',
+            'argo-deploy-targets': ['gha-runners', 'gha-runners-packer', 'a' * 53]]], 'cluster')
+        assertEquals(['gha-runners', 'gha-runners-packer', 'a' * 53], cfg['argo-deploy-targets'])
+    }
+    @Test void argoDeployTargetsMustUseProjectNameFormat() {
+        ['Gha_Runners', '-gha', 'a' * 54, ''].each { String target ->
+            def ex = assertThrows(IllegalArgumentException) {
+                ConfigValidator.validate(['project-config': ['project-name': 'demo',
+                    'argo-deploy-targets': ['ok', target]]], 'cluster')
+            }
+            assertEquals("'project-config.argo-deploy-targets[1]' must match ^[a-z0-9]([-a-z0-9]*[a-z0-9])?\$ and be at most 53 characters.",
+                ex.message)
+        }
+    }
+    @Test void argoDeployTargetsMustBeUnique() {
+        def ex = assertThrows(IllegalArgumentException) {
+            ConfigValidator.validate(['project-config': ['project-name': 'demo',
+                'argo-deploy-targets': ['gha-runners', 'gha-runners']]], 'cluster')
+        }
+        assertEquals("'project-config.argo-deploy-targets' must not contain duplicates.", ex.message)
+    }
+    @Test void argoDeployTargetsMustBeAListOfStrings() {
+        invalid('argo-targets-string', 'project-config.argo-deploy-targets')
+        def ex = assertThrows(IllegalArgumentException) {
+            ConfigValidator.validate(['project-config': ['project-name': 'demo', 'argo-deploy-targets': [true]]], 'cluster')
+        }
+        assertTrue(ex.message.contains('project-config.argo-deploy-targets[0]'), ex.message)
+    }
     @Test void acceptsMaximumProjectNameLength() {
         assertEquals('a' * 53, ConfigValidator.validate(['project-config': ['project-name': 'a' * 53]], 'cluster')['project-name'])
     }
@@ -189,6 +218,7 @@ class ConfigValidatorTest {
         assertNull(cfg['test-command'])
         assertNull(cfg['build-command'])
         assertEquals([], cfg['helm-overrides'])
+        assertEquals([], cfg['argo-deploy-targets'])
         assertEquals([], cfg['trivy-fail-on'])
         assertEquals([], cfg['opengrep-fail-on'])
         assertEquals('', cfg['helm-image-tag-path'])

@@ -106,13 +106,14 @@ The table shows each key under `project-config`.
 
 | Key | Type | Default | Rules |
 | --- | --- | --- | --- |
-| `project-name` | string | none | Required. Must match `^[a-z0-9]([-a-z0-9]*[a-z0-9])?$`. Maximum 53 characters. The library uses it as the Helm release name, the default image name and the Argo file name `argo/dev/<project-name>.yaml`. |
+| `project-name` | string | none | Required. Must match `^[a-z0-9]([-a-z0-9]*[a-z0-9])?$`. Maximum 53 characters. The library uses it as the Helm release name, the default image name and, when `argo-deploy-targets` is empty, the Argo file name `argo/dev/<project-name>.yaml`. |
 | `project-description` | string | `""` | Optional. The build description shows it. |
 | `project-namespace` | string | null | Must match the `project-name` pattern when set. Required when `helm-install` or `helm-clean-install` is true. |
 | `publish-targets` | list of `ghcr`, `harbor` | `[]` | No duplicates. Must not be empty when `build-docker-image` or `helm-package-upload` is true. |
 | `test-command` | string | null | Required (not blank) when `unit-test` is true. One shell string. The library runs it with `sh` from the repo root. |
 | `build-command` | string | null | Java pipeline only. Required (not blank) when `build` is true. One shell string, run with `sh` from the repo root. |
 | `helm-overrides` | list of string | `[]` | Each item must be a non-empty path relative to the repo root. The library passes each path as `-f <path>` to `helm upgrade --install`, in list order. |
+| `argo-deploy-targets` | list of string | `[]` | Each item must match the `project-name` pattern. Maximum 53 characters. No duplicates. When the list isn't empty, `argoDeploy` uses only these names, and not `project-name`. See [Argo deploy targets](#argo-deploy-targets). |
 | `trivy-fail-on` | list of `CRITICAL`, `HIGH`, `MEDIUM`, `LOW`, `UNKNOWN` | `[]` | An empty list makes the Trivy image and config scans warn only. |
 | `opengrep-fail-on` | list of `ERROR`, `WARNING`, `INFO` | `[]` | An empty list makes opengrep warn only. |
 | `docker-image` | map | see the child keys | Allowed child keys: `name`, `dockerfile`, `context`. |
@@ -124,6 +125,30 @@ The table shows each key under `project-config`.
 | `pipeline-steps.<flag>` | boolean | `false` | `build` is allowed only in the java pipeline. In the cluster pipeline, `build` is an unknown key. |
 
 A relative path is not blank, doesn't start with `/` and has no `..` part.
+
+### Argo deploy targets
+
+Use `argo-deploy-targets` when the Argo file names in `cluster-config` aren't the same as `project-name`, or when one chart deploys more than one app.
+Example for the `gha-runners` chart, which deploys two apps:
+
+```yaml
+project-config:
+  project-name: gha-runners
+  argo-deploy-targets:
+    - gha-runners
+    - gha-runners-packer
+  pipeline-steps:
+    argo-deploy: true
+```
+
+`argoDeploy` does these steps:
+
+1. It makes the list of targets. When `argo-deploy-targets` is empty, the only target is `project-name`.
+2. It checks every target file `argo/dev/<name>.yaml` before it opens a PR. Each file must exist and must have a source whose `chart` is the name in `charts/Chart.yaml`. When one file fails this check, the build fails and no PR is opened.
+3. For each target, in list order, it opens one PR. The branch is `argo-deploy/<name>-dev-<version>`, made from `main`. The title is `deploy(<name>): dev <version>`.
+4. It opens no PR for a target when its file already has the version, or when an open PR for its branch exists. It reuses the branch when the branch already exists on the remote.
+
+The step changes only the files in `argo/dev`. Merge each PR by hand.
 
 ### Validation rules
 

@@ -17,7 +17,8 @@ class ConfigValidator implements Serializable {
      * of at most 53 characters) and the project-namespace format; that project-namespace is set
      * when helm-install or helm-clean-install is true; that test-command is set when unit-test is
      * true and build-command when build is true; that publish-targets has no duplicates and is not
-     * empty when build-docker-image or helm-package-upload is true; the docker-image.name format
+     * empty when build-docker-image or helm-package-upload is true; that each argo-deploy-targets
+     * entry has the project-name format and that the list has no duplicates; the docker-image.name format
      * when build-docker-image is true; that docker-image.dockerfile, docker-image.context and each
      * helm-overrides entry are paths relative to the repo root; and that helm-image-tag-path starts
      * with '.' and needs build-docker-image. When docker-image.name is not given, it defaults to
@@ -69,6 +70,15 @@ class ConfigValidator implements Serializable {
             }
             if ((steps['build-docker-image'] || steps['helm-package-upload']) && !targets) {
                 errors.add("'project-config.publish-targets' must be non-empty when build-docker-image or helm-package-upload is true.")
+            }
+            List argoTargets = cfg['argo-deploy-targets']
+            argoTargets?.eachWithIndex { String target, int index ->
+                if (target != null && (!(target ==~ /^[a-z0-9]([-a-z0-9]*[a-z0-9])?$/) || target.length() > 53)) {
+                    errors.add("'project-config.argo-deploy-targets[${index}]' must match ^[a-z0-9]([-a-z0-9]*[a-z0-9])?\$ and be at most 53 characters.")
+                }
+            }
+            if (argoTargets != null && argoTargets.unique(false).size() != argoTargets.size()) {
+                errors.add("'project-config.argo-deploy-targets' must not contain duplicates.")
             }
             if (image != null) {
                 if (!(raw['project-config']['docker-image'] instanceof Map) ||

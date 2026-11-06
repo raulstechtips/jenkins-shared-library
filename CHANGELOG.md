@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add the first shared library, including its pipelines, steps, release flow, config validation, and reference README ([DEVSECOPS-34](https://raulstechtips.atlassian.net/browse/DEVSECOPS-34))
+- Add the `argo-deploy-targets` config key, so that `argoDeploy` opens one dev deploy PR for each listed Argo file instead of only `argo/dev/<project-name>.yaml` ([DEVSECOPS-47](https://raulstechtips.atlassian.net/browse/DEVSECOPS-47))
 
 ### Changed
 

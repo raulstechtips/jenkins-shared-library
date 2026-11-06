@@ -37,6 +37,7 @@ class ConfigSchema implements Serializable {
             'publish-targets': [type: 'list', defaultValue: [], choices: ['ghcr', 'harbor']],
             'test-command': [type: 'string', defaultValue: null],
             'helm-overrides': [type: 'list', defaultValue: []],
+            'argo-deploy-targets': [type: 'list', defaultValue: []],
             'trivy-fail-on': [type: 'list', defaultValue: [],
                 choices: ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'UNKNOWN']],
             'opengrep-fail-on': [type: 'list', defaultValue: [],

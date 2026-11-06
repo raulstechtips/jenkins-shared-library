@@ -1,0 +1,3 @@
+project-config:
+  project-name: demo
+  argo-deploy-targets: gha-runners
