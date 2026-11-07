@@ -12,9 +12,9 @@ import dev.raulstechtips.jenkins.helpers.RegistryCatalog
  * deploy, chart version update, and release. Most stages run on the generic agent merged with the library pod. Image
  * build runs on the builder agent and the Helm installs on the deployer agent. Unit test runs
  * test-command in the shell container. The Helm installs never run on main or in a release run, and
- * Argo deploy runs only on a main push or in a release run. The chart version update runs only on
- * a main push with helm-package-upload on: it commits the build version to charts/Chart.yaml as the
- * Jenkins bot and pushes it to main. On a non-PR main build with RELEASE_VERSION empty, when the
+ * Argo deploy runs only on a main push or in a release run. On every main push where
+ * charts/Chart.yaml exists, the chart version update commits the build version to
+ * charts/Chart.yaml as the Jenkins bot and pushes it to main. It has no pipeline-steps flag. On a non-PR main build with RELEASE_VERSION empty, when the
  * last commit author is the Jenkins bot (a chart version or release commit), Checkout marks the
  * build NOT_BUILT and skips every stage after Checkout. Files under .pipeline/reports are archived. The build times out after 60 minutes
  * and builds do not run concurrently.
@@ -76,7 +76,7 @@ def call() {
                                     'trivy-dockerfile-scan', 'opengrep-scan', 'helm-test',
                                     'build-docker-image', 'unit-test', 'trivy-image-scan',
                                     'helm-package-upload', 'trivy-chart-scan', 'helm-clean-install',
-                                    'helm-install', 'argo-deploy', 'chart-version-commit', 'release'
+                                    'helm-install', 'argo-deploy', 'release'
                                 ]).join(', ')
                                 if (!cfg.skipAll) {
                                     cfg.version = computeVersion(cfg)
@@ -235,7 +235,7 @@ def call() {
                     }
                     stage('Update chart version') {
                         when {
-                            expression { PipelineSteps.shouldRun(cfg, 'chart-version-commit') }
+                            expression { !cfg.skipAll && cfg.buildKind == 'main' && cfg.chartPresent }
                         }
                         steps {
                             updateChartVersion(cfg)

@@ -32,8 +32,6 @@ class PipelineSteps implements Serializable {
             on: Collections.unmodifiableList(['branch', 'pr']), needs: 'nonMainBranch']),
         'argo-deploy': Collections.unmodifiableMap([
             flag: 'argo-deploy', on: Collections.unmodifiableList(['main', 'release'])]),
-        'chart-version-commit': Collections.unmodifiableMap([
-            flag: 'helm-package-upload', on: Collections.unmodifiableList(['main'])]),
         'release': Collections.unmodifiableMap([on: Collections.unmodifiableList(['release'])])
     ])
 

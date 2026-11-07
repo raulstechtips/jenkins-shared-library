@@ -142,7 +142,7 @@ class ClusterConfigurablePipelineTest extends DeclarativePipelineTest {
         assertTrue(helper.callStack.any { it.methodName == 'echo' &&
             it.args[0].toString() == 'Steps for this build (main): render, early-checks, ' +
                 'trivy-secret-scan, trivy-dockerfile-scan, opengrep-scan, helm-test, ' +
-                'helm-package-upload, trivy-chart-scan, argo-deploy, chart-version-commit' })
+                'helm-package-upload, trivy-chart-scan, argo-deploy' })
         assertAgentStructure()
         assertFalse(agentEntries().any { it.contains('builder') || it.contains('deployer') })
         assertArchive()
@@ -189,10 +189,19 @@ class ClusterConfigurablePipelineTest extends DeclarativePipelineTest {
     }
 
     @Test
-    void mainWithoutChartUploadDoesNotUpdateChartVersion() {
-        configText = fixture('argocd').replace('helm-package-upload: true', 'helm-package-upload: false')
+    void mainWithChartUpdatesChartVersionWithoutAnyFlag() {
+        configText = 'project-config:\n  project-name: demo\n'
         runPipeline()
-        assertFalse(calls*.name.contains('updateChartVersion'))
+        assertEquals(['computeVersion', 'renderChart', 'updateChartVersion'], calls*.name)
+        assertJobStatusSuccess()
+    }
+
+    @Test
+    void mainWithoutChartDoesNotUpdateChartVersion() {
+        configText = 'project-config:\n  project-name: demo\n'
+        chartPresent = false
+        runPipeline()
+        assertEquals(['computeVersion'], calls*.name)
         assertJobStatusSuccess()
     }
 

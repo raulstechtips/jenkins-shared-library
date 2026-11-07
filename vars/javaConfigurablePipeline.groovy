@@ -15,7 +15,8 @@ import dev.raulstechtips.jenkins.helpers.RegistryCatalog
  * never run on main or in a release run, and Argo deploy runs only on a main push or in a release
  * run. On a non-PR main build with RELEASE_VERSION empty, when the last commit author is the
  * Jenkins bot (a release commit), Checkout marks the build NOT_BUILT and skips every stage after
- * Checkout. This pipeline does not commit the build version to gradle.properties. Files under .pipeline/reports are archived. The
+ * Checkout. On every main push where charts/Chart.yaml exists, the chart version update commits the
+ * build version to charts/Chart.yaml as the Jenkins bot. It never writes gradle.properties. Files under .pipeline/reports are archived. The
  * build times out after 60 minutes and builds do not run concurrently.
  *
  * The RELEASE_VERSION parameter (X.Y.Z, main only) starts a release run through releasePipeline.
@@ -232,6 +233,14 @@ def call() {
                         }
                         steps {
                             argoDeploy(cfg)
+                        }
+                    }
+                    stage('Update chart version') {
+                        when {
+                            expression { !cfg.skipAll && cfg.buildKind == 'main' && cfg.chartPresent }
+                        }
+                        steps {
+                            updateChartVersion(cfg)
                         }
                     }
                     stage('Release') {

@@ -107,7 +107,7 @@ class JavaConfigurablePipelineTest extends DeclarativePipelineTest {
             [head: 'a1b2c3dabcdef', base: '9f8e7d6abcdef']
         })
         ['renderChart', 'trivySecretScan', 'trivyDockerfileScan', 'opengrepScan',
-            'helmTest', 'trivyChartScan', 'argoDeploy'].each { String name ->
+            'helmTest', 'trivyChartScan', 'argoDeploy', 'updateChartVersion'].each { String name ->
             helper.registerAllowedMethod(name, [Map], { Map cfg -> record(name, cfg) })
         }
         helper.registerAllowedMethod('buildDockerImage', [Map], { Map cfg ->
@@ -374,7 +374,7 @@ class JavaConfigurablePipelineTest extends DeclarativePipelineTest {
     void deliveryOnMainUsesArgoAndNeverStartsDeployer() {
         deliveryConfig()
         runPipeline()
-        assertEquals('argoDeploy', calls.last().name)
+        assertEquals(['argoDeploy', 'updateChartVersion'], calls.takeRight(2)*.name)
         assertFalse(agentEntries().any { it.contains('deployer') })
         assertJobStatusSuccess()
     }
@@ -409,7 +409,7 @@ class JavaConfigurablePipelineTest extends DeclarativePipelineTest {
         def pipeline = declaration.stages['Pipeline']
         assertEquals(['Checkout', 'Render', 'Early checks', 'Build', 'Unit test', 'Helm test',
             'Build image', 'Trivy image scan', 'Package and upload chart', 'Trivy chart scan',
-            'Helm clean install', 'Helm install', 'Argo deploy', 'Release'],
+            'Helm clean install', 'Helm install', 'Argo deploy', 'Update chart version', 'Release'],
             pipeline.stages.keySet() as List)
         assertEquals(['Trivy scan', 'Opengrep scan'],
             pipeline.stages['Early checks'].parallel.stages.keySet() as List)

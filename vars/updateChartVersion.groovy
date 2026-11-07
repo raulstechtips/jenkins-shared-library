@@ -3,6 +3,9 @@ import dev.raulstechtips.jenkins.helpers.JenkinsBot
 /**
  * Writes cfg.version into charts/Chart.yaml and pushes the commit to main as the Jenkins bot.
  *
+ * The pipelines call it on every main push where charts/Chart.yaml exists. It has no
+ * pipeline-steps flag.
+ *
  * In the tools container it sets the version with yq, commits only charts/Chart.yaml with the
  * message "chore: set chart version to VERSION", and pushes HEAD to main with the github-app
  * credentials, through the environment of that one process. The commit author is the bot, so the

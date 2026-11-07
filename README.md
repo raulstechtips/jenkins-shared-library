@@ -176,7 +176,7 @@ Put the flags under `pipeline-steps`. Every flag is `false` by default.
 | `build` | `runBuildCommand` | java only | all |
 | `unit-test` | `runTestCommand` | both | all |
 | `build-docker-image` | `buildDockerImage` | both | all |
-| `helm-package-upload` | `helmPackageUpload`, and `updateChartVersion` on `main` builds (cluster pipeline only) | both | all |
+| `helm-package-upload` | `helmPackageUpload` | both | all |
 | `helm-install` | `helmInstall` | both | Never on `main`. Never in a release run. Skipped when `helm-clean-install` is also true. |
 | `helm-clean-install` | `helmCleanInstall` | both | Never on `main`. Never in a release run. |
 | `argo-deploy` | `argoDeploy` | both | Only on `main` builds and in release runs. A PR build never deploys. |
@@ -211,7 +211,7 @@ After all stages, the build archives `.pipeline/reports/**`.
 9. `Trivy chart scan`. Runs when `trivy-scan` and `helm-package-upload` are both true.
 10. `Helm clean install` (`helm-clean-install`) or `Helm install` (`helm-install`). Not on `main`, not in a release run. Runs on a pod from the `deployer` template.
 11. `Argo deploy` (`argo-deploy`). Only on a `main` build or in a release run.
-12. `Update chart version`. Only on a `main` build, when `helm-package-upload` is true. Runs `updateChartVersion` (see below).
+12. `Update chart version`. On every `main` build where `charts/Chart.yaml` exists. It has no flag. Runs `updateChartVersion` (see below).
 13. `Release`. Only in a release run. Runs `releasePipeline.finish`.
 
 ### javaConfigurablePipeline
@@ -221,7 +221,7 @@ After all stages, the build archives `.pipeline/reports/**`.
 3. `Early checks`, in parallel: `Trivy scan` (`trivy-scan`, the secret scan and then the Dockerfile scan) and `Opengrep scan` (`opengrep-scan`).
 4. `Build` (`build`). Runs `build-command` in the `jdk` container.
 5. `Unit test` (`unit-test`). Runs `test-command` in the `jdk` container.
-6. `Helm test`, `Build image`, `Trivy image scan`, `Package and upload chart`, `Trivy chart scan`, `Helm clean install` or `Helm install`, `Argo deploy` and `Release`. These have the same rules as in the cluster pipeline. The java pipeline has no `Update chart version` stage.
+6. `Helm test`, `Build image`, `Trivy image scan`, `Package and upload chart`, `Trivy chart scan`, `Helm clean install` or `Helm install`, `Argo deploy` and `Release`. Then `Update chart version`. These have the same rules as in the cluster pipeline.
 
 ### Image-scan gate
 
@@ -236,8 +236,10 @@ Images that start with an `image-prefix` of a registry in this library aren't sc
 
 ### Update chart version
 
-After a `main` build publishes the chart, `updateChartVersion` writes the build version to `charts/Chart.yaml`.
-Thus `charts/Chart.yaml` on `main` always names a chart that exists in the registry.
+On every `main` build, when `charts/Chart.yaml` exists, `updateChartVersion` writes the build version to `charts/Chart.yaml`.
+When the repo has no `charts/Chart.yaml`, nothing is written.
+There is no flag for this step.
+Thus `charts/Chart.yaml` on `main` names the chart version of the last `main` build.
 In the `tools` container, it:
 
 1. Sets `version` in `charts/Chart.yaml` to the build version with `yq`.
