@@ -16,13 +16,11 @@ class ArgoDeployTest extends BasePipelineTest {
     private String fixture
     private String chart
     private String numstat
-    private String openPr
-    private String remoteBranch
     private Map<String, String> fixtures
     private Map<String, String> numstats
-    private Map<String, String> openPrs
     private Set<String> missingFiles
     private List<String> checkedFiles
+    private List<Integer> pushStatuses
     private boolean credentialsActive
     private String directory
     private String activeContainer
@@ -42,13 +40,11 @@ class ArgoDeployTest extends BasePipelineTest {
         fixture = new File('test/resources/fixtures/argo/jenkins.yaml').text
         chart = 'jenkins'
         numstat = '1\t1\targo/dev/jenkins.yaml\n'
-        openPr = ''
-        remoteBranch = ''
         fixtures = [:]
         numstats = [:]
-        openPrs = [:]
         missingFiles = [] as Set
         checkedFiles = []
+        pushStatuses = []
         credentialsActive = false
         directory = ''
         activeContainer = ''
@@ -114,9 +110,10 @@ class ArgoDeployTest extends BasePipelineTest {
                 .collect { it.targetRevision }.join('\n') + '\n'
         }
         if (script.contains('git diff --numstat')) { return numstats[environment.FILE] ?: numstat }
-        if (script.contains('state=open')) { return openPrs[environment.BRANCH] ?: openPr }
-        if (script.contains('git ls-remote')) { return remoteBranch }
-        if (script.contains('-X POST')) { return 'https://github.com/raulstechtips/cluster-config/pull/42\n' }
+        if (script.contains('git push')) {
+            assertEquals(true, args.returnStatus)
+            return pushStatuses ? pushStatuses.remove(0) : 0
+        }
         args.returnStdout ? '' : null
     }
 
@@ -134,6 +131,10 @@ class ArgoDeployTest extends BasePipelineTest {
         commands.any { it.script.contains(text) }
     }
 
+    private List<Map> all(String text) {
+        commands.findAll { it.script.contains(text) }
+    }
+
     @Test
     void bindsGithubAppPasswordAsGhToken() {
         deploy()
@@ -146,7 +147,7 @@ class ArgoDeployTest extends BasePipelineTest {
     void tokenRemainsLiteralInNonInterpolatedShellWithTracingDisabled() {
         deploy()
         List<Map> authenticated = commands.findAll { it.credentials }
-        assertEquals(4, authenticated.size())
+        assertEquals(2, authenticated.size())
         authenticated.each {
             assertTrue(it.script.startsWith('set +x\n'))
             assertTrue(it.script.contains('$GH_TOKEN'))
@@ -175,10 +176,10 @@ class ArgoDeployTest extends BasePipelineTest {
     void skipsWhenVersionIsAlreadySet() {
         cfg.version = '1.0.0-main-0067101-13'
         deploy()
-        assertTrue(logs.contains('argo/dev/jenkins.yaml is already at ' + cfg.version + '. No PR.'))
-        assertFalse(ran('curl'))
+        assertTrue(logs.contains('argo/dev/jenkins.yaml is already at ' + cfg.version + '. No commit.'))
         assertFalse(ran('git push'))
         assertFalse(ran('yq -i'))
+        assertFalse(ran('git commit'))
     }
 
     @Test
@@ -186,7 +187,7 @@ class ArgoDeployTest extends BasePipelineTest {
         fixture = fixture.replace('chart: jenkins', 'ref: not-a-chart')
         def failure = assertThrows(IllegalArgumentException) { deploy() }
         assertEquals('No source with chart jenkins in argo/dev/jenkins.yaml', failure.message)
-        assertFalse(ran('curl'))
+        assertFalse(ran('git push'))
     }
 
     @Test
@@ -198,10 +199,17 @@ class ArgoDeployTest extends BasePipelineTest {
     }
 
     @Test
-    void usesExactProjectDevVersionBranch() {
+    void pushesStraightToClusterConfigMainWithoutBranchOrPr() {
         deploy()
-        assertEquals('argo-deploy/jenkins-dev-' + cfg.version, command('git checkout -b').env.BRANCH)
-        assertTrue(command('git checkout -b').script.contains('"$BRANCH" main'))
+        Map push = command('git push')
+        assertTrue(push.script.contains(
+            'git push "https://x-access-token:$GH_TOKEN@github.com/raulstechtips/cluster-config.git" HEAD:refs/heads/main'))
+        assertEquals('.pipeline/cluster-config', push.directory)
+        String scripts = commands*.script.join('\n')
+        assertFalse(scripts.contains('git checkout'))
+        assertFalse(scripts.contains('curl'))
+        assertFalse(scripts.contains('/pulls'))
+        assertTrue(logs.contains('Pushed 1 deploy commit(s) for ' + cfg.version + ' to cluster-config main.'))
     }
 
     @Test
@@ -216,19 +224,11 @@ class ArgoDeployTest extends BasePipelineTest {
     }
 
     @Test
-    void acceptsExactlyOneAddedAndRemovedLineForTargetFile() {
-        deploy()
-        assertTrue(ran('git diff --numstat'))
-        assertTrue(ran('git commit'))
-    }
-
-    @Test
     void rejectsAdditionalChangedFile() {
         numstat += '1\t1\targo/dev/argocd.yaml\n'
         assertThrows(IllegalArgumentException) { deploy() }
         assertFalse(ran('git commit'))
         assertFalse(ran('git push'))
-        assertFalse(ran('-X POST'))
     }
 
     @Test
@@ -253,90 +253,61 @@ class ArgoDeployTest extends BasePipelineTest {
     }
 
     @Test
-    void commitsWithBotIdentityAndExactMessage() {
+    void commitsOnlyTargetFileWithBotIdentityExactMessageAndBuildUrl() {
         deploy()
-        String scripts = commands*.script.join('\n')
-        assertTrue(scripts.contains('raulstechtips-jenkins[bot]'))
-        assertTrue(scripts.contains('raulstechtips-jenkins[bot]@users.noreply.github.com'))
-        assertEquals('deploy(jenkins): dev ' + cfg.version, command('git commit').env.TITLE)
-        assertTrue(command('git commit').script.contains('-m "$TITLE"'))
+        Map identity = command('git config user.name')
+        assertTrue(identity.script.contains("git config user.name 'raulstechtips-jenkins[bot]'"))
+        assertTrue(identity.script.contains("git config user.email 'raulstechtips-jenkins[bot]@users.noreply.github.com'"))
+        Map commit = command('git commit')
+        assertEquals('git commit -m "$TITLE" -m "Jenkins build: $BUILD_URL" -- "$FILE"', commit.script)
+        assertEquals('deploy(jenkins): dev ' + cfg.version, commit.env.TITLE)
+        assertEquals('argo/dev/jenkins.yaml', commit.env.FILE)
+        assertFalse(commit.credentials)
     }
 
     @Test
-    void postsPrToMainWithExactTitleAndBuildUrlBody() {
+    void rejectedPushFetchesMainAgainAndRedoesTheCommits() {
+        pushStatuses = [1, 0]
         deploy()
-        Map post = command('-X POST')
-        assertTrue(post.script.contains('https://api.github.com/repos/raulstechtips/cluster-config/pulls'))
-        assertTrue(post.script.contains('base: "main"'))
-        assertTrue(post.script.contains('--arg title "$TITLE"'))
-        assertEquals('deploy(jenkins): dev ' + cfg.version, post.env.TITLE)
-        assertTrue(post.script.contains('Opened by Jenkins build $BUILD_URL. Merge by hand.'))
-        assertTrue(logs.contains('https://github.com/raulstechtips/cluster-config/pull/42'))
+        assertEquals(2, all('git push').size())
+        assertEquals(1, all('git fetch').size())
+        Map fetch = command('git fetch')
+        assertTrue(fetch.credentials)
+        assertTrue(fetch.script.startsWith('set +x\n'))
+        assertTrue(fetch.script.contains('--depth 1'))
+        assertTrue(fetch.script.contains('git reset --hard FETCH_HEAD'))
+        assertEquals(2, all('git commit').size())
+        assertEquals(2, all('yq -i').size())
+        assertTrue(logs.contains('cluster-config main moved. Attempt 2 of 3.'))
     }
 
     @Test
-    void buildsJsonWithJqArgumentsRatherThanConcatenation() {
-        deploy()
-        String script = command('-X POST').script
-        assertTrue(script.contains('jq -n --arg'))
-        assertTrue(script.contains('--arg head "$BRANCH"'))
-        assertTrue(script.contains('--arg body'))
-        assertTrue(script.contains('title: $title'))
-        assertTrue(script.contains('head: $head'))
-        assertTrue(script.contains('body: $body'))
+    void threeRejectedPushesFailTheBuild() {
+        pushStatuses = [1, 1, 1]
+        def failure = assertThrows(IllegalArgumentException) { deploy() }
+        assertEquals('Could not push the deploy commits for ' + cfg.version +
+            ' to cluster-config main after 3 attempts.', failure.message)
+        assertEquals(3, all('git push').size())
+        assertEquals(2, all('git fetch').size())
+        assertFalse(credentialsActive)
     }
 
     @Test
-    void parsesApiJsonWithJqWithoutEvaluatingUntrustedTitles() {
-        deploy()
-        assertTrue(command('state=open').script.contains('jq -'))
-        assertTrue(command('-X POST').script.contains('jq -er'))
-        assertFalse(commands*.script.join('\n').contains('eval '))
-    }
-
-    @Test
-    void neverCallsAutoMergeOrMergeApi() {
+    void neverOpensPrOrCallsMergeApi() {
         deploy()
         String scripts = commands*.script.join('\n')
         assertFalse(scripts.contains('/merge'))
-        assertFalse(scripts.contains('auto-merge'))
-        assertFalse(scripts.contains('enablePullRequestAutoMerge'))
-        assertFalse(scripts.contains('gh pr merge'))
+        assertFalse(scripts.contains('/pulls'))
+        assertFalse(scripts.contains('gh pr'))
     }
 
     @Test
-    void existingOpenPrLogsUrlWithoutPushOrCreate() {
-        openPr = 'https://github.com/raulstechtips/cluster-config/pull/21\n'
-        deploy()
-        assertTrue(logs.contains(openPr.trim()))
-        assertFalse(ran('git push'))
-        assertFalse(ran('-X POST'))
-        assertFalse(ran('git ls-remote'))
-        assertFalse(ran('yq -i'))
-        assertEquals('argo-deploy/jenkins-dev-' + cfg.version, command('state=open').env.BRANCH)
-        assertTrue(command('state=open').script.contains('head=raulstechtips:$BRANCH&state=open'))
-    }
-
-    @Test
-    void existingRemoteBranchOnlyCreatesPr() {
-        remoteBranch = 'abcdef\trefs/heads/argo-deploy/jenkins-dev-' + cfg.version + '\n'
-        deploy()
-        assertTrue(ran('git fetch'))
-        assertTrue(ran('git checkout'))
-        assertFalse(ran('git checkout -b'))
-        assertFalse(ran('yq -i'))
-        assertFalse(ran('git diff'))
-        assertFalse(ran('git commit'))
-        assertFalse(ran('git push'))
-        assertEquals(1, commands.count { it.script.contains('-X POST') })
-    }
-
-    @Test
-    void bindsCredentialsOnlyAroundClonePushAndApiCalls() {
+    void bindsCredentialsOnlyAroundCloneFetchAndPush() {
+        pushStatuses = [1, 0]
         deploy()
         commands.each {
             boolean needsToken = it.script.contains('git clone') ||
-                it.script.contains('git push') || it.script.contains('curl ')
+                it.script.contains('git push') || it.script.contains('git fetch')
             assertEquals(needsToken, it.credentials, it.script)
         }
         assertFalse(command('yq -i').credentials)
@@ -368,16 +339,11 @@ class ArgoDeployTest extends BasePipelineTest {
         assertEquals(chart, command('yq -i').env.CHART)
         assertEquals(cfg.version, command('yq -i').env.VERSION)
         assertEquals('argo/dev/' + cfg['project-name'] + '.yaml', command('yq -i').env.FILE)
-        assertEquals('argo-deploy/' + cfg['project-name'] + '-dev-' + cfg.version,
-            command('git checkout -b').env.BRANCH)
         assertEquals('deploy(' + cfg['project-name'] + '): dev ' + cfg.version,
             command('git commit').env.TITLE)
         assertTrue(command('yq -i').script.contains('"$FILE"'))
-        assertTrue(command('git checkout -b').script.contains('"$BRANCH"'))
         assertTrue(command('git commit').script.contains('"$TITLE"'))
-        assertTrue(command('-X POST').script.contains('--arg title "$TITLE"'))
-        assertTrue(command('-X POST').script.contains('--arg head "$BRANCH"'))
-        assertTrue(command('-X POST').script.contains('$BUILD_URL. Merge by hand."'))
+        assertTrue(command('git commit').script.contains('"Jenkins build: $BUILD_URL"'))
     }
 
     @Test
@@ -396,7 +362,7 @@ class ArgoDeployTest extends BasePipelineTest {
         environment.BRANCH_NAME = 'feature/DEVSECOPS-34'
         environment.CHANGE_ID = '123'
         deploy()
-        assertTrue(ran('-X POST'))
+        assertTrue(ran('git push'))
     }
 
     @Test
@@ -408,10 +374,10 @@ class ArgoDeployTest extends BasePipelineTest {
     }
 
     @Test
-    void pushFailureNeverCreatesPr() {
-        failCommand = 'git push'
+    void commitFailureStopsBeforePush() {
+        failCommand = 'git commit'
         assertThrows(IllegalStateException) { deploy() }
-        assertFalse(ran('-X POST'))
+        assertFalse(ran('git push'))
         assertFalse(credentialsActive)
     }
 
@@ -424,22 +390,17 @@ class ArgoDeployTest extends BasePipelineTest {
         numstats['argo/dev/gha-runners-packer.yaml'] = '1\t1\targo/dev/gha-runners-packer.yaml\n'
     }
 
-    private List<Map> all(String text) {
-        commands.findAll { it.script.contains(text) }
-    }
-
     @Test
-    void targetsReplaceProjectNameAndOpenOnePrForEachTarget() {
+    void targetsReplaceProjectNameAndCommitEachTargetThenPushOnce() {
         useGhaRunnerTargets()
         deploy()
         assertEquals(['argo/dev/gha-runners.yaml', 'argo/dev/gha-runners-packer.yaml'], checkedFiles)
-        assertEquals(['argo-deploy/gha-runners-dev-' + cfg.version, 'argo-deploy/gha-runners-packer-dev-' + cfg.version],
-            all('git checkout -b')*.env.BRANCH)
-        assertTrue(all('git checkout -b').every { it.script.contains('"$BRANCH" main') })
         assertEquals(['argo/dev/gha-runners.yaml', 'argo/dev/gha-runners-packer.yaml'], all('yq -i')*.env.FILE)
         assertEquals(['deploy(gha-runners): dev ' + cfg.version, 'deploy(gha-runners-packer): dev ' + cfg.version],
-            all('-X POST')*.env.TITLE)
+            all('git commit')*.env.TITLE)
         assertEquals(1, all('git clone').size())
+        assertEquals(1, all('git push').size())
+        assertTrue(logs.contains('Pushed 2 deploy commit(s) for ' + cfg.version + ' to cluster-config main.'))
     }
 
     @Test
@@ -448,7 +409,7 @@ class ArgoDeployTest extends BasePipelineTest {
         numstat = '1\t1\targo/dev/jenkins-agents.yaml\n'
         deploy()
         assertEquals(['argo/dev/jenkins-agents.yaml'], checkedFiles)
-        assertEquals('argo-deploy/jenkins-agents-dev-' + cfg.version, command('git checkout -b').env.BRANCH)
+        assertEquals('deploy(jenkins-agents): dev ' + cfg.version, command('git commit').env.TITLE)
     }
 
     @Test
@@ -456,28 +417,28 @@ class ArgoDeployTest extends BasePipelineTest {
         cfg['argo-deploy-targets'] = []
         deploy()
         assertEquals(['argo/dev/jenkins.yaml'], checkedFiles)
-        assertEquals('argo-deploy/jenkins-dev-' + cfg.version, command('git checkout -b').env.BRANCH)
+        assertEquals('deploy(jenkins): dev ' + cfg.version, command('git commit').env.TITLE)
     }
 
     @Test
-    void missingLaterTargetFailsBeforeAnyPr() {
+    void missingLaterTargetFailsBeforeAnyCommit() {
         useGhaRunnerTargets()
         missingFiles << 'argo/dev/gha-runners-packer.yaml'
         def failure = assertThrows(IllegalArgumentException) { deploy() }
         assertEquals('argo/dev/gha-runners-packer.yaml is missing', failure.message)
-        assertFalse(ran('curl'))
-        assertFalse(ran('git checkout'))
         assertFalse(ran('yq -i'))
+        assertFalse(ran('git commit'))
+        assertFalse(ran('git push'))
     }
 
     @Test
-    void laterTargetWithoutChartSourceFailsBeforeAnyPr() {
+    void laterTargetWithoutChartSourceFailsBeforeAnyCommit() {
         useGhaRunnerTargets()
         fixtures['argo/dev/gha-runners-packer.yaml'] = fixture.replace('chart: gha-runners', 'chart: other')
         def failure = assertThrows(IllegalArgumentException) { deploy() }
         assertEquals('No source with chart gha-runners in argo/dev/gha-runners-packer.yaml', failure.message)
-        assertFalse(ran('curl'))
-        assertFalse(ran('git checkout'))
+        assertFalse(ran('git commit'))
+        assertFalse(ran('git push'))
     }
 
     @Test
@@ -485,25 +446,8 @@ class ArgoDeployTest extends BasePipelineTest {
         useGhaRunnerTargets()
         fixtures['argo/dev/gha-runners-packer.yaml'] = fixture.replace('1.0.0-main-0067101-13', cfg.version)
         deploy()
-        assertTrue(logs.contains('argo/dev/gha-runners-packer.yaml is already at ' + cfg.version + '. No PR.'))
-        assertEquals(['argo-deploy/gha-runners-dev-' + cfg.version], all('-X POST')*.env.BRANCH)
-    }
-
-    @Test
-    void openPrForOneTargetDoesNotStopTheNextTarget() {
-        useGhaRunnerTargets()
-        openPrs['argo-deploy/gha-runners-dev-' + cfg.version] = 'https://github.com/raulstechtips/cluster-config/pull/21\n'
-        deploy()
-        assertTrue(logs.contains('https://github.com/raulstechtips/cluster-config/pull/21'))
-        assertEquals(['argo-deploy/gha-runners-packer-dev-' + cfg.version], all('-X POST')*.env.BRANCH)
-        assertEquals(['argo/dev/gha-runners-packer.yaml'], all('yq -i')*.env.FILE)
-    }
-
-    @Test
-    void apiFailurePropagatesRatherThanReportingSuccess() {
-        failCommand = '-X POST'
-        assertThrows(IllegalStateException) { deploy() }
-        assertFalse(logs.contains('https://github.com/raulstechtips/cluster-config/pull/42'))
-        assertFalse(credentialsActive)
+        assertTrue(logs.contains('argo/dev/gha-runners-packer.yaml is already at ' + cfg.version + '. No commit.'))
+        assertEquals(['deploy(gha-runners): dev ' + cfg.version], all('git commit')*.env.TITLE)
+        assertEquals(1, all('git push').size())
     }
 }
