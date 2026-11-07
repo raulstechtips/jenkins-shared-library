@@ -68,6 +68,43 @@ class HelmInstallCommandsTest {
     }
 
     @Test
+    void chartVersionWithMetacharactersIsInert() {
+        Map r = execute([new HelmInstallCommands().install(
+            cfg(version: "1.2.3'; touch PWNED; '"), [:], null).first()])
+        assertEquals(0, r.exit)
+        assertEquals(['-i', '.version = strenv(CHART_VERSION)', 'charts/Chart.yaml'], r.lines)
+        assertEquals([], r.files)
+    }
+
+    @Test
+    void writesBuildVersionWithoutChangingAppVersionWithRealYq() {
+        Process probe = null
+        try {
+            probe = new ProcessBuilder('yq', '--version').redirectErrorStream(true).start()
+            probe.inputStream.text
+        } catch (IOException ignored) {
+            // yq is not installed here
+        }
+        Assumptions.assumeTrue(probe != null && probe.waitFor() == 0, 'yq is not installed')
+        File dir = Files.createTempDirectory('helm-install-chart-version').toFile()
+        try {
+            new File(dir, 'charts').mkdirs()
+            new File(dir, 'charts/Chart.yaml').text = 'name: demo\nversion: 0.0.0\nappVersion: "7.4.0"\n'
+            String version = '0.1.0-feature-devsecops-190-abc1234-5'
+            String command = new HelmInstallCommands().install(cfg(version: version), [:], null).first()
+            Process process = new ProcessBuilder('/bin/sh', '-c', command).directory(dir).redirectErrorStream(true).start()
+            String output = process.inputStream.text
+            assertEquals(0, process.waitFor(), output)
+            Map chart = new org.yaml.snakeyaml.Yaml().load(new File(dir, 'charts/Chart.yaml').text)
+            assertEquals(version, chart.version)
+            assertEquals('7.4.0', chart.appVersion)
+            assertEquals('demo', chart.name)
+        } finally {
+            dir.deleteDir()
+        }
+    }
+
+    @Test
     void quotedKeyTagPathWorksWithRealYq() {
         Process probe = null
         try {

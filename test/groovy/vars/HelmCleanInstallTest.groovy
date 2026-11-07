@@ -57,6 +57,7 @@ class HelmCleanInstallTest extends BasePipelineTest {
     }
 
     private static final List INSTALL_PREFIX = [
+        "CHART_VERSION='1.2.3' yq -i '.version = strenv(CHART_VERSION)' charts/Chart.yaml",
         "helm repo add dep0 'https://charts.example.com/a'",
         "helm repo add dep2 'https://charts.example.com/c'",
         'helm dependency build charts'
@@ -101,13 +102,13 @@ class HelmCleanInstallTest extends BasePipelineTest {
     @Test
     void doesNotWriteTagWithoutDigest() {
         run(cfg('helm-image-tag-path': '.image.tag'))
-        assertFalse(shCommands().any { it.contains('yq') })
+        assertFalse(shCommands().any { it.contains('charts/values.yaml') })
     }
 
     @Test
     void doesNotWriteTagWhenPathEmpty() {
         run(cfg(), DIGEST)
-        assertFalse(shCommands().any { it.contains('yq') })
+        assertFalse(shCommands().any { it.contains('charts/values.yaml') })
     }
 
     @Test

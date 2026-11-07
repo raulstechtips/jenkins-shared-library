@@ -82,6 +82,34 @@ dependencies:
         assertFalse(helper.callStack.any { it.methodName == 'readYaml' })
     }
 
+    @Test void rendersCombinedOverridesInDeploymentOrderWithQuotedPaths() {
+        cfg['helm-overrides'] = ['overrides/common values.yaml', "overrides/it's;\$(touch PWNED).yaml"]
+        loadScript('vars/renderChart.groovy').call(cfg)
+        assertEquals("helm template 'demo' charts -n 'team' -f 'overrides/common values.yaml' -f 'overrides/it'\\''s;\$(touch PWNED).yaml' > '.pipeline/render/deployment.yaml'",
+            commands[-2])
+        assertEquals('touch .pipeline/render/.complete', commands.last())
+        assertEquals(4, commands.count { it.startsWith('helm template') })
+    }
+
+    @Test void emptyOverridesDoNotAddADeploymentRender() {
+        cfg['helm-overrides'] = []
+        loadScript('vars/renderChart.groovy').call(cfg)
+        assertEquals(3, commands.count { it.startsWith('helm template') })
+        assertFalse(commands.any { it.contains('deployment.yaml') })
+    }
+
+    @Test void deploymentRenderFailurePropagatesWithoutCompletionMarker() {
+        cfg['helm-overrides'] = ['missing.yaml']
+        helper.registerAllowedMethod('sh', [String]) { String command ->
+            commands.add(command)
+            if (command.contains('deployment.yaml')) {
+                throw new IllegalStateException('override render failed')
+            }
+        }
+        assertThrows(IllegalStateException) { loadScript('vars/renderChart.groovy').call(cfg) }
+        assertFalse(commands.contains('touch .pipeline/render/.complete'))
+    }
+
     @Test void renderFailurePropagatesWithoutCompletionMarker() {
         helper.registerAllowedMethod('sh', [String]) { String command ->
             commands.add(command)

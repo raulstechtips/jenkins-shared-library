@@ -44,4 +44,27 @@ class HelmLintTest extends BasePipelineTest {
         assertTrue(commands.empty)
         assertTrue(containers.empty)
     }
+    @Test void lintsCombinedOverridesInDeploymentOrderWithQuotedPaths() {
+        loadScript('vars/helmLint.groovy').call([chartPresent: true,
+            'helm-overrides': ['overrides/common values.yaml', "overrides/it's;\$(touch PWNED).yaml"]])
+        assertEquals("helm lint --strict charts -f 'overrides/common values.yaml' -f 'overrides/it'\\''s;\$(touch PWNED).yaml'",
+            commands.last())
+        assertEquals(4, commands.size())
+    }
+    @Test void emptyOverridesDoNotAddALintRun() {
+        files = []
+        loadScript('vars/helmLint.groovy').call([chartPresent: true, 'helm-overrides': []])
+        assertEquals(['helm lint --strict charts'], commands)
+    }
+    @Test void combinedOverridesLintFailurePropagates() {
+        helper.registerAllowedMethod('sh', [String]) { String command ->
+            commands.add(command)
+            if (command.contains("'missing.yaml'")) {
+                throw new IllegalStateException('override lint failed')
+            }
+        }
+        assertThrows(IllegalStateException) {
+            loadScript('vars/helmLint.groovy').call([chartPresent: true, 'helm-overrides': ['missing.yaml']])
+        }
+    }
 }

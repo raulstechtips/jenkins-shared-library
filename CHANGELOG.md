@@ -23,4 +23,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Set the build version in the local chart before direct Helm installation, and render and lint the combined deployment override files in deployment order ([DEVSECOPS-190](https://raulstechtips.atlassian.net/browse/DEVSECOPS-190))
+
 [Unreleased]: https://github.com/raulstechtips/jenkins-shared-library/commits/main

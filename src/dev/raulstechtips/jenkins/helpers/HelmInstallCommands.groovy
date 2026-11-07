@@ -9,7 +9,8 @@ class HelmInstallCommands implements Serializable {
      * Returns the shell commands that install or upgrade the chart in charts/.
      *
      * In order: when helm-image-tag-path and digest are both set, a yq command that writes
-     * version@digest to that path in charts/values.yaml; a helm repo add for each chart dependency
+     * version@digest to that path in charts/values.yaml; a yq command that sets the build version
+     * in charts/Chart.yaml; a helm repo add for each chart dependency
      * with an https:// repository; helm dependency build charts; and helm upgrade --install of
      * project-name in project-namespace, with one -f per helm-overrides entry, --wait and a 10
      * minute timeout. Every value is quoted with ShellQuote.
@@ -35,6 +36,7 @@ class HelmInstallCommands implements Serializable {
             String tag = "${cfg.version}@${digest}"
             commands << ("TAG=${ShellQuote.quote(tag)} yq -i ${ShellQuote.quote(tagPath + ' = strenv(TAG)')} charts/values.yaml".toString())
         }
+        commands << ("CHART_VERSION=${ShellQuote.quote(cfg.version.toString())} yq -i '.version = strenv(CHART_VERSION)' charts/Chart.yaml".toString())
         List dependencies = (chart != null && chart['dependencies']) ? (chart['dependencies'] as List) : []
         for (int i = 0; i < dependencies.size(); i++) {
             String repository = ((Map) dependencies[i])['repository']
