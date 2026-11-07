@@ -14,6 +14,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Calculate the build version from the highest `X.Y.Z` Git tag (`0.0.0` when there is no release) and increase the minor number, so the first build is `0.1.0-...`. The version files are no longer read for the build version ([DEVSECOPS-191](https://raulstechtips.atlassian.net/browse/DEVSECOPS-191))
+- On every `main` build where `charts/Chart.yaml` exists, commit the build version to `charts/Chart.yaml` as the Jenkins bot and push it to `main`. It has no flag. A failed push only logs a warning ([DEVSECOPS-191](https://raulstechtips.atlassian.net/browse/DEVSECOPS-191))
+- Skip every `main` build of a commit by the Jenkins bot, instead of only `release:` commits ([DEVSECOPS-191](https://raulstechtips.atlassian.net/browse/DEVSECOPS-191))
+- Compare `RELEASE_VERSION` with the highest release tag instead of the version file ([DEVSECOPS-191](https://raulstechtips.atlassian.net/browse/DEVSECOPS-191))
+- Set `gradle.properties` to `0.0.0` ([DEVSECOPS-191](https://raulstechtips.atlassian.net/browse/DEVSECOPS-191))
+
 ### Fixed
 
 [Unreleased]: https://github.com/raulstechtips/jenkins-shared-library/commits/main

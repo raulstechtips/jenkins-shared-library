@@ -1,7 +1,6 @@
+import dev.raulstechtips.jenkins.helpers.JenkinsBot
 import dev.raulstechtips.jenkins.helpers.PipelineSteps
 import dev.raulstechtips.jenkins.helpers.RegistryCatalog
-import dev.raulstechtips.jenkins.helpers.SemVer
-import dev.raulstechtips.jenkins.helpers.VersionCalculator
 
 /**
  * Runs the declarative pipeline for a java repository.
@@ -14,16 +13,16 @@ import dev.raulstechtips.jenkins.helpers.VersionCalculator
  * library pod. Image build runs on the builder agent and the Helm installs on the deployer agent.
  * Build and unit test run build-command and test-command in the jdk container. The Helm installs
  * never run on main or in a release run, and Argo deploy runs only on a main push or in a release
- * run. On a non-PR main build with RELEASE_VERSION empty, Checkout compares the last commit subject
- * with "release: " plus the valid version from gradle.properties. An exact match marks the build
- * NOT_BUILT and skips every stage after Checkout. Files under .pipeline/reports are archived. The
+ * run. On a non-PR main build with RELEASE_VERSION empty, when the last commit author is the
+ * Jenkins bot (a release commit), Checkout marks the build NOT_BUILT and skips every stage after
+ * Checkout. On every main push where charts/Chart.yaml exists, the chart version update commits the
+ * build version to charts/Chart.yaml as the Jenkins bot. It never writes gradle.properties. Files under .pipeline/reports are archived. The
  * build times out after 60 minutes and builds do not run concurrently.
  *
  * The RELEASE_VERSION parameter (X.Y.Z, main only) starts a release run through releasePipeline.
  *
  * @throws error (fails the build) when RELEASE_VERSION is set on a branch other than main or on a
- *     pull request, or when gradle.properties has no X.Y.Z version on a main push. Each step raises its
- *     own errors.
+ *     pull request. Each step raises its own errors.
  */
 def call() {
     def cfg = loadProjectConfig(type: 'java')
@@ -66,17 +65,11 @@ def call() {
                                 cfg.skipAll = false
                                 currentBuild.description = cfg['project-description']
                                 if (!cfg.releaseVersion && env.BRANCH_NAME == 'main' && !env.CHANGE_ID) {
-                                    String subject = sh(script: 'git log -1 --pretty=%s', returnStdout: true).trim()
-                                    String version = VersionCalculator.gradleVersion(readFile('gradle.properties'))
-                                    try {
-                                        SemVer.parse(version)
-                                    } catch (IllegalArgumentException ignored) {
-                                        error('Version file gradle.properties must contain X.Y.Z')
-                                    }
-                                    if (subject == 'release: ' + version) {
+                                    String author = sh(script: 'git log -1 --pretty=%an', returnStdout: true).trim()
+                                    if (author == JenkinsBot.NAME) {
                                         cfg.skipAll = true
                                         currentBuild.result = 'NOT_BUILT'
-                                        currentBuild.description = "Release commit ${version}: already built by the release run."
+                                        currentBuild.description = "Commit by ${author}: nothing to build."
                                     }
                                 }
                                 echo "Steps for this build (${cfg.buildKind}): " + PipelineSteps.plan(cfg, [
@@ -240,6 +233,14 @@ def call() {
                         }
                         steps {
                             argoDeploy(cfg)
+                        }
+                    }
+                    stage('Update chart version') {
+                        when {
+                            expression { !cfg.skipAll && cfg.buildKind == 'main' && cfg.chartPresent }
+                        }
+                        steps {
+                            updateChartVersion(cfg)
                         }
                     }
                     stage('Release') {

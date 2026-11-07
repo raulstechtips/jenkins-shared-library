@@ -13,7 +13,7 @@ class JavaConfigurablePipelineTest extends DeclarativePipelineTest {
     private DeclarativePipeline declaration
     private String configText
     private String versionFile
-    private String subject
+    private String author
     private String failingStep
     private boolean chartPresent
     private Map observedConfig
@@ -31,7 +31,7 @@ class JavaConfigurablePipelineTest extends DeclarativePipelineTest {
         observedConfig = null
         configText = fixture('jenkins-shared-library')
         versionFile = '# version=ignored\nversion=0.1.0\nother.version=ignored\n'
-        subject = 'feat: ordinary build'
+        author = 'Raul Chakraborty'
         failingStep = null
         chartPresent = false
         calls = []
@@ -78,8 +78,8 @@ class JavaConfigurablePipelineTest extends DeclarativePipelineTest {
         })
         helper.registerAllowedMethod('sh', [Map], { Map args ->
             assertEquals(true, args.returnStdout)
-            if (args.script == 'git log -1 --pretty=%s') {
-                return subject + '\n'
+            if (args.script == 'git log -1 --pretty=%an') {
+                return author + '\n'
             }
             assertEquals('git rev-parse HEAD', args.script)
             '0067101abcdef\n'
@@ -101,11 +101,13 @@ class JavaConfigurablePipelineTest extends DeclarativePipelineTest {
             record('computeVersion', cfg)
             versionCalculator.call(cfg)
         })
+        // No release tag yet, so builds start from 0.0.0.
+        helper.registerAllowedMethod('latestRelease', [], { -> null })
         helper.registerAllowedMethod('scmRevision', [], { ->
             [head: 'a1b2c3dabcdef', base: '9f8e7d6abcdef']
         })
         ['renderChart', 'trivySecretScan', 'trivyDockerfileScan', 'opengrepScan',
-            'helmTest', 'trivyChartScan', 'argoDeploy'].each { String name ->
+            'helmTest', 'trivyChartScan', 'argoDeploy', 'updateChartVersion'].each { String name ->
             helper.registerAllowedMethod(name, [Map], { Map cfg -> record(name, cfg) })
         }
         helper.registerAllowedMethod('buildDockerImage', [Map], { Map cfg ->
@@ -144,7 +146,7 @@ class JavaConfigurablePipelineTest extends DeclarativePipelineTest {
         assertEquals(false, observedConfig.chartPresent)
         assertEquals([], observedConfig.upstreamImages)
         assertNull(callNamed('upstreamImages'))
-        assertEquals('0.1.1-main-0067101-13', binding.getVariable('currentBuild').displayName)
+        assertEquals('0.1.0-main-0067101-13', binding.getVariable('currentBuild').displayName)
         assertEquals('jdk', callNamed('runBuildCommand').argument)
         assertEquals('jdk', callNamed('runTestCommand').argument)
         assertEquals(['project-pipeline-config.yaml', 'charts/Chart.yaml',
@@ -221,61 +223,33 @@ class JavaConfigurablePipelineTest extends DeclarativePipelineTest {
     }
 
     @Test
-    void releaseCommitSkipsEveryLaterStageAndMarksNotBuilt() {
-        subject = 'release: 1.0.0'
-        versionFile = '# version=ignored\nversion=1.0.0\nother.version=ignored\n'
+    void botCommitSkipsEveryLaterStageAndMarksNotBuilt() {
+        author = 'raulstechtips-jenkins[bot]'
         runPipeline()
         assertEquals(['Checkout'], leafStages())
         assertTrue(calls.empty)
         assertEquals('NOT_BUILT', binding.getVariable('currentBuild').result)
         assertTrue(helper.callStack.any { it.methodName == 'echo' &&
             it.args[0].toString() == 'Steps for this build (main): ' })
-        assertEquals('Release commit 1.0.0: already built by the release run.',
+        assertEquals('Commit by raulstechtips-jenkins[bot]: nothing to build.',
             binding.getVariable('currentBuild').description.toString())
         assertArchive()
     }
 
     @Test
-    void mismatchedReleaseCommitVersionDoesNotSkip() {
-        subject = 'release: 1.0.0'
+    void humanCommitOnMainDoesNotSkip() {
         runPipeline()
         assertTrue(leafStages().contains('Build'))
         assertJobStatusSuccess()
     }
 
     @Test
-    void malformedVersionMatchingReleaseSubjectFailsBeforeSkip() {
-        versionFile = 'version=1.0\n'
-        subject = 'release: 1.0'
-
-        def failure = assertThrows(IllegalArgumentException) { runPipeline() }
-
-        assertEquals('Version file gradle.properties must contain X.Y.Z', failure.message)
-        assertEquals(['Checkout'], leafStages())
-        assertTrue(calls.empty)
-        assertJobStatusFailure()
-    }
-
-    @Test
-    void missingVersionMatchingReleaseSubjectFailsBeforeSkip() {
-        versionFile = 'name=demo\n'
-        subject = 'release: null'
-
-        def failure = assertThrows(IllegalArgumentException) { runPipeline() }
-
-        assertEquals('Version file gradle.properties must contain X.Y.Z', failure.message)
-        assertEquals(['Checkout'], leafStages())
-        assertTrue(calls.empty)
-        assertJobStatusFailure()
-    }
-
-    @Test
-    void releaseSubjectOnBranchDoesNotSkip() {
+    void botCommitOnBranchDoesNotSkip() {
         featureBranch()
-        subject = 'release: 0.1.0'
+        author = 'raulstechtips-jenkins[bot]'
         runPipeline()
         assertTrue(leafStages().contains('Build'))
-        assertEquals('0.1.1-feature-devsecops-34-0067101-13', observedConfig.version)
+        assertEquals('0.1.0-feature-devsecops-34-0067101-13', observedConfig.version)
         assertJobStatusSuccess()
     }
 
@@ -284,11 +258,11 @@ class JavaConfigurablePipelineTest extends DeclarativePipelineTest {
         deliveryConfig()
         binding.getVariable('env').CHANGE_ID = '42'
         binding.getVariable('env').CHANGE_BRANCH = 'bugfix/ABC-1'
-        subject = 'release: 0.1.0'
+        author = 'raulstechtips-jenkins[bot]'
         runPipeline()
         assertTrue(leafStages().contains('Build'))
         assertFalse(calls*.name.contains('argoDeploy'))
-        assertEquals('0.1.1-bugfix-abc-1-a1b2c3d-9f8e7d6-13', observedConfig.version)
+        assertEquals('0.1.0-bugfix-abc-1-a1b2c3d-9f8e7d6-13', observedConfig.version)
         assertJobStatusSuccess()
     }
 
@@ -400,7 +374,7 @@ class JavaConfigurablePipelineTest extends DeclarativePipelineTest {
     void deliveryOnMainUsesArgoAndNeverStartsDeployer() {
         deliveryConfig()
         runPipeline()
-        assertEquals('argoDeploy', calls.last().name)
+        assertEquals(['argoDeploy', 'updateChartVersion'], calls.takeRight(2)*.name)
         assertFalse(agentEntries().any { it.contains('deployer') })
         assertJobStatusSuccess()
     }
@@ -435,7 +409,7 @@ class JavaConfigurablePipelineTest extends DeclarativePipelineTest {
         def pipeline = declaration.stages['Pipeline']
         assertEquals(['Checkout', 'Render', 'Early checks', 'Build', 'Unit test', 'Helm test',
             'Build image', 'Trivy image scan', 'Package and upload chart', 'Trivy chart scan',
-            'Helm clean install', 'Helm install', 'Argo deploy', 'Release'],
+            'Helm clean install', 'Helm install', 'Argo deploy', 'Update chart version', 'Release'],
             pipeline.stages.keySet() as List)
         assertEquals(['Trivy scan', 'Opengrep scan'],
             pipeline.stages['Early checks'].parallel.stages.keySet() as List)

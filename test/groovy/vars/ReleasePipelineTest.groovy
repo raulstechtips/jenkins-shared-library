@@ -157,22 +157,38 @@ class ReleasePipelineTest extends BasePipelineTest {
     }
 
     @Test
-    void rejectsEqualVersion() {
-        cfg.releaseVersion = '1.9.0'
-        assertPrepareFails('greater')
+    void rejectsVersionEqualToLatestReleaseTag() {
+        cfg.releaseVersion = '1.9.10'
+        assertPrepareFails('greater than the latest release 1.9.10')
     }
 
     @Test
-    void rejectsLowerVersionNumerically() {
-        files['charts/Chart.yaml'] = 'version: 1.10.0\n'
-        cfg.releaseVersion = '1.9.0'
-        assertPrepareFails('greater')
+    void rejectsVersionLowerThanLatestReleaseTagNumerically() {
+        cfg.releaseVersion = '1.9.9'
+        assertPrepareFails('greater than the latest release 1.9.10')
     }
 
     @Test
-    void rejectsMalformedVersionFile() {
-        files['charts/Chart.yaml'] = 'version: 1.0\n'
-        assertPrepareFails('Version file charts/Chart.yaml must contain X.Y.Z')
+    void ignoresBuildVersionInVersionFile() {
+        files['charts/Chart.yaml'] = 'name: demo\nversion: 1.10.0-main-0067101-7\n'
+        step.prepare(cfg)
+        assertEquals('1.10.0', cfg.version)
+        assertTrue(commands.any { it.script.contains('git tag -a') })
+    }
+
+    @Test
+    void firstReleaseIsComparedWithZero() {
+        tags = ''
+        cfg.releaseVersion = '0.0.0'
+        assertPrepareFails('greater than the latest release 0.0.0')
+    }
+
+    @Test
+    void firstReleaseAboveZeroSucceeds() {
+        tags = ''
+        cfg.releaseVersion = '0.1.0'
+        step.prepare(cfg)
+        assertTrue(files['CHANGELOG.md'].contains('/releases/tag/0.1.0'))
     }
 
     @Test
