@@ -13,7 +13,7 @@ class ClusterConfigurablePipelineTest extends DeclarativePipelineTest {
     private DeclarativePipeline declaration
     private String configText
     private String chartVersion
-    private String subject
+    private String author
     private String failingStep
     private boolean chartPresent
     private Map observedConfig
@@ -31,7 +31,7 @@ class ClusterConfigurablePipelineTest extends DeclarativePipelineTest {
         observedConfig = null
         configText = fixture('argocd')
         chartVersion = '1.2.0'
-        subject = 'feat: ordinary build'
+        author = 'Raul Chakraborty'
         failingStep = null
         chartPresent = true
         calls = []
@@ -77,8 +77,8 @@ class ClusterConfigurablePipelineTest extends DeclarativePipelineTest {
             chartText()
         })
         helper.registerAllowedMethod('sh', [Map], { Map args ->
-            assertEquals([script: 'git log -1 --pretty=%s', returnStdout: true], args)
-            subject + '\n'
+            assertEquals([script: 'git log -1 --pretty=%an', returnStdout: true], args)
+            author + '\n'
         })
         helper.registerAllowedMethod('checkout', [Map], { Map scm ->
             assertEquals(binding.getVariable('scm'), scm)
@@ -97,7 +97,7 @@ class ClusterConfigurablePipelineTest extends DeclarativePipelineTest {
             cfg.releaseVersion ?: '1.2.1-main-0067101-13'
         })
         ['renderChart', 'trivySecretScan', 'trivyDockerfileScan', 'opengrepScan',
-            'helmTest', 'trivyChartScan', 'argoDeploy'].each { String name ->
+            'helmTest', 'trivyChartScan', 'argoDeploy', 'updateChartVersion'].each { String name ->
             helper.registerAllowedMethod(name, [Map], { Map cfg -> record(name, cfg) })
         }
         helper.registerAllowedMethod('buildDockerImage', [Map], { Map cfg ->
@@ -128,10 +128,11 @@ class ClusterConfigurablePipelineTest extends DeclarativePipelineTest {
 
         assertEquals(['Checkout', 'Render', 'Trivy secret scan', 'Trivy Dockerfile scan',
             'Opengrep scan', 'Helm test', 'Trivy image scan', 'Package and upload chart',
-            'Trivy chart scan', 'Argo deploy'], leafStages())
+            'Trivy chart scan', 'Argo deploy', 'Update chart version'], leafStages())
         assertEquals(['computeVersion', 'renderChart', 'upstreamImages', 'trivySecretScan', 'trivyDockerfileScan',
             'opengrepScan', 'helmTest', 'trivyImageScan', 'helmPackageUpload',
-            'trivyChartScan', 'argoDeploy'], calls*.name)
+            'trivyChartScan', 'argoDeploy', 'updateChartVersion'], calls*.name)
+        assertEquals('1.2.1-main-0067101-13', callNamed('updateChartVersion').version)
         assertEquals('cluster', observedConfig.type)
         assertEquals('argocd', observedConfig['project-name'])
         assertEquals(false, observedConfig['pipeline-steps']['helm-clean-install'])
@@ -141,7 +142,7 @@ class ClusterConfigurablePipelineTest extends DeclarativePipelineTest {
         assertTrue(helper.callStack.any { it.methodName == 'echo' &&
             it.args[0].toString() == 'Steps for this build (main): render, early-checks, ' +
                 'trivy-secret-scan, trivy-dockerfile-scan, opengrep-scan, helm-test, ' +
-                'helm-package-upload, trivy-chart-scan, argo-deploy' })
+                'helm-package-upload, trivy-chart-scan, argo-deploy, chart-version-commit' })
         assertAgentStructure()
         assertFalse(agentEntries().any { it.contains('builder') || it.contains('deployer') })
         assertArchive()
@@ -151,11 +152,10 @@ class ClusterConfigurablePipelineTest extends DeclarativePipelineTest {
     }
 
     @Test
-    void releaseCommitSkipsEveryLaterStageAndMarksNotBuilt() {
+    void botCommitSkipsEveryLaterStageAndMarksNotBuilt() {
         configText = fixture('jenkins')
         enable('helm-install', 'helm-clean-install')
-        subject = 'release: 1.3.0'
-        chartVersion = '1.3.0'
+        author = 'raulstechtips-jenkins[bot]'
         runPipeline()
 
         assertEquals(['Checkout'], leafStages())
@@ -163,54 +163,45 @@ class ClusterConfigurablePipelineTest extends DeclarativePipelineTest {
         assertEquals('NOT_BUILT', binding.getVariable('currentBuild').result)
         assertTrue(helper.callStack.any { it.methodName == 'echo' &&
             it.args[0].toString() == 'Steps for this build (main): ' })
-        assertTrue(binding.getVariable('currentBuild').description.contains('1.3.0'))
+        assertEquals('Commit by raulstechtips-jenkins[bot]: nothing to build.',
+            binding.getVariable('currentBuild').description.toString())
         assertFalse(agentEntries().any { it.contains('builder') || it.contains('deployer') })
         assertArchive()
     }
 
     @Test
-    void mismatchedReleaseCommitVersionDoesNotSkip() {
-        subject = 'release: 1.3.0'
+    void otherAuthorWithBotLikeNameDoesNotSkip() {
+        author = 'raulstechtips-jenkins'
         runPipeline()
-        assertTrue(leafStages().contains('Argo deploy'))
+        assertTrue(leafStages().contains('Update chart version'))
         assertJobStatusSuccess()
     }
 
     @Test
-    void malformedVersionMatchingReleaseSubjectFailsBeforeSkip() {
-        chartVersion = '1.0'
-        subject = 'release: 1.0'
-
-        def failure = assertThrows(IllegalArgumentException) { runPipeline() }
-
-        assertEquals('Version file charts/Chart.yaml must contain X.Y.Z', failure.message)
-        assertEquals(['Checkout'], leafStages())
-        assertTrue(calls.empty)
-        assertJobStatusFailure()
-    }
-
-    @Test
-    void emptyChartDocumentUsesVersionErrorBeforeSkip() {
-        helper.registerAllowedMethod('readFile', [String], { String path ->
-            assertEquals('charts/Chart.yaml', path)
-            ''
-        })
-        subject = 'release: null'
-
-        def failure = assertThrows(IllegalArgumentException) { runPipeline() }
-
-        assertEquals('Version file charts/Chart.yaml must contain X.Y.Z', failure.message)
-        assertEquals(['Checkout'], leafStages())
-        assertTrue(calls.empty)
-        assertJobStatusFailure()
-    }
-
-    @Test
-    void releaseSubjectOnFeatureBranchDoesNotSkip() {
-        featureBranch()
-        subject = 'release: 1.3.0'
-        chartVersion = '1.3.0'
+    void releaseRunOnBotCommitIsNotSkipped() {
+        author = 'raulstechtips-jenkins[bot]'
+        binding.getVariable('params').RELEASE_VERSION = '1.3.0'
         runPipeline()
+        assertEquals(['computeVersion', 'prepare'], calls.take(2)*.name)
+        assertFalse(calls*.name.contains('updateChartVersion'))
+        assertEquals('finish', calls.last().name)
+        assertJobStatusSuccess()
+    }
+
+    @Test
+    void mainWithoutChartUploadDoesNotUpdateChartVersion() {
+        configText = fixture('argocd').replace('helm-package-upload: true', 'helm-package-upload: false')
+        runPipeline()
+        assertFalse(calls*.name.contains('updateChartVersion'))
+        assertJobStatusSuccess()
+    }
+
+    @Test
+    void botCommitOnFeatureBranchDoesNotSkipOrUpdateChartVersion() {
+        featureBranch()
+        author = 'raulstechtips-jenkins[bot]'
+        runPipeline()
+        assertFalse(calls*.name.contains('updateChartVersion'))
         assertTrue(leafStages().contains('Render'))
         assertJobStatusSuccess()
     }
@@ -354,11 +345,11 @@ class ClusterConfigurablePipelineTest extends DeclarativePipelineTest {
     void pullRequestNeverDeploysToArgoOrTriggersReleaseCommitSkip() {
         binding.getVariable('env').CHANGE_ID = '42'
         binding.getVariable('env').CHANGE_BRANCH = 'bugfix/ABC-1'
-        subject = 'release: 1.3.0'
-        chartVersion = '1.3.0'
+        author = 'raulstechtips-jenkins[bot]'
         runPipeline()
         assertTrue(leafStages().contains('Render'))
         assertFalse(calls*.name.contains('argoDeploy'))
+        assertFalse(calls*.name.contains('updateChartVersion'))
         assertJobStatusSuccess()
     }
 
@@ -451,7 +442,7 @@ class ClusterConfigurablePipelineTest extends DeclarativePipelineTest {
         assertAgentStructure()
         assertEquals(['Checkout', 'Render', 'Early checks', 'Helm test', 'Build image',
             'Unit test', 'Trivy image scan', 'Package and upload chart', 'Trivy chart scan',
-            'Helm clean install', 'Helm install', 'Argo deploy', 'Release'],
+            'Helm clean install', 'Helm install', 'Argo deploy', 'Update chart version', 'Release'],
             declaration.stages['Pipeline'].stages.keySet() as List)
         assertEquals(['Trivy secret scan', 'Trivy Dockerfile scan', 'Opengrep scan'],
             declaration.stages['Pipeline'].stages['Early checks'].parallel.stages.keySet() as List)

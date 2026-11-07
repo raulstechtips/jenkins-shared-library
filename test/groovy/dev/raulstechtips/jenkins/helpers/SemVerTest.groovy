@@ -30,6 +30,29 @@ class SemVerTest {
     }
 
     @Test
+    void bumpsMinorAndResetsPatchWithoutMutatingOriginal() {
+        def version = SemVer.parse('1.9.7')
+        assertEquals('1.10.0', version.bumpMinor().toString())
+        assertEquals('0.1.0', SemVer.parse('0.0.0').bumpMinor().toString())
+        assertEquals('1.9.7', version.toString())
+    }
+
+    @Test
+    void highestReleaseTagIgnoresPrefixPrereleaseAndPeeledTags() {
+        String output = 'a\trefs/tags/1.2.0\nb\trefs/tags/1.9.0\nc\trefs/tags/1.9.0^{}\n' +
+            'd\trefs/tags/1.9.9-rc1\ne\trefs/tags/v9.0.0\nf\trefs/tags/1.3.0\n' +
+            'g\trefs/tags/1.9.10\nh\trefs/tags/1.9.9\n'
+        assertEquals('1.9.10', SemVer.highestReleaseTag(output))
+    }
+
+    @Test
+    void highestReleaseTagIsNullWithoutRelease() {
+        assertNull(SemVer.highestReleaseTag(''))
+        assertNull(SemVer.highestReleaseTag(null))
+        assertNull(SemVer.highestReleaseTag('a\trefs/tags/v1.0.0\nb\trefs/tags/1.0.0-rc1\n'))
+    }
+
+    @Test
     void rejectsMissingPatch() {
         assertThrows(IllegalArgumentException) { SemVer.parse('1.0') }
     }

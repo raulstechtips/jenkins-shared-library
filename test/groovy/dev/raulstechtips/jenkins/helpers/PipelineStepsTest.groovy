@@ -72,6 +72,11 @@ class PipelineStepsTest {
             !cfg.skipAll && cfg['pipeline-steps']['argo-deploy'] &&
                 ((env.BRANCH_NAME == 'main' && !env.CHANGE_ID) || cfg.releaseVersion)
         },
+        // Update chart version (DEVSECOPS-191): a main push with helm-package-upload on.
+        'chart-version-commit': { Map cfg, Map env ->
+            !cfg.skipAll && cfg['pipeline-steps']['helm-package-upload'] &&
+                env.BRANCH_NAME == 'main' && !env.CHANGE_ID && !cfg.releaseVersion
+        },
         // Release: old when expression, beforeAgent absent.
         'release': { Map cfg, Map env ->
             !cfg.skipAll && cfg.releaseVersion
@@ -101,7 +106,8 @@ class PipelineStepsTest {
         'trivy-chart-scan': ['trivy-scan', 'helm-package-upload'],
         'helm-clean-install': ['helm-clean-install'],
         'helm-install': ['helm-install', 'helm-clean-install'],
-        'argo-deploy': ['argo-deploy']
+        'argo-deploy': ['argo-deploy'],
+        'chart-version-commit': ['helm-package-upload']
     ]
 
     @TestFactory

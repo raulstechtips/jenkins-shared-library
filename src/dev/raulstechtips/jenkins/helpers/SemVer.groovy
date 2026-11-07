@@ -44,6 +44,38 @@ class SemVer implements Serializable, Comparable<SemVer> {
     }
 
     /**
+     * Returns a new version with the minor number increased by one and the patch number set to 0.
+     *
+     * @return the bumped version
+     */
+    @NonCPS
+    SemVer bumpMinor() {
+        new SemVer(major, minor + BigInteger.ONE, BigInteger.ZERO)
+    }
+
+    /**
+     * Returns the highest X.Y.Z tag in git ls-remote --tags output. Tags with a prefix or a
+     * pre-release part, and peeled ^{} lines, are ignored.
+     *
+     * @param output the git ls-remote --tags output
+     * @return the highest release tag, or null when there is none
+     */
+    @NonCPS
+    static String highestReleaseTag(String output) {
+        String highest = null
+        for (String line : (output ?: '').readLines()) {
+            def match = line =~ /^\S+\s+refs\/tags\/([0-9]+[.][0-9]+[.][0-9]+)$/
+            if (match.matches()) {
+                String tag = match.group(1)
+                if (highest == null || parse(tag).compareTo(parse(highest)) > 0) {
+                    highest = tag
+                }
+            }
+        }
+        highest
+    }
+
+    /**
      * Compares by major, then minor, then patch number.
      *
      * @param other the version to compare with

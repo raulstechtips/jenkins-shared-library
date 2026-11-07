@@ -1,6 +1,6 @@
+import dev.raulstechtips.jenkins.helpers.JenkinsBot
 import dev.raulstechtips.jenkins.helpers.PipelineSteps
 import dev.raulstechtips.jenkins.helpers.RegistryCatalog
-import dev.raulstechtips.jenkins.helpers.SemVer
 
 /**
  * Runs the declarative pipeline for a cluster repository.
@@ -9,20 +9,20 @@ import dev.raulstechtips.jenkins.helpers.SemVer
  * and runs the stages that pipeline-steps turns on: checkout and version, chart render, the Trivy
  * secret, Trivy Dockerfile and opengrep scans in parallel, Helm test, image build, Trivy image
  * scan, chart package and upload, Trivy chart scan, Helm clean install or Helm install, Argo
- * deploy, and release. Most stages run on the generic agent merged with the library pod. Image
+ * deploy, chart version update, and release. Most stages run on the generic agent merged with the library pod. Image
  * build runs on the builder agent and the Helm installs on the deployer agent. Unit test runs
  * test-command in the shell container. The Helm installs never run on main or in a release run, and
- * Argo deploy runs only on a main push or in a release run. On a non-PR main build with
- * RELEASE_VERSION empty, Checkout compares the last commit subject with "release: " plus the valid
- * version from charts/Chart.yaml. An exact match marks the build NOT_BUILT and skips every stage
- * after Checkout. Files under .pipeline/reports are archived. The build times out after 60 minutes
+ * Argo deploy runs only on a main push or in a release run. The chart version update runs only on
+ * a main push with helm-package-upload on: it commits the build version to charts/Chart.yaml as the
+ * Jenkins bot and pushes it to main. On a non-PR main build with RELEASE_VERSION empty, when the
+ * last commit author is the Jenkins bot (a chart version or release commit), Checkout marks the
+ * build NOT_BUILT and skips every stage after Checkout. Files under .pipeline/reports are archived. The build times out after 60 minutes
  * and builds do not run concurrently.
  *
  * The RELEASE_VERSION parameter (X.Y.Z, main only) starts a release run through releasePipeline.
  *
  * @throws error (fails the build) when RELEASE_VERSION is set on a branch other than main or on a
- *     pull request, or when charts/Chart.yaml has no X.Y.Z version on a main push. Each step raises its
- *     own errors.
+ *     pull request. Each step raises its own errors.
  */
 def call() {
     def cfg = loadProjectConfig(type: 'cluster')
@@ -64,17 +64,11 @@ def call() {
                                 cfg.skipAll = false
                                 currentBuild.description = cfg['project-description']
                                 if (!cfg.releaseVersion && env.BRANCH_NAME == 'main' && !env.CHANGE_ID) {
-                                    String subject = sh(script: 'git log -1 --pretty=%s', returnStdout: true).trim()
-                                    String version = readYaml(text: readFile('charts/Chart.yaml'))?.version as String
-                                    try {
-                                        SemVer.parse(version)
-                                    } catch (IllegalArgumentException ignored) {
-                                        error('Version file charts/Chart.yaml must contain X.Y.Z')
-                                    }
-                                    if (subject == 'release: ' + version) {
+                                    String author = sh(script: 'git log -1 --pretty=%an', returnStdout: true).trim()
+                                    if (author == JenkinsBot.NAME) {
                                         cfg.skipAll = true
                                         currentBuild.result = 'NOT_BUILT'
-                                        currentBuild.description = "Release commit ${version}: already built by the release run."
+                                        currentBuild.description = "Commit by ${author}: nothing to build."
                                     }
                                 }
                                 echo "Steps for this build (${cfg.buildKind}): " + PipelineSteps.plan(cfg, [
@@ -82,7 +76,7 @@ def call() {
                                     'trivy-dockerfile-scan', 'opengrep-scan', 'helm-test',
                                     'build-docker-image', 'unit-test', 'trivy-image-scan',
                                     'helm-package-upload', 'trivy-chart-scan', 'helm-clean-install',
-                                    'helm-install', 'argo-deploy', 'release'
+                                    'helm-install', 'argo-deploy', 'chart-version-commit', 'release'
                                 ]).join(', ')
                                 if (!cfg.skipAll) {
                                     cfg.version = computeVersion(cfg)
@@ -237,6 +231,14 @@ def call() {
                         }
                         steps {
                             argoDeploy(cfg)
+                        }
+                    }
+                    stage('Update chart version') {
+                        when {
+                            expression { PipelineSteps.shouldRun(cfg, 'chart-version-commit') }
+                        }
+                        steps {
+                            updateChartVersion(cfg)
                         }
                     }
                     stage('Release') {

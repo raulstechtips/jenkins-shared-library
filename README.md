@@ -176,7 +176,7 @@ Put the flags under `pipeline-steps`. Every flag is `false` by default.
 | `build` | `runBuildCommand` | java only | all |
 | `unit-test` | `runTestCommand` | both | all |
 | `build-docker-image` | `buildDockerImage` | both | all |
-| `helm-package-upload` | `helmPackageUpload` | both | all |
+| `helm-package-upload` | `helmPackageUpload`, and `updateChartVersion` on `main` builds (cluster pipeline only) | both | all |
 | `helm-install` | `helmInstall` | both | Never on `main`. Never in a release run. Skipped when `helm-clean-install` is also true. |
 | `helm-clean-install` | `helmCleanInstall` | both | Never on `main`. Never in a release run. |
 | `argo-deploy` | `argoDeploy` | both | Only on `main` builds and in release runs. A PR build never deploys. |
@@ -200,7 +200,7 @@ After all stages, the build archives `.pipeline/reports/**`.
 
 ### clusterConfigurablePipeline
 
-1. `Checkout`. Runs `checkout scm`. Then it applies the release-commit skip rule (see below). Else it calculates the version, sets it as the build name, and runs `releasePipeline.prepare` in a release run.
+1. `Checkout`. Runs `checkout scm`. Then it applies the bot-commit skip rule (see below). Else it calculates the version, sets it as the build name, and runs `releasePipeline.prepare` in a release run.
 2. `Render`. Runs when `charts/Chart.yaml` exists. Runs `renderChart`. With `trivy-scan`, it also collects the upstream images from the render.
 3. `Early checks`, in parallel: `Trivy secret scan` (`trivy-scan`), `Trivy Dockerfile scan` (`trivy-scan`) and `Opengrep scan` (`opengrep-scan`).
 4. `Helm test` (`helm-test`).
@@ -211,16 +211,17 @@ After all stages, the build archives `.pipeline/reports/**`.
 9. `Trivy chart scan`. Runs when `trivy-scan` and `helm-package-upload` are both true.
 10. `Helm clean install` (`helm-clean-install`) or `Helm install` (`helm-install`). Not on `main`, not in a release run. Runs on a pod from the `deployer` template.
 11. `Argo deploy` (`argo-deploy`). Only on a `main` build or in a release run.
-12. `Release`. Only in a release run. Runs `releasePipeline.finish`.
+12. `Update chart version`. Only on a `main` build, when `helm-package-upload` is true. Runs `updateChartVersion` (see below).
+13. `Release`. Only in a release run. Runs `releasePipeline.finish`.
 
 ### javaConfigurablePipeline
 
-1. `Checkout`. The same as the cluster pipeline. The version file is `gradle.properties`.
+1. `Checkout`. The same as the cluster pipeline. The version file is `gradle.properties`. Only a release run writes it.
 2. `Render`. The same as the cluster pipeline.
 3. `Early checks`, in parallel: `Trivy scan` (`trivy-scan`, the secret scan and then the Dockerfile scan) and `Opengrep scan` (`opengrep-scan`).
 4. `Build` (`build`). Runs `build-command` in the `jdk` container.
 5. `Unit test` (`unit-test`). Runs `test-command` in the `jdk` container.
-6. `Helm test`, `Build image`, `Trivy image scan`, `Package and upload chart`, `Trivy chart scan`, `Helm clean install` or `Helm install`, `Argo deploy` and `Release`. These have the same rules as in the cluster pipeline.
+6. `Helm test`, `Build image`, `Trivy image scan`, `Package and upload chart`, `Trivy chart scan`, `Helm clean install` or `Helm install`, `Argo deploy` and `Release`. These have the same rules as in the cluster pipeline. The java pipeline has no `Update chart version` stage.
 
 ### Image-scan gate
 
@@ -233,14 +234,29 @@ When neither exists, the stage is skipped.
 For a built image, the scan target is `<image-prefix of the first publish target>/<image name>:<version>@<digest>`.
 Images that start with an `image-prefix` of a registry in this library aren't scanned as upstream images.
 
-### Release-commit skip
+### Update chart version
 
-A release run pushes a commit `release: <v>` to `main`.
-That push starts a new `main` build.
-The new build must not build the same version again.
-So, on a `main` build without `RELEASE_VERSION`, `Checkout` compares the last commit subject with `release: <version file value>`.
-When they're equal, the build sets the result `NOT_BUILT` and the description `Release commit <v>: already built by the release run.`
+After a `main` build publishes the chart, `updateChartVersion` writes the build version to `charts/Chart.yaml`.
+Thus `charts/Chart.yaml` on `main` always names a chart that exists in the registry.
+In the `tools` container, it:
+
+1. Sets `version` in `charts/Chart.yaml` to the build version with `yq`.
+2. Commits only `charts/Chart.yaml` with the message `chore: set chart version to <v>`. The author is `raulstechtips-jenkins[bot]`.
+3. Pushes the commit to `main` with the `github-app` credentials.
+
+When the commit or the push fails (for example, when `main` moved during the build), the build logs a warning and does not fail.
+The next `main` build writes a newer version.
+The GitHub App must be on the bypass list of the `main` ruleset of the repo.
+
+### Bot-commit skip
+
+The bot pushes commits to `main`: `chore: set chart version to <v>` and `release: <v>`.
+Each push starts a new `main` build.
+That build must not run, or the chart version commit would start a loop.
+So, on a `main` build without `RELEASE_VERSION`, `Checkout` reads the author of the last commit.
+When the author is `raulstechtips-jenkins[bot]`, the build sets the result `NOT_BUILT` and the description `Commit by raulstechtips-jenkins[bot]: nothing to build.`
 Every later stage is skipped.
+Branch builds, PR builds and release runs never skip.
 
 ### Agent stages
 
@@ -250,15 +266,14 @@ Each of these stages runs its own `checkout scm`.
 
 ## 6. Version rules
 
-The version file is:
+A build that isn't a release reads the latest release from Git tags with `latestRelease`.
+It runs `git ls-remote --tags origin` with the `github-app` credentials and takes the highest `X.Y.Z` tag.
+Tags with a prefix (`v1.0.0`) or a pre-release part (`1.0.0-rc1`) are ignored.
+When there is no release tag, the latest release is `0.0.0`.
 
-- `charts/Chart.yaml` (key `version`) for the cluster pipeline;
-- `gradle.properties` (line `version=X.Y.Z`) for the java pipeline.
-
-The value must be `X.Y.Z`. Otherwise the build stops with `Version file <path> must contain X.Y.Z`.
-
-A build that isn't a release uses the base `X.Y.(Z+1)`.
-The library doesn't read Git tags for this.
+The base is the latest release with the minor number increased by one and the patch number set to `0`: `X.(Y+1).0`.
+For example, `0.0.0` gives `0.1.0`, and `1.2.3` gives `1.3.0`.
+The version files (`charts/Chart.yaml` and `gradle.properties`) are not read.
 
 The build kind sets the format:
 
@@ -280,13 +295,13 @@ Any other name stops the build with this error: `Branch "<name>" must be <type>/
 
 Examples:
 
-| Version file | Build | Result |
+| Latest release tag | Build | Result |
 | --- | --- | --- |
-| `1.0.0` | `main`, SHA `0067101`, build 13 | `1.0.1-main-0067101-13` |
-| `1.2.0` | branch `feature/DEVSECOPS-70-x`, SHA `e4f5a6b`, build 3 | `1.2.1-feature-devsecops-70-e4f5a6b-3` |
-| `1.2.0` | PR from `bugfix/ABC-1`, head `a1b2c3d`, base `9f8e7d6`, build 2 | `1.2.1-bugfix-abc-1-a1b2c3d-9f8e7d6-2` |
+| none | `main`, SHA `0067101`, build 13 | `0.1.0-main-0067101-13` |
+| `1.0.0` | `main`, SHA `0067101`, build 13 | `1.1.0-main-0067101-13` |
+| `1.2.0` | branch `feature/DEVSECOPS-70-x`, SHA `e4f5a6b`, build 3 | `1.3.0-feature-devsecops-70-e4f5a6b-3` |
+| `1.2.0` | PR from `bugfix/ABC-1`, head `a1b2c3d`, base `9f8e7d6`, build 2 | `1.3.0-bugfix-abc-1-a1b2c3d-9f8e7d6-2` |
 | `1.2.0` | branch `wip/test` | error: branch name |
-| `1.0` | any | error: version file |
 | any | release run with `RELEASE_VERSION=1.3.0` | `1.3.0` |
 
 ## 7. Release
@@ -304,8 +319,8 @@ Examples:
 In `Checkout`, `releasePipeline.prepare` runs in the `tools` container. It does these checks:
 
 - `RELEASE_VERSION` must be `X.Y.Z`.
-- `RELEASE_VERSION` must be greater than the version file value.
 - The tag must not exist on `origin`.
+- `RELEASE_VERSION` must be greater than the highest `X.Y.Z` tag on `origin` (`0.0.0` when there is no release). The version file is not compared, because on `main` it holds the last build version.
 - `CHANGELOG.md` must exist, and `[Unreleased]` must have entries.
 
 A failed check stops the build with the reason.
