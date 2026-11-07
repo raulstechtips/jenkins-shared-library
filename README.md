@@ -144,11 +144,15 @@ project-config:
 `argoDeploy` does these steps:
 
 1. It makes the list of targets. When `argo-deploy-targets` is empty, the only target is `project-name`.
-2. It checks every target file `argo/dev/<name>.yaml` before it opens a PR. Each file must exist and must have a source whose `chart` is the name in `charts/Chart.yaml`. When one file fails this check, the build fails and no PR is opened.
-3. For each target, in list order, it opens one PR. The branch is `argo-deploy/<name>-dev-<version>`, made from `main`. The title is `deploy(<name>): dev <version>`.
-4. It opens no PR for a target when its file already has the version, or when an open PR for its branch exists. It reuses the branch when the branch already exists on the remote.
+2. It checks every target file `argo/dev/<name>.yaml` before it makes a commit. Each file must exist and must have a source whose `chart` is the name in `charts/Chart.yaml`. When one file fails this check, the build fails and nothing is committed.
+3. It skips a target when its file already has the version.
+4. For each other target, in list order, it sets `targetRevision` of the chart source to the version and commits only that file to `main`. The author is `raulstechtips-jenkins[bot]`. The message is `deploy(<name>): dev <version>`, with the Jenkins build URL in the body.
+5. It pushes all the commits to `cluster-config` `main` in one push. No PR is opened.
+6. When `main` moved and the push is rejected, it fetches `main` again, makes the commits again and pushes. After 3 rejected pushes, the build fails.
 
-The step changes only the files in `argo/dev`. Merge each PR by hand.
+The step changes only the files in `argo/dev`.
+The GitHub App must be on the bypass list of the `cluster-config` `main` ruleset.
+Argo CD Applications with automatic sync deploy the new version at once.
 
 ### Validation rules
 
@@ -366,7 +370,7 @@ Each target has `host`, `image-prefix`, `chart-repo` and `credentials-id`.
 | --- | --- | --- |
 | `ghcr` | `ghcr-push` | Push and pull images and charts on GHCR. |
 | `harbor` | `harbor-push` | Push and pull images and charts on Harbor. |
-| (none) | `github-app` | Release tag check and push, and the Argo deploy PR to `cluster-config`. |
+| (none) | `github-app` | Release tag check and push, the latest release lookup, the chart version commit, and the Argo deploy commit to `cluster-config`. |
 
 Each credential is a Jenkins "username with password" credential.
 `withRegistryLogin(target) { ... }` binds the credential of a target as `REG_USER` and `REG_PASS`.

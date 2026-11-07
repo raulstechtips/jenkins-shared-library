@@ -1,6 +1,6 @@
 /**
- * Opens pull requests in cluster-config that move the project's dev Argo CD apps to this build's
- * chart version.
+ * Commits the project's dev Argo CD apps at this build's chart version straight to cluster-config
+ * main.
  *
  * The targets are the names in argo-deploy-targets. When that list is empty, the only target is
  * project-name. A target NAME is the file argo/dev/NAME.yaml.
@@ -8,15 +8,16 @@
  * In the tools container, with the github-app credentials, it clones cluster-config main into
  * .pipeline/cluster-config. First it checks every target file: the file must exist and have a
  * source whose chart is the name in charts/Chart.yaml. When one file fails, the build fails before
- * any PR is opened. Then, for each target in list order, it sets that source's targetRevision to
- * cfg.version on the branch argo-deploy/NAME-dev-VERSION, made from main, and opens one PR. It
- * opens no PR for a target when its file already has that version or an open PR exists for its
- * branch, and it reuses the branch when it already exists on the remote. Each PR is merged by hand.
+ * any commit. A target whose file already has cfg.version is skipped. For each other target, in
+ * list order, it sets that source's targetRevision to cfg.version and commits only that file as the
+ * Jenkins bot, with the message "deploy(NAME): dev VERSION". Then it pushes all commits to main in
+ * one push. When main moved and the push is rejected, it fetches main again, makes the commits
+ * again and pushes, up to 3 attempts. No pull request is opened.
  *
  * @param cfg the loaded config. Reads project-name, argo-deploy-targets and version.
  * @throws error (fails the build) when a target file is missing, when no source in a target file
- *     uses the chart, when an edit is not exactly one changed line, or when a git, yq, curl or jq
- *     command fails
+ *     uses the chart, when an edit is not exactly one changed line, when the push fails 3 times, or
+ *     when a git or yq command fails
  */
 def call(Map cfg) {
     String chart = readYaml(file: 'charts/Chart.yaml').name
@@ -50,81 +51,70 @@ git -C .pipeline/cluster-config remote set-url origin https://github.com/raulste
                     }
                     current[target] = revision
                 }
+                List<String> pending = []
                 for (String target : targets) {
-                    String file = "argo/dev/${target}.yaml"
                     if (current[target] == version) {
-                        echo "${file} is already at ${version}. No PR."
-                        continue
-                    }
-                    withEnv(["FILE=${file}", "BRANCH=argo-deploy/${target}-dev-${version}",
-                        "TITLE=deploy(${target}): dev ${version}"]) {
-                        deployTarget(file)
+                        echo "argo/dev/${target}.yaml is already at ${version}. No commit."
+                    } else {
+                        pending.add(target)
                     }
                 }
+                if (pending.empty) {
+                    return
+                }
+                sh '''git config user.name 'raulstechtips-jenkins[bot]'
+git config user.email 'raulstechtips-jenkins[bot]@users.noreply.github.com'
+'''
+                for (int attempt = 1; attempt <= 3; attempt++) {
+                    if (attempt > 1) {
+                        echo "cluster-config main moved. Attempt ${attempt} of 3."
+                        withCredentials([usernamePassword(credentialsId: 'github-app',
+                            usernameVariable: 'GH_USER', passwordVariable: 'GH_TOKEN')]) {
+                            sh '''set +x
+set -eu
+git fetch --depth 1 "https://x-access-token:$GH_TOKEN@github.com/raulstechtips/cluster-config.git" main
+git reset --hard FETCH_HEAD
+'''
+                        }
+                    }
+                    for (String target : pending) {
+                        String file = "argo/dev/${target}.yaml"
+                        withEnv(["FILE=${file}", "TITLE=deploy(${target}): dev ${version}"]) {
+                            commitTarget(file)
+                        }
+                    }
+                    int status
+                    withCredentials([usernamePassword(credentialsId: 'github-app',
+                        usernameVariable: 'GH_USER', passwordVariable: 'GH_TOKEN')]) {
+                        status = sh(script: '''set +x
+git push "https://x-access-token:$GH_TOKEN@github.com/raulstechtips/cluster-config.git" HEAD:refs/heads/main
+''', returnStatus: true)
+                    }
+                    if (status == 0) {
+                        echo "Pushed ${pending.size()} deploy commit(s) for ${version} to cluster-config main."
+                        return
+                    }
+                }
+                error("Could not push the deploy commits for ${version} to cluster-config main after 3 attempts.")
             }
         }
     }
 }
 
 /**
- * Opens the PR for one target file, unless an open PR for its branch exists.
+ * Sets the chart source's targetRevision in one target file and commits only that file.
  *
- * Runs in the cluster-config clone with FILE, BRANCH, TITLE, CHART and VERSION in the environment.
- * A new branch is made from main, so each PR changes only its own file.
+ * Runs in the cluster-config clone with FILE, TITLE, CHART and VERSION in the environment.
  *
  * @param file the target file, the same value as FILE
+ * @throws error (fails the build) when the edit is not exactly one changed line in file
  */
-void deployTarget(String file) {
-    String existingPr
-    withCredentials([usernamePassword(credentialsId: 'github-app',
-        usernameVariable: 'GH_USER', passwordVariable: 'GH_TOKEN')]) {
-        existingPr = sh(script: '''set +x
-set -eu
-response=$(curl -fsS -H "Authorization: Bearer $GH_TOKEN" "https://api.github.com/repos/raulstechtips/cluster-config/pulls?head=raulstechtips:$BRANCH&state=open")
-printf '%s' "$response" | jq -r 'if type == "array" then (.[0].html_url // empty) else error("Expected PR array") end'
-''', returnStdout: true).trim()
+void commitTarget(String file) {
+    sh '''yq -i '(.spec.sources[] | select(.chart == strenv(CHART))).targetRevision = strenv(VERSION)' "$FILE"'''
+    String numstat = sh(script: 'git diff --numstat', returnStdout: true)
+    String expected = "1\t1\t${file}"
+    if (numstat != expected && numstat != expected + '\n') {
+        error("Expected exactly one targetRevision change in ${file}; got: ${numstat}")
     }
-    if (existingPr) {
-        echo existingPr
-        return
-    }
-    String remoteBranch = sh(script: 'git ls-remote --heads origin "$BRANCH"',
-        returnStdout: true).trim()
-    if (remoteBranch) {
-        sh '''set -eu
-git fetch --depth 1 origin "$BRANCH"
-git checkout -B "$BRANCH" FETCH_HEAD
-'''
-    } else {
-        sh 'git checkout -b "$BRANCH" main'
-        sh '''yq -i '(.spec.sources[] | select(.chart == strenv(CHART))).targetRevision = strenv(VERSION)' "$FILE"'''
-        String numstat = sh(script: 'git diff --numstat', returnStdout: true)
-        String expected = "1\t1\t${file}"
-        if (numstat != expected && numstat != expected + '\n') {
-            error("Expected exactly one targetRevision change in ${file}; got: ${numstat}")
-        }
-        sh '''set -eu
-git config user.name 'raulstechtips-jenkins[bot]'
-git config user.email 'raulstechtips-jenkins[bot]@users.noreply.github.com'
-git commit -m "$TITLE" -- "$FILE"
-'''
-        withCredentials([usernamePassword(credentialsId: 'github-app',
-            usernameVariable: 'GH_USER', passwordVariable: 'GH_TOKEN')]) {
-            sh '''set +x
-set -eu
-git push "https://x-access-token:$GH_TOKEN@github.com/raulstechtips/cluster-config.git" "HEAD:refs/heads/$BRANCH"
-'''
-        }
-    }
-    String prUrl
-    withCredentials([usernamePassword(credentialsId: 'github-app',
-        usernameVariable: 'GH_USER', passwordVariable: 'GH_TOKEN')]) {
-        prUrl = sh(script: '''set +x
-set -eu
-payload=$(jq -n --arg title "$TITLE" --arg head "$BRANCH" --arg body "Opened by Jenkins build $BUILD_URL. Merge by hand." '{title: $title, head: $head, base: "main", body: $body}')
-response=$(curl -fsS -X POST https://api.github.com/repos/raulstechtips/cluster-config/pulls -H "Authorization: Bearer $GH_TOKEN" -H 'Content-Type: application/json' --data "$payload")
-printf '%s' "$response" | jq -er '.html_url | select(type == "string" and length > 0)'
-''', returnStdout: true).trim()
-    }
-    echo prUrl
+    sh 'git commit -m "$TITLE" -m "Jenkins build: $BUILD_URL" -- "$FILE"'
 }
