@@ -6,12 +6,12 @@ import com.cloudbees.groovy.cps.NonCPS
 class HelmInstallCommands implements Serializable {
 
     /**
-     * Returns the shell commands that install or upgrade the chart in charts/.
+     * Returns the shell commands to run from charts/ to install or upgrade the chart.
      *
      * In order: when helm-image-tag-path and digest are both set, a yq command that writes
-     * version@digest to that path in charts/values.yaml; a yq command that sets the build version
-     * in charts/Chart.yaml; a helm repo add for each chart dependency
-     * with an https:// repository; helm dependency build charts; and helm upgrade --install of
+     * version@digest to that path in values.yaml; a yq command that sets the build version
+     * in Chart.yaml; a helm repo add for each chart dependency
+     * with an https:// repository; helm dependency build .; and helm upgrade -i of
      * project-name in project-namespace, with one -f per helm-overrides entry, --wait and a 10
      * minute timeout. Every value is quoted with ShellQuote.
      *
@@ -34,9 +34,9 @@ class HelmInstallCommands implements Serializable {
                 throw new IllegalArgumentException("Invalid image digest '${digest}'")
             }
             String tag = "${cfg.version}@${digest}"
-            commands << ("TAG=${ShellQuote.quote(tag)} yq -i ${ShellQuote.quote(tagPath + ' = strenv(TAG)')} charts/values.yaml".toString())
+            commands << ("TAG=${ShellQuote.quote(tag)} yq -i ${ShellQuote.quote(tagPath + ' = strenv(TAG)')} values.yaml".toString())
         }
-        commands << ("CHART_VERSION=${ShellQuote.quote(cfg.version.toString())} yq -i '.version = strenv(CHART_VERSION)' charts/Chart.yaml".toString())
+        commands << ("CHART_VERSION=${ShellQuote.quote(cfg.version.toString())} yq -i '.version = strenv(CHART_VERSION)' Chart.yaml".toString())
         List dependencies = (chart != null && chart['dependencies']) ? (chart['dependencies'] as List) : []
         for (int i = 0; i < dependencies.size(); i++) {
             String repository = ((Map) dependencies[i])['repository']
@@ -44,13 +44,13 @@ class HelmInstallCommands implements Serializable {
                 commands << ("helm repo add dep${i} ${ShellQuote.quote(repository)}".toString())
             }
         }
-        commands << 'helm dependency build charts'
-        StringBuilder upgrade = new StringBuilder("helm upgrade --install ${ShellQuote.quote(name)} charts -n ${ShellQuote.quote(namespace)}")
+        commands << 'helm dependency build .'
+        StringBuilder upgrade = new StringBuilder("helm upgrade -i ${ShellQuote.quote(name)} .")
         List overrides = cfg['helm-overrides'] ? (cfg['helm-overrides'] as List) : []
         for (int i = 0; i < overrides.size(); i++) {
             upgrade.append(' -f ').append(ShellQuote.quote(overrides[i].toString()))
         }
-        upgrade.append(' --wait --timeout 10m')
+        upgrade.append(' -n ').append(ShellQuote.quote(namespace)).append(' --wait --timeout 10m')
         commands << upgrade.toString()
         return commands
     }

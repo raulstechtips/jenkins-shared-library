@@ -112,7 +112,7 @@ The table shows each key under `project-config`.
 | `publish-targets` | list of `ghcr`, `harbor` | `[]` | No duplicates. Must not be empty when `build-docker-image` or `helm-package-upload` is true. |
 | `test-command` | string | null | Required (not blank) when `unit-test` is true. One shell string. The library runs it with `sh` from the repo root. |
 | `build-command` | string | null | Java pipeline only. Required (not blank) when `build` is true. One shell string, run with `sh` from the repo root. |
-| `helm-overrides` | list of string | `[]` | Each item must be a non-empty path relative to the repo root. The library passes each path as `-f <path>` to `helm upgrade --install`, in list order. It also renders and, with `helm-test`, lints the combined overrides in that same order. |
+| `helm-overrides` | list of string | `[]` | Each item must be a non-empty path relative to `charts/`. The library passes each path as `-f <path>` to `helm upgrade -i` from `charts/`, in list order. It also renders and, with `helm-test`, lints the combined overrides in that same order. |
 | `argo-deploy-targets` | list of string | `[]` | Each item must match the `project-name` pattern. Maximum 53 characters. No duplicates. When the list isn't empty, `argoDeploy` uses only these names, and not `project-name`. See [Argo deploy targets](#argo-deploy-targets). |
 | `trivy-fail-on` | list of `CRITICAL`, `HIGH`, `MEDIUM`, `LOW`, `UNKNOWN` | `[]` | An empty list makes the Trivy image and config scans warn only. |
 | `opengrep-fail-on` | list of `ERROR`, `WARNING`, `INFO` | `[]` | An empty list makes opengrep warn only. |
@@ -280,13 +280,29 @@ the built image digest are set, the step also writes `<version>@<digest>` into
 `charts/values.yaml`.
 
 Both install steps pass all `helm-overrides` files together, in list order.
+They use Jenkins `dir('charts')` in the `kubectl` container. They read `Chart.yaml`,
+write `Chart.yaml` and, when needed, `values.yaml` there, then run
+`helm dependency build .`. The install command puts all `-f` arguments before
+`-n <namespace>`, followed by `--wait --timeout 10m`. Clean install first runs
+`helm uninstall <release> -n <namespace> --wait --ignore-not-found`.
+
+For example, with `project-name: redis`, `project-namespace: redis` and
+`helm-overrides: [overrides.yaml]`, keep the file at `charts/overrides.yaml`.
+The command runs from `charts/`:
+
+```sh
+helm upgrade -i redis . -f overrides.yaml -n redis --wait --timeout 10m
+```
+
+The library quotes each config value as one shell argument.
 `renderChart` checks that same combination and writes
 `.pipeline/render/deployment.yaml` when the list is not empty. With `helm-test`
 enabled, `helmLint` checks the combined overrides and `kubeconformCheck` validates
 the additional render. Default values and individual `charts/ci/*-values.yaml`
 files are still checked. An empty override list adds no extra render or lint run.
 
-For example, a repo can keep its deployment settings outside `charts/ci/`:
+Render and lint run from the repo root and add `charts/` to each override path.
+For example, a repo can keep its deployment settings in `charts/overrides/`:
 
 ```yaml
 project-config:
@@ -296,6 +312,8 @@ project-config:
 ```
 
 This is a config fragment; the repo must also supply the required project keys.
+For an existing config with `charts/` at the start of each override path, remove
+that prefix. Move any override files outside `charts/` into `charts/`.
 The render runs before the image build, so it validates the combined chart
 configuration, not the final generated image digest. An override can still
 replace an image tag written into `charts/values.yaml`.

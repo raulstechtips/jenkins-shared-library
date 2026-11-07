@@ -47,7 +47,7 @@ class HelmLintTest extends BasePipelineTest {
     @Test void lintsCombinedOverridesInDeploymentOrderWithQuotedPaths() {
         loadScript('vars/helmLint.groovy').call([chartPresent: true,
             'helm-overrides': ['overrides/common values.yaml', "overrides/it's;\$(touch PWNED).yaml"]])
-        assertEquals("helm lint --strict charts -f 'overrides/common values.yaml' -f 'overrides/it'\\''s;\$(touch PWNED).yaml'",
+        assertEquals("helm lint --strict charts -f 'charts/overrides/common values.yaml' -f 'charts/overrides/it'\\''s;\$(touch PWNED).yaml'",
             commands.last())
         assertEquals(4, commands.size())
     }
@@ -59,7 +59,7 @@ class HelmLintTest extends BasePipelineTest {
     @Test void combinedOverridesLintFailurePropagates() {
         helper.registerAllowedMethod('sh', [String]) { String command ->
             commands.add(command)
-            if (command.contains("'missing.yaml'")) {
+            if (command.contains("'charts/missing.yaml'")) {
                 throw new IllegalStateException('override lint failed')
             }
         }

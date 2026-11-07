@@ -20,7 +20,7 @@ def call(Map cfg) {
             sh "helm lint --strict charts -f ${ShellQuote.quote(file.path)}"
         }
         if (cfg['helm-overrides']) {
-            String overrides = cfg['helm-overrides'].collect { path -> ' -f ' + ShellQuote.quote(path) }.join('')
+            String overrides = cfg['helm-overrides'].collect { path -> ' -f ' + ShellQuote.quote('charts/' + path) }.join('')
             sh "helm lint --strict charts${overrides}"
         }
     }

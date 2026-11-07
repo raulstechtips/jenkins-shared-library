@@ -19,8 +19,9 @@ class ConfigValidator implements Serializable {
      * true and build-command when build is true; that publish-targets has no duplicates and is not
      * empty when build-docker-image or helm-package-upload is true; that each argo-deploy-targets
      * entry has the project-name format and that the list has no duplicates; the docker-image.name format
-     * when build-docker-image is true; that docker-image.dockerfile, docker-image.context and each
-     * helm-overrides entry are paths relative to the repo root; and that helm-image-tag-path starts
+     * when build-docker-image is true; that docker-image.dockerfile and docker-image.context are
+     * paths relative to the repo root and each helm-overrides entry is relative to charts/;
+     * and that helm-image-tag-path starts
      * with '.' and needs build-docker-image. When docker-image.name is not given, it defaults to
      * project-name.
      *
@@ -97,7 +98,7 @@ class ConfigValidator implements Serializable {
             }
             cfg['helm-overrides']?.eachWithIndex { String path, int index ->
                 if (path != null && !relativePath(path)) {
-                    errors.add("'project-config.helm-overrides[${index}]' must be a non-empty path relative to the repo root.")
+                    errors.add("'project-config.helm-overrides[${index}]' must be a non-empty path relative to charts/.")
                 }
             }
             String tagPath = cfg['helm-image-tag-path']

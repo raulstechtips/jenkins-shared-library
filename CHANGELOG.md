@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Resolve `helm-overrides` paths relative to `charts/` and run direct Helm installation from that directory, with override files before the namespace argument. Render and lint keep the combined override order from the repo root ([DEVSECOPS-190](https://raulstechtips.atlassian.net/browse/DEVSECOPS-190))
 - `argoDeploy` commits the new `targetRevision` straight to `cluster-config` `main` as the Jenkins bot, one commit for each target and one push, instead of opening a PR for each target. A rejected push is tried again, up to 3 times ([DEVSECOPS-191](https://raulstechtips.atlassian.net/browse/DEVSECOPS-191))
 - Calculate the build version from the highest `X.Y.Z` Git tag (`0.0.0` when there is no release) and increase the minor number, so the first build is `0.1.0-...`. The version files are no longer read for the build version ([DEVSECOPS-191](https://raulstechtips.atlassian.net/browse/DEVSECOPS-191))
 - On every `main` build where `charts/Chart.yaml` exists, commit the build version to `charts/Chart.yaml` as the Jenkins bot and push it to `main`. It has no flag. A failed push only logs a warning ([DEVSECOPS-191](https://raulstechtips.atlassian.net/browse/DEVSECOPS-191))

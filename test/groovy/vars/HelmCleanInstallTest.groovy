@@ -9,6 +9,7 @@ class HelmCleanInstallTest extends BasePipelineTest {
     private static final String DIGEST = 'sha256:' + ('a' * 64)
     private List calls
     private String current
+    private String directory
 
     @Override
     @BeforeEach
@@ -16,6 +17,7 @@ class HelmCleanInstallTest extends BasePipelineTest {
         super.setUp()
         calls = []
         current = null
+        directory = null
         binding.setVariable('scm', [:])
         helper.registerAllowedMethod('checkout', [Map]) { Map args -> calls << ['checkout', current, args] }
         helper.registerAllowedMethod('container', [String, Closure]) { String name, Closure body ->
@@ -27,15 +29,30 @@ class HelmCleanInstallTest extends BasePipelineTest {
                 current = previous
             }
         }
+        helper.registerAllowedMethod('dir', [String, Closure]) { String path, Closure body ->
+            assertEquals('kubectl', current)
+            assertEquals('charts', path)
+            String previous = directory
+            directory = path
+            try {
+                body.call()
+            } finally {
+                directory = previous
+            }
+        }
         helper.registerAllowedMethod('readYaml', [Map]) { Map args ->
-            assertEquals('charts/Chart.yaml', args.file)
+            assertEquals('charts', directory)
+            assertEquals('Chart.yaml', args.file)
             [name: 'demo', dependencies: [
                 [name: 'a', repository: 'https://charts.example.com/a'],
                 [name: 'b', repository: 'oci://ghcr.io/x'],
                 [name: 'c', repository: 'https://charts.example.com/c'],
                 [name: 'local', repository: 'file://../local']]]
         }
-        helper.registerAllowedMethod('sh', [String]) { String script -> calls << ['sh', current, script] }
+        helper.registerAllowedMethod('sh', [String]) { String script ->
+            assertEquals('charts', directory)
+            calls << ['sh', current, script]
+        }
     }
 
     private Map cfg(Map extra = [:]) {
@@ -57,10 +74,10 @@ class HelmCleanInstallTest extends BasePipelineTest {
     }
 
     private static final List INSTALL_PREFIX = [
-        "CHART_VERSION='1.2.3' yq -i '.version = strenv(CHART_VERSION)' charts/Chart.yaml",
+        "CHART_VERSION='1.2.3' yq -i '.version = strenv(CHART_VERSION)' Chart.yaml",
         "helm repo add dep0 'https://charts.example.com/a'",
         "helm repo add dep2 'https://charts.example.com/c'",
-        'helm dependency build charts'
+        'helm dependency build .'
     ]
     private static final String UNINSTALL = "helm uninstall 'demo' -n 'apps' --wait --ignore-not-found"
 
@@ -76,13 +93,13 @@ class HelmCleanInstallTest extends BasePipelineTest {
     void addsHttpsDependencyReposBuildsDependenciesAndUpgrades() {
         run(cfg())
         assertEquals([UNINSTALL] + INSTALL_PREFIX + [
-            "helm upgrade --install 'demo' charts -n 'apps' --wait --timeout 10m"], shCommands())
+            "helm upgrade -i 'demo' . -n 'apps' --wait --timeout 10m"], shCommands())
     }
 
     @Test
     void passesOverridesInListOrder() {
         run(cfg('helm-overrides': ['a', 'b']))
-        assertEquals("helm upgrade --install 'demo' charts -n 'apps' -f 'a' -f 'b' --wait --timeout 10m", shCommands().last())
+        assertEquals("helm upgrade -i 'demo' . -f 'a' -f 'b' -n 'apps' --wait --timeout 10m", shCommands().last())
     }
 
     @Test
@@ -94,21 +111,21 @@ class HelmCleanInstallTest extends BasePipelineTest {
     @Test
     void writesTagWhenPathSetAndDigestGiven() {
         run(cfg('helm-image-tag-path': '.image.tag'), DIGEST)
-        String write = "TAG='1.2.3@${DIGEST}' yq -i '.image.tag = strenv(TAG)' charts/values.yaml"
+        String write = "TAG='1.2.3@${DIGEST}' yq -i '.image.tag = strenv(TAG)' values.yaml"
         assertEquals([UNINSTALL] + [write] + INSTALL_PREFIX + [
-            "helm upgrade --install 'demo' charts -n 'apps' --wait --timeout 10m"], shCommands())
+            "helm upgrade -i 'demo' . -n 'apps' --wait --timeout 10m"], shCommands())
     }
 
     @Test
     void doesNotWriteTagWithoutDigest() {
         run(cfg('helm-image-tag-path': '.image.tag'))
-        assertFalse(shCommands().any { it.contains('charts/values.yaml') })
+        assertFalse(shCommands().any { it.contains('values.yaml') })
     }
 
     @Test
     void doesNotWriteTagWhenPathEmpty() {
         run(cfg(), DIGEST)
-        assertFalse(shCommands().any { it.contains('charts/values.yaml') })
+        assertFalse(shCommands().any { it.contains('values.yaml') })
     }
 
     @Test
@@ -133,14 +150,14 @@ class HelmCleanInstallTest extends BasePipelineTest {
     @Test
     void keepsOverrideWithSpaceAsOneQuotedArgument() {
         run(cfg('helm-overrides': ['my values.yaml', "it's;x.yaml"]))
-        assertEquals("helm upgrade --install 'demo' charts -n 'apps' -f 'my values.yaml' -f 'it'\\''s;x.yaml' --wait --timeout 10m",
+        assertEquals("helm upgrade -i 'demo' . -f 'my values.yaml' -f 'it'\\''s;x.yaml' -n 'apps' --wait --timeout 10m",
             shCommands().last())
     }
 
     @Test
     void acceptsQuotedKeyYqPath() {
         run(cfg('helm-image-tag-path': '.image["tag.name"]'), DIGEST)
-        assertEquals("TAG='1.2.3@${DIGEST}' yq -i '.image[\"tag.name\"] = strenv(TAG)' charts/values.yaml".toString(),
+        assertEquals("TAG='1.2.3@${DIGEST}' yq -i '.image[\"tag.name\"] = strenv(TAG)' values.yaml".toString(),
             shCommands().find { it.contains('yq') })
     }
 }

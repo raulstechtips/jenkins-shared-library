@@ -33,7 +33,7 @@ def call(Map cfg) {
             sh "helm template ${ShellQuote.quote(cfg['project-name'])} charts -n ${ShellQuote.quote(namespace)} -f ${ShellQuote.quote(file.path)} > ${ShellQuote.quote(".pipeline/render/ci-${basename}.yaml")}"
         }
         if (cfg['helm-overrides']) {
-            String overrides = cfg['helm-overrides'].collect { path -> ' -f ' + ShellQuote.quote(path) }.join('')
+            String overrides = cfg['helm-overrides'].collect { path -> ' -f ' + ShellQuote.quote('charts/' + path) }.join('')
             sh "helm template ${ShellQuote.quote(cfg['project-name'])} charts -n ${ShellQuote.quote(namespace)}${overrides} > '.pipeline/render/deployment.yaml'"
         }
         // Workspace-local completion marker, written after this render completes.

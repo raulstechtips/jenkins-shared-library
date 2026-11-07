@@ -4,8 +4,8 @@ import dev.raulstechtips.jenkins.helpers.HelmInstallCommands
  * Uninstalls the release and installs the chart again, so the branch build starts from a clean
  * release.
  *
- * It checks out the repo, reads charts/Chart.yaml and runs the HelmInstallCommands.cleanInstall
- * commands one by one in the kubectl container, so the pipelines call it on the deployer agent.
+ * It checks out the repo and enters charts/ in the kubectl container. There it reads Chart.yaml
+ * and runs the HelmInstallCommands.cleanInstall commands on the deployer agent.
  *
  * @param cfg the loaded config. Reads project-name, project-namespace, version, helm-image-tag-path
  *     and helm-overrides.
@@ -17,10 +17,12 @@ import dev.raulstechtips.jenkins.helpers.HelmInstallCommands
 def call(Map cfg, String digest = null) {
     checkout scm
     container('kubectl') {
-        Map chart = readYaml(file: 'charts/Chart.yaml')
-        List commands = new HelmInstallCommands().cleanInstall(cfg, chart, digest)
-        for (int i = 0; i < commands.size(); i++) {
-            sh commands[i]
+        dir('charts') {
+            Map chart = readYaml(file: 'Chart.yaml')
+            List commands = new HelmInstallCommands().cleanInstall(cfg, chart, digest)
+            for (int i = 0; i < commands.size(); i++) {
+                sh commands[i]
+            }
         }
     }
 }

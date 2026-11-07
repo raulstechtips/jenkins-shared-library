@@ -85,7 +85,7 @@ dependencies:
     @Test void rendersCombinedOverridesInDeploymentOrderWithQuotedPaths() {
         cfg['helm-overrides'] = ['overrides/common values.yaml', "overrides/it's;\$(touch PWNED).yaml"]
         loadScript('vars/renderChart.groovy').call(cfg)
-        assertEquals("helm template 'demo' charts -n 'team' -f 'overrides/common values.yaml' -f 'overrides/it'\\''s;\$(touch PWNED).yaml' > '.pipeline/render/deployment.yaml'",
+        assertEquals("helm template 'demo' charts -n 'team' -f 'charts/overrides/common values.yaml' -f 'charts/overrides/it'\\''s;\$(touch PWNED).yaml' > '.pipeline/render/deployment.yaml'",
             commands[-2])
         assertEquals('touch .pipeline/render/.complete', commands.last())
         assertEquals(4, commands.count { it.startsWith('helm template') })
