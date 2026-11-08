@@ -94,6 +94,14 @@ class ConfigValidatorTest {
     }
     @Test void tagPathMustStartWithDot() { invalid('invalid-tag-path', 'project-config.helm-image-tag-path') }
     @Test void overridePathsMustBeRelative() { invalid('absolute-override', 'project-config.helm-overrides') }
+    @Test void overridePathsStayInsideCharts() {
+        ['', '  ', '../overrides.yaml', 'ci/../../overrides.yaml'].each { String path ->
+            assertThrows(IllegalArgumentException) {
+                ConfigValidator.validate(['project-config': ['project-name': 'demo',
+                    'helm-overrides': [path]]], 'cluster')
+            }
+        }
+    }
     @Test void dockerfileMustBeRelative() { invalid('absolute-dockerfile', 'project-config.docker-image.dockerfile') }
     @Test void contextMustStayUnderRepositoryRoot() { invalid('parent-context', 'project-config.docker-image.context') }
     @Test void emptyRequiredCommandIsRejected() { invalid('empty-command', 'project-config.test-command') }
@@ -158,14 +166,14 @@ class ConfigValidatorTest {
             'publish-targets': ['ghcr', 'harbor'],
             'trivy-fail-on': ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'UNKNOWN'],
             'opengrep-fail-on': ['ERROR', 'WARNING', 'INFO'],
-            'helm-overrides': ['charts/values.yaml', 'charts/ci/all-on-values.yaml'],
+            'helm-overrides': ['overrides.yaml', 'ci/all-on-values.yaml'],
             'test-command': './test.sh',
             'build-command': './build.sh',
             'helm-image-tag-path': '.image.tag',
             'pipeline-steps': ['helm-install': true, 'helm-clean-install': true,
                 'unit-test': true, build: true, 'build-docker-image': true, 'helm-package-upload': true]
         ]], 'java')
-        assertEquals(['charts/values.yaml', 'charts/ci/all-on-values.yaml'], cfg['helm-overrides'])
+        assertEquals(['overrides.yaml', 'ci/all-on-values.yaml'], cfg['helm-overrides'])
         assertEquals(['ghcr', 'harbor'], cfg['publish-targets'])
     }
     @Test void acceptsArgoDeployTargetsInOrder() {

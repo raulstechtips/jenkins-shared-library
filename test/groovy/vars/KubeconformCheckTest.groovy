@@ -41,6 +41,12 @@ class KubeconformCheckTest extends BasePipelineTest {
         loadScript('vars/kubeconformCheck.groovy').call([chartPresent: true])
         assertTrue(commands.empty)
     }
+    @Test void validatesTheDeploymentRenderAlongsideDefaultAndCi() {
+        files.add([path: '.pipeline/render/deployment.yaml'])
+        loadScript('vars/kubeconformCheck.groovy').call([chartPresent: true])
+        assertEquals(3, commands.size())
+        assertTrue(commands.last().endsWith(" '.pipeline/render/deployment.yaml'"))
+    }
     @Test void missingChartDoesNothing() {
         loadScript('vars/kubeconformCheck.groovy').call([chartPresent: false])
         assertTrue(commands.empty)

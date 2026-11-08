@@ -124,6 +124,22 @@ kubeconform() {
         checkCiPath('helmLint', 'x$(: > injected)` : > injected`-values.yaml')
     }
 
+    @Test void combinedOverridePathsStayOrderedAndInertFromRepositoryRoot() {
+        List<String> paths = ['overrides.yaml', "owner's space.yaml",
+            'x; : > injected; #.yaml', 'x$(: > injected)` : > injected`.yaml']
+        cfg['helm-overrides'] = paths
+        ['renderChart', 'helmLint'].each { String step ->
+            commands.clear()
+            checkShell(step) { List calls, File workspace ->
+                List prefix = step == 'renderChart' ?
+                    ['helm', 'template', 'demo', 'charts', '-n', 'team'] :
+                    ['helm', 'lint', '--strict', 'charts']
+                assertEquals(prefix + paths.collect { ['-f', 'charts/' + it] }.flatten(),
+                    calls.last())
+            }
+        }
+    }
+
     private void checkRenderedPath(String name) {
         String path = ".pipeline/render/${name}"
         files = [[path: path, name: name]]

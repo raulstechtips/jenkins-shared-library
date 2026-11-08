@@ -36,6 +36,7 @@ class ConfigSchema implements Serializable {
             'project-namespace': [type: 'string', defaultValue: null],
             'publish-targets': [type: 'list', defaultValue: [], choices: ['ghcr', 'harbor']],
             'test-command': [type: 'string', defaultValue: null],
+            // Override paths are relative to charts/, in deployment order.
             'helm-overrides': [type: 'list', defaultValue: []],
             'argo-deploy-targets': [type: 'list', defaultValue: []],
             'trivy-fail-on': [type: 'list', defaultValue: [],

@@ -45,7 +45,7 @@ class HelmInstallCommandsTest {
     void overridePathWithSpaceIsOneArgument() {
         Map r = execute([new HelmInstallCommands().install(cfg('helm-overrides': ['my values.yaml']), [:], null).last()])
         assertEquals(0, r.exit)
-        assertEquals(['upgrade', '--install', 'demo', 'charts', '-n', 'apps', '-f', 'my values.yaml', '--wait', '--timeout', '10m'], r.lines)
+        assertEquals(['upgrade', '-i', 'demo', '.', '-f', 'my values.yaml', '-n', 'apps', '--wait', '--timeout', '10m'], r.lines)
     }
 
     @Test
@@ -53,8 +53,8 @@ class HelmInstallCommandsTest {
         List<String> paths = ['v.yaml; touch PWNED #', 'a$(touch PWNED2).yaml', 'q\'uote"x`touch PWNED3`.yaml', 'b.yaml']
         Map r = execute([new HelmInstallCommands().install(cfg('helm-overrides': paths), [:], null).last()])
         assertEquals(0, r.exit)
-        assertEquals(['upgrade', '--install', 'demo', 'charts', '-n', 'apps'] +
-            paths.collect { ['-f', it] }.flatten() + ['--wait', '--timeout', '10m'], r.lines)
+        assertEquals(['upgrade', '-i', 'demo', '.'] +
+            paths.collect { ['-f', it] }.flatten() + ['-n', 'apps', '--wait', '--timeout', '10m'], r.lines)
         assertEquals([], r.files)
     }
 
@@ -63,8 +63,45 @@ class HelmInstallCommandsTest {
         String path = ".a'; touch PWNED4; '"
         Map r = execute([new HelmInstallCommands().install(cfg('helm-image-tag-path': path), [:], DIGEST).first()])
         assertEquals(0, r.exit)
-        assertEquals(['-i', path + ' = strenv(TAG)', 'charts/values.yaml'], r.lines)
+        assertEquals(['-i', path + ' = strenv(TAG)', 'values.yaml'], r.lines)
         assertEquals([], r.files)
+    }
+
+    @Test
+    void chartVersionWithMetacharactersIsInert() {
+        Map r = execute([new HelmInstallCommands().install(
+            cfg(version: "1.2.3'; touch PWNED; '"), [:], null).first()])
+        assertEquals(0, r.exit)
+        assertEquals(['-i', '.version = strenv(CHART_VERSION)', 'Chart.yaml'], r.lines)
+        assertEquals([], r.files)
+    }
+
+    @Test
+    void writesBuildVersionWithoutChangingAppVersionWithRealYq() {
+        Process probe = null
+        try {
+            probe = new ProcessBuilder('yq', '--version').redirectErrorStream(true).start()
+            probe.inputStream.text
+        } catch (IOException ignored) {
+            // yq is not installed here
+        }
+        Assumptions.assumeTrue(probe != null && probe.waitFor() == 0, 'yq is not installed')
+        File dir = Files.createTempDirectory('helm-install-chart-version').toFile()
+        try {
+            new File(dir, 'charts').mkdirs()
+            new File(dir, 'charts/Chart.yaml').text = 'name: demo\nversion: 0.0.0\nappVersion: "7.4.0"\n'
+            String version = '0.1.0-feature-devsecops-190-abc1234-5'
+            String command = new HelmInstallCommands().install(cfg(version: version), [:], null).first()
+            Process process = new ProcessBuilder('/bin/sh', '-c', command).directory(new File(dir, 'charts')).redirectErrorStream(true).start()
+            String output = process.inputStream.text
+            assertEquals(0, process.waitFor(), output)
+            Map chart = new org.yaml.snakeyaml.Yaml().load(new File(dir, 'charts/Chart.yaml').text)
+            assertEquals(version, chart.version)
+            assertEquals('7.4.0', chart.appVersion)
+            assertEquals('demo', chart.name)
+        } finally {
+            dir.deleteDir()
+        }
     }
 
     @Test
@@ -82,7 +119,7 @@ class HelmInstallCommandsTest {
             new File(dir, 'charts').mkdirs()
             new File(dir, 'charts/values.yaml').text = 'image:\n  tag.name: old\n'
             String command = new HelmInstallCommands().install(cfg('helm-image-tag-path': '.image["tag.name"]'), [:], DIGEST).first()
-            Process process = new ProcessBuilder('/bin/sh', '-c', command).directory(dir).redirectErrorStream(true).start()
+            Process process = new ProcessBuilder('/bin/sh', '-c', command).directory(new File(dir, 'charts')).redirectErrorStream(true).start()
             process.inputStream.text
             assertEquals(0, process.waitFor())
             assertEquals('image:\n  tag.name: 1.2.3@' + DIGEST + '\n', new File(dir, 'charts/values.yaml').text)
