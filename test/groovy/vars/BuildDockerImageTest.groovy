@@ -15,7 +15,8 @@ class BuildDockerImageTest extends BasePipelineTest {
     private List<String> scopes
     private Map environment
     private String activeContainer
-    private List checkouts
+    private List workspaceEvents
+    private Map workspace
     private String digest
     private boolean executorFails
     private Map cfg
@@ -28,17 +29,25 @@ class BuildDockerImageTest extends BasePipelineTest {
         commands = []
         scopes = []
         environment = [:]
-        checkouts = []
+        workspaceEvents = []
+        workspace = ['stale-file': 'old']
         digest = 'sha256:' + 'a' * 64
         executorFails = false
         registries = new Yaml().load(new File('resources/dev/raulstechtips/jenkins/registries.yaml').text)
         cfg = ['project-name': 'example', version: '1.2.3',
             'publish-targets': ['ghcr', 'harbor'],
             'docker-image': [name: 'controller', dockerfile: 'plugins/Dockerfile', context: 'plugins']]
-        binding.setVariable('scm', [branch: 'test'])
-        helper.registerAllowedMethod('checkout', [Map]) { Map value ->
-            assertNull(activeContainer, 'Checkout needs the default git-capable container')
-            checkouts << value
+        helper.registerAllowedMethod('deleteDir', []) { ->
+            assertNull(activeContainer)
+            workspaceEvents << 'deleteDir'
+            workspace.clear()
+        }
+        helper.registerAllowedMethod('unstash', [String]) { String name ->
+            assertEquals('image-context', name)
+            assertTrue(workspace.isEmpty())
+            workspaceEvents << name
+            workspace.putAll(['gradle.properties': 'version=1.2.3',
+                'charts/Chart.yaml': 'version: 1.2.3', 'build/libs/app.jar': 'built application'])
         }
         helper.registerAllowedMethod('container', [String, Closure]) { String name, Closure body ->
             activeContainer = name
@@ -70,6 +79,11 @@ class BuildDockerImageTest extends BasePipelineTest {
         helper.registerAllowedMethod('sh', [String]) { String text ->
             commands << [text: text, container: activeContainer,
                 scopes: new ArrayList(scopes), environment: new LinkedHashMap(environment)]
+            if (text.contains('/kaniko/executor')) {
+                assertEquals('version=1.2.3', workspace['gradle.properties'])
+                assertEquals('built application', workspace['build/libs/app.jar'])
+                assertFalse(workspace.containsKey('stale-file'))
+            }
             if (executorFails && text.contains('/kaniko/executor')) {
                 throw new IllegalStateException('executor failed')
             }
@@ -86,7 +100,9 @@ class BuildDockerImageTest extends BasePipelineTest {
     @Test
     void buildsOnceToBothTargetsInsideNestedLoginsAndReturnsValidatedDigest() {
         assertEquals(digest, loadScript('vars/buildDockerImage.groovy').call(cfg))
-        assertEquals([[branch: 'test']], checkouts)
+        assertEquals(['deleteDir', 'image-context'], workspaceEvents)
+        assertEquals(['gradle.properties': 'version=1.2.3', 'charts/Chart.yaml': 'version: 1.2.3',
+            'build/libs/app.jar': 'built application'], workspace)
         List executors = commands.findAll { it.text.contains('/kaniko/executor') }
         assertEquals(1, executors.size())
         Map executor = executors[0]

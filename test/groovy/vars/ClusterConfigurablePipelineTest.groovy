@@ -84,6 +84,11 @@ class ClusterConfigurablePipelineTest extends DeclarativePipelineTest {
             assertEquals(binding.getVariable('scm'), scm)
             events << 'checkout'
         })
+        helper.registerAllowedMethod('stash', [Map], { Map args ->
+            assertEquals([name: 'image-context', includes: '**/*',
+                excludes: '.git,.git/**,.pipeline/**,.gradle/**', useDefaultExcludes: false], args)
+            record('stash', observedConfig)
+        })
         helper.registerAllowedMethod('archiveArtifacts', [Map], { Map args -> archives << args })
         helper.registerAllowedMethod('logRotator', [Map], { Map args -> args })
         helper.registerAllowedMethod('buildDiscarder', [Map], { Map args -> })
@@ -97,14 +102,15 @@ class ClusterConfigurablePipelineTest extends DeclarativePipelineTest {
             cfg.releaseVersion ?: '1.2.1-main-0067101-13'
         })
         ['renderChart', 'trivySecretScan', 'trivyDockerfileScan', 'opengrepScan',
-            'helmTest', 'trivyChartScan', 'argoDeploy', 'updateChartVersion'].each { String name ->
+            'helmTest', 'trivyChartScan', 'argoDeploy', 'updateChartVersion',
+            'helmPackageUpload', 'helmInstall', 'helmCleanInstall'].each { String name ->
             helper.registerAllowedMethod(name, [Map], { Map cfg -> record(name, cfg) })
         }
         helper.registerAllowedMethod('buildDockerImage', [Map], { Map cfg ->
             record('buildDockerImage', cfg)
             digest
         })
-        ['trivyImageScan', 'helmPackageUpload', 'helmInstall', 'helmCleanInstall',
+        ['trivyImageScan',
             'runTestCommand'].each { String name ->
             helper.registerAllowedMethod(name, [Map, String], { Map cfg, String argument ->
                 record(name, cfg, argument)
@@ -112,7 +118,7 @@ class ClusterConfigurablePipelineTest extends DeclarativePipelineTest {
         }
         binding.setVariable('releasePipeline', [
             prepare: { Map cfg -> record('prepare', cfg) },
-            finish: { Map cfg -> record('finish', cfg) }
+            publish: { Map cfg -> record('publish', cfg) }
         ])
         binding.setVariable('trivyImageScan', [
             upstreamImages: { Map cfg ->
@@ -128,10 +134,10 @@ class ClusterConfigurablePipelineTest extends DeclarativePipelineTest {
 
         assertEquals(['Checkout', 'Render', 'Trivy secret scan', 'Trivy Dockerfile scan',
             'Opengrep scan', 'Helm test', 'Trivy image scan', 'Package and upload chart',
-            'Trivy chart scan', 'Argo deploy', 'Update chart version'], leafStages())
+            'Trivy chart scan', 'Update chart version', 'Argo deploy'], leafStages())
         assertEquals(['computeVersion', 'renderChart', 'upstreamImages', 'trivySecretScan', 'trivyDockerfileScan',
             'opengrepScan', 'helmTest', 'trivyImageScan', 'helmPackageUpload',
-            'trivyChartScan', 'argoDeploy', 'updateChartVersion'], calls*.name)
+            'trivyChartScan', 'updateChartVersion', 'argoDeploy'], calls*.name)
         assertEquals('1.2.1-main-0067101-13', callNamed('updateChartVersion').version)
         assertEquals('cluster', observedConfig.type)
         assertEquals('argocd', observedConfig['project-name'])
@@ -184,7 +190,7 @@ class ClusterConfigurablePipelineTest extends DeclarativePipelineTest {
         runPipeline()
         assertEquals(['computeVersion', 'prepare'], calls.take(2)*.name)
         assertFalse(calls*.name.contains('updateChartVersion'))
-        assertEquals('finish', calls.last().name)
+        assertEquals(['publish', 'argoDeploy'], calls.takeRight(2)*.name)
         assertJobStatusSuccess()
     }
 
@@ -216,16 +222,16 @@ class ClusterConfigurablePipelineTest extends DeclarativePipelineTest {
     }
 
     @Test
-    void jenkinsFeatureBuildPassesDigestToScanAndChartAndUsesShellTests() {
+    void jenkinsFeatureBuildPassesDigestOnlyToScanAndUsesShellTests() {
         configText = fixture('jenkins')
         featureBranch()
         runPipeline()
 
         assertEquals(['Checkout', 'Render', 'Trivy secret scan', 'Trivy Dockerfile scan',
-            'Opengrep scan', 'Helm test', 'Build image', 'Unit test', 'Trivy image scan',
+            'Opengrep scan', 'Helm test', 'Unit test', 'Prepare image context', 'Build image', 'Trivy image scan',
             'Package and upload chart', 'Trivy chart scan'], leafStages())
         assertEquals(digest, observedConfig.digest)
-        assertEquals(digest, callNamed('helmPackageUpload').argument)
+        assertNull(callNamed('helmPackageUpload').argument)
         assertEquals('ghcr.io/raulstechtips/jenkins-controller:' + observedConfig.version + '@' + digest,
             callNamed('trivyImageScan').argument)
         assertEquals('shell', callNamed('runTestCommand').argument)
@@ -296,13 +302,13 @@ class ClusterConfigurablePipelineTest extends DeclarativePipelineTest {
     }
 
     @Test
-    void helmInstallOnBranchRunsWithDigest() {
+    void helmInstallOnBranchUsesVersionOnly() {
         configText = fixture('jenkins')
         enable('helm-install')
         featureBranch()
         runPipeline()
         assertEquals('Helm install', leafStages().last())
-        assertEquals(digest, callNamed('helmInstall').argument)
+        assertNull(callNamed('helmInstall').argument)
         assertEquals(1, agentEntries().count { it.contains('deployer') })
         assertJobStatusSuccess()
     }
@@ -317,14 +323,14 @@ class ClusterConfigurablePipelineTest extends DeclarativePipelineTest {
     }
 
     @Test
-    void bothInstallFlagsOnBranchRunOnlyCleanInstallWithDigest() {
+    void bothInstallFlagsOnBranchRunOnlyCleanInstall() {
         configText = fixture('jenkins')
         enable('helm-install', 'helm-clean-install')
         featureBranch()
         runPipeline()
         assertEquals('Helm clean install', leafStages().last())
         assertFalse(calls*.name.contains('helmInstall'))
-        assertEquals(digest, callNamed('helmCleanInstall').argument)
+        assertNull(callNamed('helmCleanInstall').argument)
         assertEquals(1, agentEntries().count { it.contains('deployer') })
         assertJobStatusSuccess()
     }
@@ -363,7 +369,7 @@ class ClusterConfigurablePipelineTest extends DeclarativePipelineTest {
     }
 
     @Test
-    void mainReleasePreparesInCheckoutAndFinishesAfterArgoWithoutInstall() {
+    void mainReleasePreparesInCheckoutAndPublishesBeforeArgoWithoutInstall() {
         configText = fixture('jenkins')
         enable('helm-install', 'helm-clean-install')
         binding.getVariable('params').RELEASE_VERSION = '1.3.0'
@@ -371,8 +377,11 @@ class ClusterConfigurablePipelineTest extends DeclarativePipelineTest {
 
         assertEquals(['computeVersion', 'prepare'], calls.take(2)*.name)
         assertEquals('Checkout', callNamed('prepare').stage)
-        assertEquals(['argoDeploy', 'finish'], calls.takeRight(2)*.name)
-        assertEquals('Release', leafStages().last())
+        assertEquals(['publish', 'argoDeploy'], calls.takeRight(2)*.name)
+        assertTrue(calls.indexOf(callNamed('prepare')) < calls.indexOf(callNamed('stash')))
+        assertTrue(calls.indexOf(callNamed('runTestCommand')) < calls.indexOf(callNamed('stash')))
+        assertTrue(calls.indexOf(callNamed('stash')) < calls.indexOf(callNamed('buildDockerImage')))
+        assertEquals('Argo deploy', leafStages().last())
         assertTrue(calls.every { it.name == 'computeVersion' || it.version == '1.3.0' })
         assertEquals('1.3.0', binding.getVariable('currentBuild').displayName)
         assertFalse(agentEntries().any { it.contains('deployer') })
@@ -381,12 +390,35 @@ class ClusterConfigurablePipelineTest extends DeclarativePipelineTest {
     }
 
     @Test
+    void failedReleasePushPreventsArgoDeployment() {
+        configText = fixture('jenkins')
+        binding.getVariable('params').RELEASE_VERSION = '1.3.0'
+        failingStep = 'publish'
+        assertThrows(IllegalArgumentException) { runPipeline() }
+        assertNotNull(callNamed('helmPackageUpload'))
+        assertNotNull(callNamed('publish'))
+        assertNull(callNamed('argoDeploy'))
+        assertJobStatusFailure()
+    }
+
+    @Test
+    void failedUnitTestPreventsImagePublication() {
+        configText = fixture('jenkins')
+        failingStep = 'runTestCommand'
+        assertThrows(IllegalArgumentException) { runPipeline() }
+        assertNull(callNamed('stash'))
+        assertNull(callNamed('buildDockerImage'))
+        assertNull(callNamed('helmPackageUpload'))
+        assertJobStatusFailure()
+    }
+
+    @Test
     void releaseRerunWithSameParameterStillCallsPrepare() {
         // A failed prior run has not pushed its local release commit or tag.
         binding.getVariable('params').RELEASE_VERSION = '1.3.0'
         runPipeline()
         assertEquals('1.3.0', callNamed('prepare').releaseVersion)
-        assertEquals('finish', calls.last().name)
+        assertEquals(['publish', 'argoDeploy'], calls.takeRight(2)*.name)
         assertJobStatusSuccess()
     }
 
@@ -449,9 +481,9 @@ class ClusterConfigurablePipelineTest extends DeclarativePipelineTest {
     void agentDeclarationsUseRealPodAndBeforeAgentForEveryOwnAgentStage() {
         runPipeline()
         assertAgentStructure()
-        assertEquals(['Checkout', 'Render', 'Early checks', 'Helm test', 'Build image',
-            'Unit test', 'Trivy image scan', 'Package and upload chart', 'Trivy chart scan',
-            'Helm clean install', 'Helm install', 'Argo deploy', 'Update chart version', 'Release'],
+        assertEquals(['Checkout', 'Render', 'Early checks', 'Helm test', 'Unit test',
+            'Prepare image context', 'Build image', 'Trivy image scan', 'Package and upload chart', 'Trivy chart scan',
+            'Helm clean install', 'Helm install', 'Update chart version', 'Release', 'Argo deploy'],
             declaration.stages['Pipeline'].stages.keySet() as List)
         assertEquals(['Trivy secret scan', 'Trivy Dockerfile scan', 'Opengrep scan'],
             declaration.stages['Pipeline'].stages['Early checks'].parallel.stages.keySet() as List)

@@ -7,9 +7,9 @@ import dev.raulstechtips.jenkins.helpers.RegistryCatalog
  *
  * It loads project-pipeline-config.yaml as type cluster, builds the agent pod with agentPodYaml,
  * and runs the stages that pipeline-steps turns on: checkout and version, chart render, the Trivy
- * secret, Trivy Dockerfile and opengrep scans in parallel, Helm test, image build, Trivy image
- * scan, chart package and upload, Trivy chart scan, Helm clean install or Helm install, Argo
- * deploy, chart version update, and release. Most stages run on the generic agent merged with the library pod. Image
+ * secret, Trivy Dockerfile and opengrep scans in parallel, Helm test, unit test, prepared image
+ * context transfer, image build, Trivy image scan, chart package and upload, Trivy chart scan,
+ * Helm clean install or Helm install, chart version update, release publication, and Argo deploy. Most stages run on the generic agent merged with the library pod. Image
  * build runs on the builder agent and the Helm installs on the deployer agent. Unit test runs
  * test-command in the shell container. The Helm installs never run on main or in a release run, and
  * Argo deploy runs only on a main push or in a release run. On every main push where
@@ -74,9 +74,9 @@ def call() {
                                 echo "Steps for this build (${cfg.buildKind}): " + PipelineSteps.plan(cfg, [
                                     'render', 'early-checks', 'trivy-secret-scan',
                                     'trivy-dockerfile-scan', 'opengrep-scan', 'helm-test',
-                                    'build-docker-image', 'unit-test', 'trivy-image-scan',
+                                    'unit-test', 'build-docker-image', 'trivy-image-scan',
                                     'helm-package-upload', 'trivy-chart-scan', 'helm-clean-install',
-                                    'helm-install', 'argo-deploy', 'release'
+                                    'helm-install', 'release', 'argo-deploy'
                                 ]).join(', ')
                                 if (!cfg.skipAll) {
                                     cfg.version = computeVersion(cfg)
@@ -140,6 +140,23 @@ def call() {
                             helmTest(cfg)
                         }
                     }
+                    stage('Unit test') {
+                        when {
+                            expression { PipelineSteps.shouldRun(cfg, 'unit-test') }
+                        }
+                        steps {
+                            runTestCommand(cfg, 'shell')
+                        }
+                    }
+                    stage('Prepare image context') {
+                        when {
+                            expression { PipelineSteps.shouldRun(cfg, 'build-docker-image') }
+                        }
+                        steps {
+                            stash name: 'image-context', includes: '**/*',
+                                excludes: '.git,.git/**,.pipeline/**,.gradle/**', useDefaultExcludes: false
+                        }
+                    }
                     stage('Build image') {
                         when {
                             beforeAgent true
@@ -154,14 +171,6 @@ def call() {
                             script {
                                 cfg.digest = buildDockerImage(cfg)
                             }
-                        }
-                    }
-                    stage('Unit test') {
-                        when {
-                            expression { PipelineSteps.shouldRun(cfg, 'unit-test') }
-                        }
-                        steps {
-                            runTestCommand(cfg, 'shell')
                         }
                     }
                     stage('Trivy image scan') {
@@ -186,7 +195,7 @@ def call() {
                             expression { PipelineSteps.shouldRun(cfg, 'helm-package-upload') }
                         }
                         steps {
-                            helmPackageUpload(cfg, cfg.digest)
+                            helmPackageUpload(cfg)
                         }
                     }
                     stage('Trivy chart scan') {
@@ -208,7 +217,7 @@ def call() {
                             }
                         }
                         steps {
-                            helmCleanInstall(cfg, cfg.digest)
+                            helmCleanInstall(cfg)
                         }
                     }
                     stage('Helm install') {
@@ -222,15 +231,7 @@ def call() {
                             }
                         }
                         steps {
-                            helmInstall(cfg, cfg.digest)
-                        }
-                    }
-                    stage('Argo deploy') {
-                        when {
-                            expression { PipelineSteps.shouldRun(cfg, 'argo-deploy') }
-                        }
-                        steps {
-                            argoDeploy(cfg)
+                            helmInstall(cfg)
                         }
                     }
                     stage('Update chart version') {
@@ -247,8 +248,16 @@ def call() {
                         }
                         steps {
                             script {
-                                releasePipeline.finish(cfg)
+                                releasePipeline.publish(cfg)
                             }
+                        }
+                    }
+                    stage('Argo deploy') {
+                        when {
+                            expression { PipelineSteps.shouldRun(cfg, 'argo-deploy') }
+                        }
+                        steps {
+                            argoDeploy(cfg)
                         }
                     }
                 }
