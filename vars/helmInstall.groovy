@@ -8,17 +8,15 @@ import dev.raulstechtips.jenkins.helpers.HelmInstallCommands
  *
  * @param cfg the loaded config. Reads project-name, project-namespace, version, helm-image-tag-path
  *     and helm-overrides.
- * @param digest the built image digest, or null when no image was built
- * @throws IllegalArgumentException when project-name or project-namespace is missing, or when the
- *     digest is used and is invalid
+ * @throws IllegalArgumentException when project-name or project-namespace is missing
  * @throws error (fails the build) when a helm or yq command fails
  */
-def call(Map cfg, String digest = null) {
+def call(Map cfg) {
     checkout scm
     container('kubectl') {
         dir('charts') {
             Map chart = readYaml(file: 'Chart.yaml')
-            List commands = new HelmInstallCommands().install(cfg, chart, digest)
+            List commands = new HelmInstallCommands().install(cfg, chart)
             for (int i = 0; i < commands.size(); i++) {
                 sh commands[i]
             }

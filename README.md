@@ -120,7 +120,7 @@ The table shows each key under `project-config`.
 | `docker-image.name` | string | value of `project-name` | Must match `^[a-z0-9]+([._-][a-z0-9]+)*$`. The library checks the pattern only when `build-docker-image` is true. |
 | `docker-image.dockerfile` | string | `Dockerfile` | Must be a non-empty path relative to the repo root. |
 | `docker-image.context` | string | `.` | Must be a non-empty path relative to the repo root. |
-| `helm-image-tag-path` | string | `""` | When set, it must start with `.` and `build-docker-image` must be true. Example: `.jenkins.controller.image.tag`. The library writes `<version>@<digest>` to this path in `charts/values.yaml` before `helm package` and before `helm install`. When it's empty, the library writes nothing. |
+| `helm-image-tag-path` | string | `""` | When set, it must start with `.` and `build-docker-image` must be true. Example: `.jenkins.controller.image.tag`. The library writes `<version>` to this path in `charts/values.yaml` before `helm package` and before `helm install`. When it's empty, the library writes nothing. |
 | `pipeline-steps` | map | all flags `false` | Allowed child keys: the flags of section 4. |
 | `pipeline-steps.<flag>` | boolean | `false` | `build` is allowed only in the java pipeline. In the cluster pipeline, `build` is an unknown key. |
 
@@ -208,15 +208,15 @@ After all stages, the build archives `.pipeline/reports/**`.
 2. `Render`. Runs when `charts/Chart.yaml` exists. Runs `renderChart`. With `trivy-scan`, it also collects the upstream images from the render.
 3. `Early checks`, in parallel: `Trivy secret scan` (`trivy-scan`), `Trivy Dockerfile scan` (`trivy-scan`) and `Opengrep scan` (`opengrep-scan`).
 4. `Helm test` (`helm-test`).
-5. `Build image` (`build-docker-image`). Runs on a pod from the `builder` template.
-6. `Unit test` (`unit-test`). Runs in the `shell` container.
+5. `Unit test` (`unit-test`). Runs in the `shell` container before image publication.
+6. `Prepare image context`, then `Build image` (`build-docker-image`). Stashes the prepared files and build outputs on the main pod, then restores them on a pod from the `builder` template.
 7. `Trivy image scan`. Runs with `trivy-scan` when the build has an image digest or the render has upstream images.
 8. `Package and upload chart` (`helm-package-upload`).
 9. `Trivy chart scan`. Runs when `trivy-scan` and `helm-package-upload` are both true.
 10. `Helm clean install` (`helm-clean-install`) or `Helm install` (`helm-install`). Not on `main`, not in a release run. Runs on a pod from the `deployer` template.
-11. `Argo deploy` (`argo-deploy`). Only on a `main` build or in a release run.
-12. `Update chart version`. On every `main` build where `charts/Chart.yaml` exists. It has no flag. Runs `updateChartVersion` (see below).
-13. `Release`. Only in a release run. Runs `releasePipeline.finish`.
+11. `Update chart version`. On every `main` build where `charts/Chart.yaml` exists. It has no flag. Runs `updateChartVersion` (see below).
+12. `Release`. Only in a release run. Runs `releasePipeline.publish`.
+13. `Argo deploy` (`argo-deploy`). Only on a `main` build or in a release run. This is the last stage; a failed release push prevents it.
 
 ### javaConfigurablePipeline
 
@@ -225,7 +225,7 @@ After all stages, the build archives `.pipeline/reports/**`.
 3. `Early checks`, in parallel: `Trivy scan` (`trivy-scan`, the secret scan and then the Dockerfile scan) and `Opengrep scan` (`opengrep-scan`).
 4. `Build` (`build`). Runs `build-command` in the `jdk` container.
 5. `Unit test` (`unit-test`). Runs `test-command` in the `jdk` container.
-6. `Helm test`, `Build image`, `Trivy image scan`, `Package and upload chart`, `Trivy chart scan`, `Helm clean install` or `Helm install`, `Argo deploy` and `Release`. Then `Update chart version`. These have the same rules as in the cluster pipeline.
+6. `Helm test`, `Prepare image context`, `Build image`, `Trivy image scan`, `Package and upload chart`, `Trivy chart scan`, `Helm clean install` or `Helm install`, `Update chart version`, `Release`, then `Argo deploy`. These have the same rules as in the cluster pipeline.
 
 ### Image-scan gate
 
@@ -268,16 +268,18 @@ Branch builds, PR builds and release runs never skip.
 
 `Build image`, `Helm install` and `Helm clean install` use their own pod.
 These stages use `beforeAgent true`, so a skipped stage never starts a pod.
-Each of these stages runs its own `checkout scm`.
+The install stages run their own `checkout scm`.
+`Build image` clears its builder workspace and restores the `image-context` stash instead of checking out the old source revision.
+The stash includes the prepared release files and Java build outputs. It excludes Git metadata, `.pipeline` reports, and the root `.gradle` cache.
 
 ### Direct Helm deployment
 
 `helmInstall` and `helmCleanInstall` set `version` in `charts/Chart.yaml` to the
 build version before installation. This changes only the deployer workspace:
 it does not commit the file or change `appVersion`. The installed chart metadata
-therefore identifies the build that deployed it. When `helm-image-tag-path` and
-the built image digest are set, the step also writes `<version>@<digest>` into
-`charts/values.yaml`.
+therefore identifies the build that deployed it. When `helm-image-tag-path` is set,
+the step also writes the clean `<version>` into `charts/values.yaml`.
+Digests are used internally to scan the exact built image, not in chart image tags.
 
 Both install steps pass all `helm-overrides` files together, in list order.
 They use Jenkins `dir('charts')` in the `kubectl` container. They read `Chart.yaml`,
@@ -315,7 +317,7 @@ This is a config fragment; the repo must also supply the required project keys.
 For an existing config with `charts/` at the start of each override path, remove
 that prefix. Move any override files outside `charts/` into `charts/`.
 The render runs before the image build, so it validates the combined chart
-configuration, not the final generated image digest. An override can still
+configuration before image publication. An override can still
 replace an image tag written into `charts/values.yaml`.
 
 ## 6. Version rules
@@ -362,7 +364,7 @@ Examples:
 
 ### Run a release
 
-1. Make sure `CHANGELOG.md` has at least one `- ` bullet under `## [Unreleased]`.
+1. If `CHANGELOG.md` exists, make sure it has at least one `- ` bullet under `## [Unreleased]`. If it is missing, the release creates it.
 2. Open the `main` job of the repo in Jenkins.
 3. Click **Build with Parameters**.
 4. Set `RELEASE_VERSION` to the new version, for example `1.3.0`.
@@ -375,7 +377,7 @@ In `Checkout`, `releasePipeline.prepare` runs in the `tools` container. It does 
 - `RELEASE_VERSION` must be `X.Y.Z`.
 - The tag must not exist on `origin`.
 - `RELEASE_VERSION` must be greater than the highest `X.Y.Z` tag on `origin` (`0.0.0` when there is no release). The version file is not compared, because on `main` it holds the last build version.
-- `CHANGELOG.md` must exist, and `[Unreleased]` must have entries.
+- An existing `CHANGELOG.md` must have entries in `[Unreleased]`. Missing categories are allowed. A missing file is bootstrapped instead of rejected.
 
 A failed check stops the build with the reason.
 
@@ -384,22 +386,26 @@ Then `prepare` does these steps on the local clone:
 1. It moves the `[Unreleased]` entries under `## [<v>] - <YYYY-MM-DD>` (UTC date). Empty subsections of that release are removed.
 2. It adds a new empty `[Unreleased]` section with `### Added`, `### Changed` and `### Fixed`.
 3. It updates the compare links at the bottom. The previous version is the highest `X.Y.Z` tag on `origin`.
-4. It writes `<v>` to the version file.
-5. It commits `CHANGELOG.md` and the version file as `release: <v>`. The author is `raulstechtips-jenkins[bot]`.
-6. It creates the annotated tag `<v>`.
+4. It writes `<v>` to `charts/Chart.yaml` when the repo has a chart, and to `gradle.properties` for Java repos. A Java repo with a chart gets both updates. Upstream `appVersion` values are not changed.
+5. When `helm-image-tag-path` is configured, it writes `<v>` to that field in `charts/values.yaml`. It does not append a digest.
 
-Nothing is pushed yet.
-All later stages use the version `<v>`.
-The `Build image`, `Helm install` and `Helm clean install` pods check out the commit before the release commit.
-The release commit changes only `CHANGELOG.md` and the version file.
+For a missing changelog, it creates the standard introduction, all three empty Unreleased headings, and a dated release heading with no categories or invented entries. It adds the same release and comparison links as for an existing changelog. It does not invent historical release sections.
 
-The last stage, `Release`, runs `releasePipeline.finish`.
-It pushes `main` and the tag in one atomic push.
-This happens only when all earlier stages passed.
+Nothing is committed, tagged or pushed during preparation.
+All later stages use the version `<v>`. The image builder receives the prepared source and build outputs from the main pod.
+
+After the artifact uploads and checks, `Release` runs `releasePipeline.publish`:
+
+1. Commit only the prepared changelog, version files and configured chart image values as `release: <v>`, authored by `raulstechtips-jenkins[bot]`.
+2. Create the annotated tag `<v>` on that commit. Checking out the tag shows the updated changelog and clean chart image tag.
+3. Push `main` and the tag in one atomic push.
+
+Only after that push succeeds does `Argo deploy` update cluster-config.
+The image is uploaded before its image scan, and the chart is uploaded before its chart scan. These scans block release publication and deployment, but a failed scan can leave uploaded artifacts.
 
 ### Re-run a failed release
 
-A failed release pushes nothing. The tag doesn't exist on `origin`.
+If a release fails before the atomic source push succeeds, its release commit and tag are not published. Images or charts can already have been uploaded. Check the failed stage before retrying.
 
 1. Find the cause in the build log.
 2. Fix the cause on `main` with a normal PR, if a fix is needed.
@@ -407,7 +413,9 @@ A failed release pushes nothing. The tag doesn't exist on `origin`.
 
 When `main` moves during the release build, the atomic push is rejected.
 Then the build fails and nothing is tagged.
-Run the release again.
+Run the release again after checking any uploaded artifacts.
+
+If only `Argo deploy` fails after the source push succeeds, the release already exists. Do not rebuild or overwrite that release version: `prepare` rejects an existing tag. Retry only the cluster-config update to the verified chart version, through the existing deployment process. This change does not add a separate deployment retry job.
 
 ## 8. Registries and credentials
 
@@ -479,6 +487,21 @@ Run the full build:
 
 ```sh
 ./gradlew build
+```
+
+Run the release integration checks on a machine with Git, yq v4 and Helm 3:
+
+```sh
+./gradlew releaseIntegrationTest
+```
+
+These checks run real release preparation, chart packaging and atomic Git pushes
+against temporary local repositories. They do not contact GitHub or a registry.
+They are separate from `test` because the Jenkins `jdk` container does not include
+yq and Helm. Run both checks before changing the release process:
+
+```sh
+./gradlew build releaseIntegrationTest
 ```
 
 Use `--no-daemon` when other Gradle builds run on the same machine.

@@ -20,6 +20,12 @@ class ChangelogUpdater implements Serializable {
     private static final String FRESH_UNRELEASED =
         '## [Unreleased]\n\n### Added\n\n### Changed\n\n### Fixed\n'
 
+    static final String TEMPLATE = '# Changelog\n\n' +
+        'All notable changes to this project are documented in this file.\n\n' +
+        'The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),\n' +
+        'and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).\n\n' +
+        FRESH_UNRELEASED
+
     /**
      * Moves the Unreleased entries into a new release section and returns the new changelog text.
      *

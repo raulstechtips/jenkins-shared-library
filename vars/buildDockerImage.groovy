@@ -4,7 +4,7 @@ import dev.raulstechtips.jenkins.helpers.RegistryCatalog
 /**
  * Builds the project image with Kaniko and pushes it to every publish target.
  *
- * It checks out the repo, writes a Kaniko registry config with the credentials of each target, and
+ * It restores the prepared image context from the pipeline stash, writes a Kaniko registry config with the credentials of each target, and
  * runs /kaniko/executor with one destination per target, tagged IMAGE-PREFIX/NAME:VERSION from
  * docker-image and the build version. It runs in the kaniko container, so the pipelines call it on
  * the builder agent. Kaniko runs as root, so after a successful build it makes .pipeline and the
@@ -17,7 +17,8 @@ import dev.raulstechtips.jenkins.helpers.RegistryCatalog
  * @throws IllegalArgumentException when a publish target is not in registries.yaml
  */
 def call(Map cfg) {
-    checkout scm
+    deleteDir()
+    unstash 'image-context'
     Map registries = readYaml(text: libraryResource('dev/raulstechtips/jenkins/registries.yaml'))
     def catalog = new RegistryCatalog(registries)
     List targets = cfg['publish-targets'].collect { String name ->

@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test
 import static org.junit.jupiter.api.Assertions.*
 
 class HelmInstallTest extends BasePipelineTest {
-    private static final String DIGEST = 'sha256:' + ('a' * 64)
     private List calls
     private String current
     private String directory
@@ -69,8 +68,8 @@ class HelmInstallTest extends BasePipelineTest {
         calls.findAll { it[0] == 'sh' }.collect { it[2] }
     }
 
-    private void run(Map cfg, String digest = null) {
-        loadScript('vars/helmInstall.groovy').call(cfg, digest)
+    private void run(Map cfg) {
+        loadScript('vars/helmInstall.groovy').call(cfg)
     }
 
     private static final List INSTALL_PREFIX = [
@@ -108,28 +107,17 @@ class HelmInstallTest extends BasePipelineTest {
     }
 
     @Test
-    void writesTagWhenPathSetAndDigestGiven() {
-        run(cfg('helm-image-tag-path': '.image.tag'), DIGEST)
-        String write = "TAG='1.2.3@${DIGEST}' yq -i '.image.tag = strenv(TAG)' values.yaml"
+    void writesCleanTagWhenPathSet() {
+        run(cfg('helm-image-tag-path': '.image.tag'))
+        String write = "TAG='1.2.3' yq -i '.image.tag = strenv(TAG)' values.yaml"
         assertEquals([write] + INSTALL_PREFIX + [
             "helm upgrade -i 'demo' . -n 'apps' --wait --timeout 10m"], shCommands())
     }
 
     @Test
-    void doesNotWriteTagWithoutDigest() {
-        run(cfg('helm-image-tag-path': '.image.tag'))
-        assertFalse(shCommands().any { it.contains('values.yaml') })
-    }
-
-    @Test
     void doesNotWriteTagWhenPathEmpty() {
-        run(cfg(), DIGEST)
+        run(cfg())
         assertFalse(shCommands().any { it.contains('values.yaml') })
-    }
-
-    @Test
-    void rejectsMalformedDigest() {
-        assertThrows(IllegalArgumentException) { run(cfg('helm-image-tag-path': '.image.tag'), 'sha256:xyz') }
     }
 
     @Test
@@ -149,8 +137,8 @@ class HelmInstallTest extends BasePipelineTest {
 
     @Test
     void acceptsQuotedKeyYqPath() {
-        run(cfg('helm-image-tag-path': '.image["tag.name"]'), DIGEST)
-        assertEquals("TAG='1.2.3@${DIGEST}' yq -i '.image[\"tag.name\"] = strenv(TAG)' values.yaml".toString(),
+        run(cfg('helm-image-tag-path': '.image["tag.name"]'))
+        assertEquals("TAG='1.2.3' yq -i '.image[\"tag.name\"] = strenv(TAG)' values.yaml".toString(),
             shCommands().find { it.contains('yq') })
     }
 }

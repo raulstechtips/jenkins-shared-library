@@ -8,8 +8,8 @@ class HelmInstallCommands implements Serializable {
     /**
      * Returns the shell commands to run from charts/ to install or upgrade the chart.
      *
-     * In order: when helm-image-tag-path and digest are both set, a yq command that writes
-     * version@digest to that path in values.yaml; a yq command that sets the build version
+     * In order: when helm-image-tag-path is set, a yq command that writes
+     * version to that path in values.yaml; a yq command that sets the build version
      * in Chart.yaml; a helm repo add for each chart dependency
      * with an https:// repository; helm dependency build .; and helm upgrade -i of
      * project-name in project-namespace, with one -f per helm-overrides entry, --wait and a 10
@@ -18,22 +18,17 @@ class HelmInstallCommands implements Serializable {
      * @param cfg the validated config. Reads project-name, project-namespace, version,
      *     helm-image-tag-path and helm-overrides.
      * @param chart the parsed charts/Chart.yaml, or null
-     * @param digest the built image digest, or null when no image was built
      * @return the commands, in the order to run them
-     * @throws IllegalArgumentException when project-name or project-namespace is empty, or when the
-     *     digest is used and is not sha256: followed by 64 lowercase hex characters
+     * @throws IllegalArgumentException when project-name or project-namespace is empty
      */
     @NonCPS
-    List<String> install(Map cfg, Map chart, String digest) {
+    List<String> install(Map cfg, Map chart) {
         String name = required(cfg, 'project-name')
         String namespace = required(cfg, 'project-namespace')
         List<String> commands = []
         String tagPath = cfg['helm-image-tag-path'] ? cfg['helm-image-tag-path'].toString() : ''
-        if (tagPath && digest) {
-            if (!(digest ==~ /^sha256:[0-9a-f]{64}$/)) {
-                throw new IllegalArgumentException("Invalid image digest '${digest}'")
-            }
-            String tag = "${cfg.version}@${digest}"
+        if (tagPath) {
+            String tag = cfg.version
             commands << ("TAG=${ShellQuote.quote(tag)} yq -i ${ShellQuote.quote(tagPath + ' = strenv(TAG)')} values.yaml".toString())
         }
         commands << ("CHART_VERSION=${ShellQuote.quote(cfg.version.toString())} yq -i '.version = strenv(CHART_VERSION)' Chart.yaml".toString())
@@ -63,16 +58,14 @@ class HelmInstallCommands implements Serializable {
      *
      * @param cfg the validated config. Reads the same keys as install.
      * @param chart the parsed charts/Chart.yaml, or null
-     * @param digest the built image digest, or null when no image was built
      * @return the commands, in the order to run them
-     * @throws IllegalArgumentException when project-name or project-namespace is empty, or when the
-     *     digest is used and is invalid
+     * @throws IllegalArgumentException when project-name or project-namespace is empty
      */
     @NonCPS
-    List<String> cleanInstall(Map cfg, Map chart, String digest) {
+    List<String> cleanInstall(Map cfg, Map chart) {
         List<String> commands = []
         commands << ("helm uninstall ${ShellQuote.quote(required(cfg, 'project-name'))} -n ${ShellQuote.quote(required(cfg, 'project-namespace'))} --wait --ignore-not-found".toString())
-        commands.addAll(install(cfg, chart, digest))
+        commands.addAll(install(cfg, chart))
         return commands
     }
 

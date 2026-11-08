@@ -35,5 +35,19 @@ dependencies {
 }
 
 test {
-    useJUnitPlatform()
+    useJUnitPlatform {
+        excludeTags 'release-integration'
+    }
+}
+
+// Runs with real Git, yq and Helm, which are not installed in the CI jdk container.
+tasks.register('releaseIntegrationTest', Test) {
+    description = 'Checks release files and atomic pushes with local Git, yq and Helm.'
+    group = 'verification'
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    useJUnitPlatform {
+        includeTags 'release-integration'
+    }
+    shouldRunAfter test
 }

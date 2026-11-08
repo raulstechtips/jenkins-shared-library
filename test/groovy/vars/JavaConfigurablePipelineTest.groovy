@@ -88,6 +88,11 @@ class JavaConfigurablePipelineTest extends DeclarativePipelineTest {
             assertEquals(binding.getVariable('scm'), scm)
             events << 'checkout'
         })
+        helper.registerAllowedMethod('stash', [Map], { Map args ->
+            assertEquals([name: 'image-context', includes: '**/*',
+                excludes: '.git,.git/**,.pipeline/**,.gradle/**', useDefaultExcludes: false], args)
+            record('stash', observedConfig)
+        })
         helper.registerAllowedMethod('archiveArtifacts', [Map], { Map args -> archives << args })
         helper.registerAllowedMethod('logRotator', [Map], { Map args -> args })
         helper.registerAllowedMethod('buildDiscarder', [Map], { Map args -> })
@@ -107,14 +112,15 @@ class JavaConfigurablePipelineTest extends DeclarativePipelineTest {
             [head: 'a1b2c3dabcdef', base: '9f8e7d6abcdef']
         })
         ['renderChart', 'trivySecretScan', 'trivyDockerfileScan', 'opengrepScan',
-            'helmTest', 'trivyChartScan', 'argoDeploy', 'updateChartVersion'].each { String name ->
+            'helmTest', 'trivyChartScan', 'argoDeploy', 'updateChartVersion',
+            'helmPackageUpload', 'helmInstall', 'helmCleanInstall'].each { String name ->
             helper.registerAllowedMethod(name, [Map], { Map cfg -> record(name, cfg) })
         }
         helper.registerAllowedMethod('buildDockerImage', [Map], { Map cfg ->
             record('buildDockerImage', cfg)
             digest
         })
-        ['trivyImageScan', 'helmPackageUpload', 'helmInstall', 'helmCleanInstall',
+        ['trivyImageScan',
             'runBuildCommand', 'runTestCommand'].each { String name ->
             helper.registerAllowedMethod(name, [Map, String], { Map cfg, String argument ->
                 record(name, cfg, argument)
@@ -122,7 +128,7 @@ class JavaConfigurablePipelineTest extends DeclarativePipelineTest {
         }
         binding.setVariable('releasePipeline', [
             prepare: { Map cfg -> record('prepare', cfg) },
-            finish: { Map cfg -> record('finish', cfg) }
+            publish: { Map cfg -> record('publish', cfg) }
         ])
         binding.setVariable('trivyImageScan', [
             upstreamImages: { Map cfg ->
@@ -187,7 +193,7 @@ class JavaConfigurablePipelineTest extends DeclarativePipelineTest {
     }
 
     @Test
-    void mainReleasePreparesJavaVersionFileAndFinishesLast() {
+    void mainReleasePreparesJavaVersionFileAndPublishesLast() {
         binding.getVariable('params').RELEASE_VERSION = '1.0.0'
         runPipeline()
 
@@ -195,14 +201,40 @@ class JavaConfigurablePipelineTest extends DeclarativePipelineTest {
         assertEquals('Checkout', callNamed('prepare').stage)
         assertEquals('java', callNamed('prepare').type)
         assertEquals('1.0.0', callNamed('prepare').releaseVersion)
-        assertEquals(['prepare', 'finish'], calls.findAll { it.name in ['prepare', 'finish'] }*.name)
-        assertEquals('finish', calls.last().name)
+        assertEquals(['prepare', 'publish'], calls.findAll { it.name in ['prepare', 'publish'] }*.name)
+        assertEquals('publish', calls.last().name)
         assertEquals('Release', leafStages().last())
         assertTrue(calls.every { it.name == 'computeVersion' || it.version == '1.0.0' })
         assertEquals('1.0.0', binding.getVariable('currentBuild').displayName)
         assertArchive()
         assertJobStatusSuccess()
         // The real release var's Java write and atomic push are covered by ReleasePipelineTest.
+    }
+
+    @Test
+    void javaReleaseTransfersBuiltContextAndPublishesBeforeArgo() {
+        deliveryConfig()
+        binding.getVariable('params').RELEASE_VERSION = '1.0.0'
+        runPipeline()
+        assertTrue(calls.indexOf(callNamed('prepare')) < calls.indexOf(callNamed('runBuildCommand')))
+        assertTrue(calls.indexOf(callNamed('runTestCommand')) < calls.indexOf(callNamed('stash')))
+        assertTrue(calls.indexOf(callNamed('stash')) < calls.indexOf(callNamed('buildDockerImage')))
+        assertEquals(['publish', 'argoDeploy'], calls.takeRight(2)*.name)
+        assertEquals('Argo deploy', leafStages().last())
+        assertNull(callNamed('updateChartVersion'))
+        assertJobStatusSuccess()
+    }
+
+    @Test
+    void failedReleasePushPreventsArgoDeployment() {
+        deliveryConfig()
+        binding.getVariable('params').RELEASE_VERSION = '1.0.0'
+        failingStep = 'publish'
+        assertThrows(IllegalArgumentException) { runPipeline() }
+        assertNotNull(callNamed('helmPackageUpload'))
+        assertNotNull(callNamed('publish'))
+        assertNull(callNamed('argoDeploy'))
+        assertJobStatusFailure()
     }
 
     @Test
@@ -299,11 +331,11 @@ class JavaConfigurablePipelineTest extends DeclarativePipelineTest {
         featureBranch()
         runPipeline()
         assertEquals(['Checkout', 'Render', 'Trivy scan', 'Opengrep scan', 'Build', 'Unit test',
-            'Helm test', 'Build image', 'Trivy image scan', 'Package and upload chart',
+            'Helm test', 'Prepare image context', 'Build image', 'Trivy image scan', 'Package and upload chart',
             'Trivy chart scan', 'Helm clean install'], leafStages())
         assertEquals(digest, observedConfig.digest)
-        assertEquals(digest, callNamed('helmPackageUpload').argument)
-        assertEquals(digest, callNamed('helmCleanInstall').argument)
+        assertNull(callNamed('helmPackageUpload').argument)
+        assertNull(callNamed('helmCleanInstall').argument)
         assertEquals('ghcr.io/raulstechtips/jenkins-controller:' + observedConfig.version + '@' + digest,
             callNamed('trivyImageScan').argument)
         assertFalse(calls*.name.contains('helmInstall'))
@@ -374,7 +406,7 @@ class JavaConfigurablePipelineTest extends DeclarativePipelineTest {
     void deliveryOnMainUsesArgoAndNeverStartsDeployer() {
         deliveryConfig()
         runPipeline()
-        assertEquals(['argoDeploy', 'updateChartVersion'], calls.takeRight(2)*.name)
+        assertEquals(['updateChartVersion', 'argoDeploy'], calls.takeRight(2)*.name)
         assertFalse(agentEntries().any { it.contains('deployer') })
         assertJobStatusSuccess()
     }
@@ -386,7 +418,7 @@ class JavaConfigurablePipelineTest extends DeclarativePipelineTest {
         featureBranch()
         runPipeline()
         assertEquals('helmInstall', calls.last().name)
-        assertEquals(digest, callNamed('helmInstall').argument)
+        assertNull(callNamed('helmInstall').argument)
     }
 
     @Test
@@ -408,8 +440,8 @@ class JavaConfigurablePipelineTest extends DeclarativePipelineTest {
         assertAgentStructure()
         def pipeline = declaration.stages['Pipeline']
         assertEquals(['Checkout', 'Render', 'Early checks', 'Build', 'Unit test', 'Helm test',
-            'Build image', 'Trivy image scan', 'Package and upload chart', 'Trivy chart scan',
-            'Helm clean install', 'Helm install', 'Argo deploy', 'Update chart version', 'Release'],
+            'Prepare image context', 'Build image', 'Trivy image scan', 'Package and upload chart', 'Trivy chart scan',
+            'Helm clean install', 'Helm install', 'Update chart version', 'Release', 'Argo deploy'],
             pipeline.stages.keySet() as List)
         assertEquals(['Trivy scan', 'Opengrep scan'],
             pipeline.stages['Early checks'].parallel.stages.keySet() as List)

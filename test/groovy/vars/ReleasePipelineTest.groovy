@@ -26,7 +26,8 @@ class ReleasePipelineTest extends BasePipelineTest {
     @BeforeEach
     void setUp() throws Exception {
         super.setUp()
-        cfg = [type: 'cluster', releaseVersion: '1.10.0', version: '1.10.0']
+        cfg = [type: 'cluster', chartPresent: true, releaseVersion: '1.10.0', version: '1.10.0',
+            releaseFiles: ['CHANGELOG.md', 'charts/Chart.yaml']]
         environment = [:]
         binding.setVariable('env', environment)
         files = [
@@ -173,7 +174,7 @@ class ReleasePipelineTest extends BasePipelineTest {
         files['charts/Chart.yaml'] = 'name: demo\nversion: 1.10.0-main-0067101-7\n'
         step.prepare(cfg)
         assertEquals('1.10.0', cfg.version)
-        assertTrue(commands.any { it.script.contains('git tag -a') })
+        assertFalse(commands.any { it.script.contains('git tag -a') })
     }
 
     @Test
@@ -198,9 +199,14 @@ class ReleasePipelineTest extends BasePipelineTest {
     }
 
     @Test
-    void rejectsMissingChangelog() {
+    void bootstrapsMissingChangelogWithEmptyDatedRelease() {
         files.remove('CHANGELOG.md')
-        assertPrepareFails('CHANGELOG.md')
+        step.prepare(cfg)
+        String text = files['CHANGELOG.md']
+        assertTrue(text.contains('## [Unreleased]\n\n### Added\n\n### Changed\n\n### Fixed\n'))
+        assertTrue(text.contains('## [1.10.0] - 2026-10-24\n\n[Unreleased]:'))
+        assertTrue(text.contains('/compare/1.9.10...1.10.0'))
+        assertFalse(commands.any { it.script.contains('git commit') || it.script.contains('git tag -a') })
     }
 
     @Test
@@ -234,11 +240,60 @@ class ReleasePipelineTest extends BasePipelineTest {
     @Test
     void javaReplacesOnlyVersionLinePreservingOtherProperties() {
         cfg.type = 'java'
+        cfg.chartPresent = false
         step.prepare(cfg)
         assertEquals('# version=keep\nname=demo\nversion=1.10.0\nother.version=keep\n',
             files['gradle.properties'])
         assertFalse(commands.any { it.script.contains('yq') })
-        assertTrue(commands.any { it.script.contains('git add CHANGELOG.md gradle.properties') })
+        assertEquals(['CHANGELOG.md', 'gradle.properties'], cfg.releaseFiles)
+    }
+
+    @Test
+    void chartlessClusterReleasePreparesAndPublishesOnlyChangelog() {
+        cfg.chartPresent = false
+        files.remove('charts/Chart.yaml')
+        step.prepare(cfg)
+        assertEquals(['CHANGELOG.md'], cfg.releaseFiles)
+        assertFalse(commands.any { it.script.contains('yq') })
+        step.publish(cfg)
+        assertTrue(commands.any { it.script == "git add -- 'CHANGELOG.md'" })
+    }
+
+    @Test
+    void javaWithChartPreparesBothVersionsAndCleanImageTag() {
+        cfg.type = 'java'
+        cfg.chartPresent = true
+        cfg['helm-image-tag-path'] = '.image.tag'
+        step.prepare(cfg)
+        assertTrue(files['gradle.properties'].contains('version=1.10.0\n'))
+        assertTrue(commands.any { it.script.contains('charts/Chart.yaml') && it.environment.V == '1.10.0' })
+        Map imageWrite = commands.find { it.script.contains('charts/values.yaml') }
+        assertEquals('1.10.0', imageWrite.environment.V)
+        assertEquals('.image.tag = strenv(V)', imageWrite.environment.YQ_EXPRESSION)
+        assertEquals(['CHANGELOG.md', 'charts/Chart.yaml', 'gradle.properties', 'charts/values.yaml'],
+            cfg.releaseFiles)
+        step.publish(cfg)
+        assertTrue(commands.any {
+            it.script == "git add -- 'CHANGELOG.md' 'charts/Chart.yaml' 'gradle.properties' 'charts/values.yaml'"
+        })
+    }
+
+    @Test
+    void chartWithoutOwnImageDoesNotChangeUpstreamImageVersions() {
+        step.prepare(cfg)
+        assertFalse(commands.any { it.script.contains('charts/values.yaml') })
+        assertEquals(['CHANGELOG.md', 'charts/Chart.yaml'], cfg.releaseFiles)
+    }
+
+    @Test
+    void missingChangelogOnFirstReleaseHasTagLinkAndNoInventedEntries() {
+        files.remove('CHANGELOG.md')
+        tags = ''
+        step.prepare(cfg)
+        String text = files['CHANGELOG.md']
+        assertTrue(text.contains('/releases/tag/1.10.0'))
+        assertFalse(text.readLines().any { it.startsWith('- ') })
+        assertFalse(text.substring(text.indexOf('## [1.10.0]')).contains('### '))
     }
 
     @Test
@@ -258,10 +313,11 @@ class ReleasePipelineTest extends BasePipelineTest {
     }
 
     @Test
-    void prepareCreatesLocalCommitAndAnnotatedTagWithBotIdentity() {
+    void publishCreatesLocalCommitAndAnnotatedTagWithBotIdentity() {
         step.prepare(cfg)
+        step.publish(cfg)
         String all = commands*.script.join('\n')
-        assertTrue(all.contains('git add CHANGELOG.md charts/Chart.yaml'))
+        assertTrue(all.contains("git add -- 'CHANGELOG.md' 'charts/Chart.yaml'"))
         assertTrue(all.contains("git -c user.name='raulstechtips-jenkins[bot]' " +
             "-c user.email='raulstechtips-jenkins[bot]@users.noreply.github.com' commit -m \"release: \$V\""))
         assertTrue(all.contains('git tag -a "$V" -m "$V"'))
@@ -271,9 +327,10 @@ class ReleasePipelineTest extends BasePipelineTest {
     }
 
     @Test
-    void prepareNeverPushes() {
+    void prepareNeverCommitsTagsOrPushes() {
         step.prepare(cfg)
-        assertFalse(commands.any { it.script.contains('git push') })
+        assertFalse(commands.any { it.script.contains('git push') || it.script.contains('git tag -a') ||
+            it.script.contains('git add') || it.script.contains(' commit -m ') })
     }
 
     @Test
@@ -285,30 +342,30 @@ class ReleasePipelineTest extends BasePipelineTest {
     }
 
     @Test
-    void finishPushesCommitAndTagAtomicallyFromHttpsOrigin() {
-        step.finish(cfg)
+    void publishPushesCommitAndTagAtomicallyFromHttpsOrigin() {
+        step.publish(cfg)
         assertAtomicPush('raulstechtips/demo')
     }
 
     @Test
-    void finishHandlesScpStyleSshOrigin() {
+    void publishHandlesScpStyleSshOrigin() {
         remote = 'git@github.com:raulstechtips/other.git\n'
-        step.finish(cfg)
+        step.publish(cfg)
         assertAtomicPush('raulstechtips/other')
     }
 
     @Test
-    void finishHandlesSshProtocolOrigin() {
+    void publishHandlesSshProtocolOrigin() {
         remote = 'ssh://git@github.com/raulstechtips/other.git\n'
-        step.finish(cfg)
+        step.publish(cfg)
         assertAtomicPush('raulstechtips/other')
     }
 
     @Test
-    void finishKeepsHostilePushOperandsAsArguments() {
+    void publishKeepsHostilePushOperandsAsArguments() {
         remote = 'https://github.com/raulstechtips/demo.git\n'
         cfg.releaseVersion = '1.10.0;touch version-pwned'
-        step.finish(cfg)
+        step.publish(cfg)
 
         Map push = commands.find { it.script.contains('git push') }
         String script = push.script
@@ -345,16 +402,16 @@ class ReleasePipelineTest extends BasePipelineTest {
     }
 
     @Test
-    void mainMovedMakesFinishFailOnNonzeroPush() {
+    void mainMovedMakesPublishFailOnNonzeroPush() {
         pushStatus = 1
-        assertThrows(IllegalStateException) { step.finish(cfg) }
+        assertThrows(IllegalStateException) { step.publish(cfg) }
         assertEquals(1, commands.count { it.script.contains('git push') })
     }
 
     @Test
     void noSecretAppearsInRegisteredShScriptStrings() {
         step.prepare(cfg)
-        step.finish(cfg)
+        step.publish(cfg)
         def calls = helper.callStack.findAll { it.methodName == 'sh' }
         assertFalse(calls.isEmpty())
         calls.each { call ->

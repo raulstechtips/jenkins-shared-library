@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Prepare changelogs, chart and application versions, and clean image tags before builds. Bootstrap missing changelogs and publish the release commit and tag before updating cluster-config ([DEVSECOPS-192](https://raulstechtips.atlassian.net/browse/DEVSECOPS-192)).
+- Transfer prepared source and Java build outputs to the image builder, run cluster unit tests before image publication, and remove digest pins from packaged and directly installed charts ([DEVSECOPS-192](https://raulstechtips.atlassian.net/browse/DEVSECOPS-192)).
+
 - Resolve `helm-overrides` paths relative to `charts/` and run direct Helm installation from that directory, with override files before the namespace argument. Render and lint keep the combined override order from the repo root ([DEVSECOPS-190](https://raulstechtips.atlassian.net/browse/DEVSECOPS-190))
 - `argoDeploy` commits the new `targetRevision` straight to `cluster-config` `main` as the Jenkins bot, one commit for each target and one push, instead of opening a PR for each target. A rejected push is tried again, up to 3 times ([DEVSECOPS-191](https://raulstechtips.atlassian.net/browse/DEVSECOPS-191))
 - Calculate the build version from the highest `X.Y.Z` Git tag (`0.0.0` when there is no release) and increase the minor number, so the first build is `0.1.0-...`. The version files are no longer read for the build version ([DEVSECOPS-191](https://raulstechtips.atlassian.net/browse/DEVSECOPS-191))

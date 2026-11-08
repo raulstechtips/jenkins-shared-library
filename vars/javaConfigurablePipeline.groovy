@@ -8,8 +8,9 @@ import dev.raulstechtips.jenkins.helpers.RegistryCatalog
  * It loads project-pipeline-config.yaml as type java, builds the agent pod with agentPodYaml, and
  * runs the stages that pipeline-steps turns on: checkout and version, chart render, the Trivy
  * secret and Dockerfile scans in parallel with the opengrep scan, build, unit test, Helm test,
- * image build, Trivy image scan, chart package and upload, Trivy chart scan, Helm clean install or
- * Helm install, Argo deploy, and release. Most stages run on the generic agent merged with the
+ * prepared image context transfer, image build, Trivy image scan, chart package and upload,
+ * Trivy chart scan, Helm clean install or Helm install, chart version update, release publication,
+ * and Argo deploy. Most stages run on the generic agent merged with the
  * library pod. Image build runs on the builder agent and the Helm installs on the deployer agent.
  * Build and unit test run build-command and test-command in the jdk container. The Helm installs
  * never run on main or in a release run, and Argo deploy runs only on a main push or in a release
@@ -77,7 +78,7 @@ def call() {
                                     'opengrep-scan', 'build', 'unit-test',
                                     'helm-test', 'build-docker-image', 'trivy-image-scan',
                                     'helm-package-upload', 'trivy-chart-scan', 'helm-clean-install',
-                                    'helm-install', 'argo-deploy', 'release'
+                                    'helm-install', 'release', 'argo-deploy'
                                 ]).join(', ')
                                 if (!cfg.skipAll) {
                                     cfg.version = computeVersion(cfg)
@@ -150,6 +151,15 @@ def call() {
                             helmTest(cfg)
                         }
                     }
+                    stage('Prepare image context') {
+                        when {
+                            expression { PipelineSteps.shouldRun(cfg, 'build-docker-image') }
+                        }
+                        steps {
+                            stash name: 'image-context', includes: '**/*',
+                                excludes: '.git,.git/**,.pipeline/**,.gradle/**', useDefaultExcludes: false
+                        }
+                    }
                     stage('Build image') {
                         when {
                             beforeAgent true
@@ -188,7 +198,7 @@ def call() {
                             expression { PipelineSteps.shouldRun(cfg, 'helm-package-upload') }
                         }
                         steps {
-                            helmPackageUpload(cfg, cfg.digest)
+                            helmPackageUpload(cfg)
                         }
                     }
                     stage('Trivy chart scan') {
@@ -210,7 +220,7 @@ def call() {
                             }
                         }
                         steps {
-                            helmCleanInstall(cfg, cfg.digest)
+                            helmCleanInstall(cfg)
                         }
                     }
                     stage('Helm install') {
@@ -224,15 +234,7 @@ def call() {
                             }
                         }
                         steps {
-                            helmInstall(cfg, cfg.digest)
-                        }
-                    }
-                    stage('Argo deploy') {
-                        when {
-                            expression { PipelineSteps.shouldRun(cfg, 'argo-deploy') }
-                        }
-                        steps {
-                            argoDeploy(cfg)
+                            helmInstall(cfg)
                         }
                     }
                     stage('Update chart version') {
@@ -249,8 +251,16 @@ def call() {
                         }
                         steps {
                             script {
-                                releasePipeline.finish(cfg)
+                                releasePipeline.publish(cfg)
                             }
+                        }
+                    }
+                    stage('Argo deploy') {
+                        when {
+                            expression { PipelineSteps.shouldRun(cfg, 'argo-deploy') }
+                        }
+                        steps {
+                            argoDeploy(cfg)
                         }
                     }
                 }

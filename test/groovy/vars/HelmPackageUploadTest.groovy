@@ -16,7 +16,6 @@ class HelmPackageUploadTest extends BasePipelineTest {
     private String activeContainer
     private String remoteVersion
     private Map cfg
-    private String digest
     private String chartName
     private Map registryOverrides
 
@@ -28,7 +27,6 @@ class HelmPackageUploadTest extends BasePipelineTest {
         scopes = []
         environment = [:]
         remoteVersion = '1.2.3'
-        digest = 'sha256:' + 'a' * 64
         chartName = 'chart-name'
         registryOverrides = [:]
         cfg = [version: '1.2.3', 'publish-targets': ['ghcr', 'harbor'],
@@ -87,13 +85,13 @@ class HelmPackageUploadTest extends BasePipelineTest {
     }
 
     @Test
-    void writesVersionDigestTagBeforePackagingAndPushesSameArchiveToBothTargets() {
-        loadScript('vars/helmPackageUpload.groovy').call(cfg, digest)
+    void writesCleanVersionTagBeforePackagingAndPushesSameArchiveToBothTargets() {
+        loadScript('vars/helmPackageUpload.groovy').call(cfg)
         Map tag = commands.find { it.text.contains('yq -i') }
         assertEquals('tools', tag.container)
         assertEquals(['-i', '.jenkins.controller.image.tag = strenv(TAG)', 'charts/values.yaml'],
             PublishingShellProbe.argv(tag, 'yq'))
-        assertEquals('1.2.3@' + digest, tag.environment.TAG)
+        assertEquals('1.2.3', tag.environment.TAG)
         Map pack = commands.find { it.text.contains('helm package') }
         assertEquals('helm', pack.container)
         assertTrue(pack.scopes.empty, 'Packaging must not bind registry credentials')
@@ -133,7 +131,7 @@ class HelmPackageUploadTest extends BasePipelineTest {
     void emptyTagPathLeavesValuesUntouchedAndNeedsNoDigest() {
         cfg['helm-image-tag-path'] = ''
         cfg['publish-targets'] = ['ghcr']
-        loadScript('vars/helmPackageUpload.groovy').call(cfg, null)
+        loadScript('vars/helmPackageUpload.groovy').call(cfg)
         assertFalse(commands.any { it.text.contains('yq') })
         assertEquals(1, commands.count { it.text.contains('helm push ') })
     }
@@ -142,7 +140,7 @@ class HelmPackageUploadTest extends BasePipelineTest {
     void rejectsWrongRemoteVersionEvenWhenHelmShowSucceeds() {
         remoteVersion = '9.9.9'
         def failure = assertThrows(IllegalArgumentException) {
-            loadScript('vars/helmPackageUpload.groovy').call(cfg, digest)
+            loadScript('vars/helmPackageUpload.groovy').call(cfg)
         }
         assertTrue(failure.message.contains('version'))
         assertEquals(1, commands.count { it.text.contains('helm push ') })
@@ -153,12 +151,12 @@ class HelmPackageUploadTest extends BasePipelineTest {
     void rejectsMissingRemoteVersion() {
         remoteVersion = ''
         assertThrows(IllegalArgumentException) {
-            loadScript('vars/helmPackageUpload.groovy').call(cfg, digest)
+            loadScript('vars/helmPackageUpload.groovy').call(cfg)
         }
     }
 
     static List<Arguments> chartInputs() {
-        ['tag-path', 'digest', 'version', 'chart-name', 'chart-repo', 'host'].collectMany { String field ->
+        ['tag-path', 'version', 'chart-name', 'chart-repo', 'host'].collectMany { String field ->
             PublishingShellProbe.payloads.collect { String payload -> Arguments.of(field, payload) }
         }
     }
@@ -168,17 +166,16 @@ class HelmPackageUploadTest extends BasePipelineTest {
     void chartArgumentsStayInert(String field, String payload) {
         switch (field) {
             case 'tag-path': cfg['helm-image-tag-path'] = '.["' + payload + '"].image.tag'; break
-            case 'digest': digest = payload; break
             case 'version': cfg.version = payload; remoteVersion = payload; break
             case 'chart-name': chartName = payload; break
             case 'chart-repo': registryOverrides['chart-repo'] = payload; break
             case 'host': registryOverrides.host = payload; break
         }
-        loadScript('vars/helmPackageUpload.groovy').call(cfg, digest)
+        loadScript('vars/helmPackageUpload.groovy').call(cfg)
         Map tag = commands.find { it.text.contains('yq -i') }
         assertEquals(['-i', cfg['helm-image-tag-path'] + ' = strenv(TAG)', 'charts/values.yaml'],
             PublishingShellProbe.argv(tag, 'yq'))
-        assertEquals(cfg.version + '@' + digest, tag.environment.TAG)
+        assertEquals(cfg.version, tag.environment.TAG)
         Map pack = commands.find { it.text.contains('helm package') }
         assertEquals(['package', 'charts', '--version', cfg.version, '--destination', '.pipeline/dist'],
             PublishingShellProbe.argv(pack, 'helm'))
