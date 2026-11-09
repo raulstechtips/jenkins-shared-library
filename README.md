@@ -29,6 +29,25 @@ change Git. See the `platform-operations` README for setup and use.
 
 Its unit tests run with `./gradlew test`.
 
+`discoverJobsPipeline()` is the discovery entry point for `platform-operations`.
+On `main` only, it checks out that repository on the generic agent and finds
+`pipelines/*.Jenkinsfile`. `discoverJobs` passes filename-derived IDs and
+display names to a fixed Job DSL script in `JobDiscovery`.
+The script creates manual SCM jobs under the root `Jobs` folder. It uses the
+checked-out repository's URL and credential, branch `*/main`, and each file's
+script path. It preserves runtime job properties and tracking actions, but
+removes automatic pipeline triggers. It never reads or executes operational
+Jenkinsfile contents.
+Feature branches, pull requests, and tags do not modify generated jobs.
+
+Removed files disable their jobs without deleting history. Restoring the same
+filename re-enables its job. Filenames must use lowercase words separated by
+hyphens; `update-infisical-auth.Jenkinsfile` displays as `Update Infisical Auth`.
+The fixed Job DSL script requires administrator script approval before its
+first use; adding files does not change that script. The `platform-operations`
+README contains the initial discovery and approval steps.
+No project pipeline configuration or per-job metadata file is needed.
+
 ## 2. How a repo uses the library
 
 A repo needs two files in its root.
