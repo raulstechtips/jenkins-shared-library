@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add `updateInfisicalAuthPipeline()` for manual, selective updates to the existing Infisical credentials Secret and connection. Leave omitted fields unchanged, reject empty requests, and allow the connection name to be selected with `infisical-prod` as the default. The operation does not update Git ([DEVSECOPS-62](https://raulstechtips.atlassian.net/browse/DEVSECOPS-62)).
+- Add `discoverJobsPipeline()` to discover `pipelines/*.Jenkinsfile` on `main` and create manual SCM jobs in the root `Jobs` folder. Derive display names from filenames, preserve runtime parameters and build history, disable jobs for removed files, and re-enable them when the files return. The fixed Job DSL script requires initial administrator approval; adding pipeline files does not require another approval ([DEVSECOPS-62](https://raulstechtips.atlassian.net/browse/DEVSECOPS-62)).
 - Add the first shared library, including its pipelines, steps, release flow, config validation, and reference README ([DEVSECOPS-34](https://raulstechtips.atlassian.net/browse/DEVSECOPS-34))
 - Add the `argo-deploy-targets` config key, so that `argoDeploy` opens one dev deploy PR for each listed Argo file instead of only `argo/dev/<project-name>.yaml` ([DEVSECOPS-47](https://raulstechtips.atlassian.net/browse/DEVSECOPS-47))
 
