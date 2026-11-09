@@ -5,7 +5,7 @@ Jenkins shared library of CI/CD steps.
 ## 1. Purpose
 
 This library gives each repo a full CI/CD pipeline from one config file.
-The library has two pipelines:
+The library has two repository pipelines:
 
 - `clusterConfigurablePipeline()` is for repos that ship a Helm chart and an optional image.
 - `javaConfigurablePipeline()` is for Gradle (Java or Groovy) repos.
@@ -15,6 +15,19 @@ The library validates the file and stops the build on any error.
 Flags in the file enable the steps.
 The library calculates the version, runs the scans, publishes the artifacts and deploys.
 A release run tags and pushes the release commit.
+
+The separate `updateInfisicalAuthPipeline()` is a manual operational
+pipeline. It takes optional client ID, client secret and URL build parameters,
+and updates only the supplied fields in existing Kubernetes resources.
+The library fixes the credentials target to `infisical/universal-auth-credentials`
+and the connection namespace to `default`. The `INFISICAL_CONNECTION_NAME`
+build parameter selects the connection, with `infisical-prod` as its default.
+The implementation follows the same step and helper pattern:
+`vars/updateInfisicalAuth.groovy` runs commands built by
+`InfisicalAuthCommands`. It does not read project pipeline configuration or
+change Git. See the `platform-operations` README for setup and use.
+
+Its unit tests run with `./gradlew test`.
 
 ## 2. How a repo uses the library
 
