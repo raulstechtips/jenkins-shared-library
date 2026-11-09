@@ -36,7 +36,7 @@ dependencies {
 
 test {
     useJUnitPlatform {
-        excludeTags 'release-integration', 'operations-integration'
+        excludeTags 'release-integration'
     }
 }
 
@@ -48,18 +48,6 @@ tasks.register('releaseIntegrationTest', Test) {
     classpath = sourceSets.test.runtimeClasspath
     useJUnitPlatform {
         includeTags 'release-integration'
-    }
-    shouldRunAfter test
-}
-
-// Runs with Bash and jq, which are available in the operational kubectl container.
-tasks.register('operationsIntegrationTest', Test) {
-    description = 'Checks selective Infisical updates with Bash, jq and a local Kubernetes fixture.'
-    group = 'verification'
-    testClassesDirs = sourceSets.test.output.classesDirs
-    classpath = sourceSets.test.runtimeClasspath
-    useJUnitPlatform {
-        includeTags 'operations-integration'
     }
     shouldRunAfter test
 }

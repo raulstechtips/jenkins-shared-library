@@ -11,14 +11,13 @@ class InfisicalAuthCommands implements Serializable {
      * Only supplied fields are included. Credential values are read by jq from the
      * agent environment; they are never included in a command string.
      *
-     * @param inputs clientId, clientSecret and url from the build environment
-     * @param targets the existing credentials Secret and connection names and namespaces
+     * @param inputs clientId, clientSecret, url and connectionName from the build environment
      * @return preflight commands, then update commands, in the same resource order
      * @throws IllegalArgumentException when every input is blank, the URL is invalid,
-     *     or resource configuration is missing
+     *     or the connection name is blank when a URL is supplied
      */
     @NonCPS
-    List<String> update(Map inputs, Map targets) {
+    List<String> update(Map inputs) {
         boolean id = supplied(inputs.clientId)
         boolean secret = supplied(inputs.clientSecret)
         boolean url = supplied(inputs.url)
@@ -35,12 +34,12 @@ class InfisicalAuthCommands implements Serializable {
             if (id) { fields << 'clientId: (env.INFISICAL_CLIENT_ID | @base64)' }
             if (secret) { fields << 'clientSecret: (env.INFISICAL_CLIENT_SECRET | @base64)' }
             patches << patch('{data: {' + fields.join(', ') + '}}', 'secret',
-                required(targets, 'credentialsNamespace'), required(targets, 'credentialsSecretName'))
+                'infisical', 'universal-auth-credentials')
         }
         if (url) {
             patches << patch('{spec: {address: env.INFISICAL_URL}}',
                 'infisicalconnections.secrets.infisical.com',
-                required(targets, 'connectionNamespace'), required(targets, 'connectionName'))
+                'default', required(inputs, 'connectionName'))
         }
         return patches.collect { it + ' --dry-run=server -o name >/dev/null' } +
             patches.collect { it + ' -o name' }

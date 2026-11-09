@@ -10,19 +10,17 @@ import static org.junit.jupiter.api.Assertions.*
 class UpdateInfisicalAuthTest extends BasePipelineTest {
     private String containerName
     private List<String> commands
-    private Map targets
 
     @Override
     @BeforeEach
     void setUp() throws Exception {
         super.setUp()
-        targets = [credentialsNamespace: 'infisical', credentialsSecretName: 'universal-auth-credentials',
-            connectionNamespace: 'default', connectionName: 'infisical-prod']
         commands = []
         binding.setVariable('env', [
             INFISICAL_CLIENT_ID: 'new-id',
             INFISICAL_CLIENT_SECRET: 'new-secret',
-            INFISICAL_URL: 'https://new.example.test/api'
+            INFISICAL_URL: 'https://new.example.test/api',
+            INFISICAL_CONNECTION_NAME: 'infisical-dev'
         ])
         helper.registerAllowedMethod('container', [String, Closure]) { String name, Closure body ->
             containerName = name
@@ -36,25 +34,23 @@ class UpdateInfisicalAuthTest extends BasePipelineTest {
 
     @Test
     void runsTheRealCommandHelperOutputInOrder() {
-        loadScript('vars/updateInfisicalAuth.groovy').call(targets)
+        loadScript('vars/updateInfisicalAuth.groovy').call()
         assertEquals('kubectl', containerName)
         assertEquals(new InfisicalAuthCommands().update([
-            clientId: 'new-id', clientSecret: 'new-secret', url: 'https://new.example.test/api'
-        ], targets), commands)
+            clientId: 'new-id', clientSecret: 'new-secret', url: 'https://new.example.test/api',
+            connectionName: 'infisical-dev'
+        ]), commands)
         assertFalse(commands.any { it.contains('new-secret') || it.contains('new-id') })
     }
 
     @Test
-    void rejectsMissingOrBlankResourceConfigurationBeforeShellExecution() {
-        targets.keySet().each { String key ->
-            [null, '', '  ', 7].each { invalid ->
-                Map bad = new LinkedHashMap(targets)
-                bad[key] = invalid
-                assertThrows(IllegalArgumentException) {
-                    loadScript('vars/updateInfisicalAuth.groovy').call(bad)
-                }
-                assertTrue(commands.empty)
+    void rejectsMissingOrBlankConnectionNameBeforeShellExecution() {
+        [null, '', '  ', 7].each { invalid ->
+            binding.getVariable('env').INFISICAL_CONNECTION_NAME = invalid
+            assertThrows(IllegalArgumentException) {
+                loadScript('vars/updateInfisicalAuth.groovy').call()
             }
+            assertTrue(commands.empty)
         }
     }
 
@@ -62,7 +58,7 @@ class UpdateInfisicalAuthTest extends BasePipelineTest {
     void emptyInputFailsBeforeAnyShellCommand() {
         binding.setVariable('env', [:])
         assertThrows(IllegalArgumentException) {
-            loadScript('vars/updateInfisicalAuth.groovy').call(targets)
+            loadScript('vars/updateInfisicalAuth.groovy').call()
         }
         assertTrue(commands.empty)
     }
@@ -74,7 +70,7 @@ class UpdateInfisicalAuthTest extends BasePipelineTest {
             throw new IllegalStateException('Patch forbidden')
         }
         assertThrows(IllegalStateException) {
-            loadScript('vars/updateInfisicalAuth.groovy').call(targets)
+            loadScript('vars/updateInfisicalAuth.groovy').call()
         }
         assertEquals(1, commands.size())
         assertTrue(commands[0].contains('--dry-run=server'))

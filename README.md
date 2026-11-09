@@ -16,17 +16,18 @@ Flags in the file enable the steps.
 The library calculates the version, runs the scans, publishes the artifacts and deploys.
 A release run tags and pushes the release commit.
 
-The separate `updateInfisicalAuthPipeline(targets)` is a manual operational
+The separate `updateInfisicalAuthPipeline()` is a manual operational
 pipeline. It takes optional client ID, client secret and URL build parameters,
 and updates only the supplied fields in existing Kubernetes resources.
-`platform-operations/pipelines/update-infisical-auth.Jenkinsfile` selects the
-target resources. The implementation follows the same step and helper pattern:
+The library fixes the credentials target to `infisical/universal-auth-credentials`
+and the connection namespace to `default`. The `INFISICAL_CONNECTION_NAME`
+build parameter selects the connection, with `infisical-prod` as its default.
+The implementation follows the same step and helper pattern:
 `vars/updateInfisicalAuth.groovy` runs commands built by
 `InfisicalAuthCommands`. It does not read project pipeline configuration or
 change Git. See the `platform-operations` README for setup and use.
 
-Run its command integration checks with `./gradlew operationsIntegrationTest`
-on a machine with Bash and jq. The checks use a local Kubernetes fixture.
+Its unit tests run with `./gradlew test`.
 
 ## 2. How a repo uses the library
 

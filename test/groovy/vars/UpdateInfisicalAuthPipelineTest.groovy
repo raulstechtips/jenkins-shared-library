@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test
 import static org.junit.jupiter.api.Assertions.*
 
 class UpdateInfisicalAuthPipelineTest extends DeclarativePipelineTest {
-    private Map observedTargets
+    private boolean updateCalled
     private DeclarativePipeline declaration
     private boolean failUpdate
 
@@ -17,7 +17,7 @@ class UpdateInfisicalAuthPipelineTest extends DeclarativePipelineTest {
     @BeforeEach
     void setUp() throws Exception {
         super.setUp()
-        observedTargets = null
+        updateCalled = false
         declaration = null
         failUpdate = false
         binding.setVariable('params', [:])
@@ -28,8 +28,8 @@ class UpdateInfisicalAuthPipelineTest extends DeclarativePipelineTest {
         }
         helper.registerAllowedMethod('logRotator', [Map]) { Map args -> args }
         helper.registerAllowedMethod('buildDiscarder', [Map]) { Map args -> }
-        helper.registerAllowedMethod('updateInfisicalAuth', [Map]) { Map targets ->
-            observedTargets = targets
+        helper.registerAllowedMethod('updateInfisicalAuth', []) {
+            updateCalled = true
             if (failUpdate) {
                 throw new IllegalStateException('Update failed')
             }
@@ -37,11 +37,10 @@ class UpdateInfisicalAuthPipelineTest extends DeclarativePipelineTest {
     }
 
     @Test
-    void runsOnlyTheOperationalStepWithTheConfiguredTargets() {
-        Map targets = [credentialsNamespace: 'infisical', credentialsSecretName: 'universal-auth-credentials',
-            connectionNamespace: 'default', connectionName: 'infisical-prod']
-        loadScript('vars/updateInfisicalAuthPipeline.groovy').call(targets)
-        assertEquals(targets, observedTargets)
+    void runsOnlyTheOperationalStepWithDefaultConnectionParameter() {
+        loadScript('vars/updateInfisicalAuthPipeline.groovy').call()
+        assertTrue(updateCalled)
+        assertEquals('infisical-prod', binding.getVariable('params').INFISICAL_CONNECTION_NAME)
         assertEquals('none', declaration.agent.label)
         assertEquals('deployer',
             declaration.stages['Update Infisical authentication'].agent.kubernetes.inheritFrom)
@@ -53,7 +52,7 @@ class UpdateInfisicalAuthPipelineTest extends DeclarativePipelineTest {
     void doesNotSuppressUpdateFailure() {
         failUpdate = true
         assertThrows(IllegalStateException) {
-            loadScript('vars/updateInfisicalAuthPipeline.groovy').call([:])
+            loadScript('vars/updateInfisicalAuthPipeline.groovy').call()
         }
     }
 }
