@@ -5,7 +5,7 @@ Jenkins shared library of CI/CD steps.
 ## 1. Purpose
 
 This library gives each repo a full CI/CD pipeline from one config file.
-The library has two pipelines:
+The library has two repository pipelines:
 
 - `clusterConfigurablePipeline()` is for repos that ship a Helm chart and an optional image.
 - `javaConfigurablePipeline()` is for Gradle (Java or Groovy) repos.
@@ -15,6 +15,38 @@ The library validates the file and stops the build on any error.
 Flags in the file enable the steps.
 The library calculates the version, runs the scans, publishes the artifacts and deploys.
 A release run tags and pushes the release commit.
+
+The separate `updateInfisicalAuthPipeline()` is a manual operational
+pipeline. It takes optional client ID, client secret and URL build parameters,
+and updates only the supplied fields in existing Kubernetes resources.
+The library fixes the credentials target to `infisical/universal-auth-credentials`
+and the connection namespace to `default`. The `INFISICAL_CONNECTION_NAME`
+build parameter selects the connection, with `infisical-prod` as its default.
+The implementation follows the same step and helper pattern:
+`vars/updateInfisicalAuth.groovy` runs commands built by
+`InfisicalAuthCommands`. It does not read project pipeline configuration or
+change Git. See the `platform-operations` README for setup and use.
+
+Its unit tests run with `./gradlew test`.
+
+`discoverJobsPipeline()` is the discovery entry point for `platform-operations`.
+On `main` only, it checks out that repository on the generic agent and finds
+`pipelines/*.Jenkinsfile`. `discoverJobs` passes filename-derived IDs and
+display names to a fixed Job DSL script in `JobDiscovery`.
+The script creates manual SCM jobs under the root `Jobs` folder. It uses the
+checked-out repository's URL and credential, branch `*/main`, and each file's
+script path. It preserves runtime job properties and tracking actions, but
+removes automatic pipeline triggers. It never reads or executes operational
+Jenkinsfile contents.
+Feature branches, pull requests, and tags do not modify generated jobs.
+
+Removed files disable their jobs without deleting history. Restoring the same
+filename re-enables its job. Filenames must use lowercase words separated by
+hyphens; `update-infisical-auth.Jenkinsfile` displays as `Update Infisical Auth`.
+The fixed Job DSL script requires administrator script approval before its
+first use; adding files does not change that script. The `platform-operations`
+README contains the initial discovery and approval steps.
+No project pipeline configuration or per-job metadata file is needed.
 
 ## 2. How a repo uses the library
 
