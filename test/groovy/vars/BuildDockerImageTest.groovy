@@ -111,7 +111,7 @@ class BuildDockerImageTest extends BasePipelineTest {
         assertEquals(2, executor.text.count('--destination '))
         assertEquals(['--context', 'plugins', '--dockerfile', 'plugins/Dockerfile',
             '--destination', 'ghcr.io/raulstechtips/controller:1.2.3',
-            '--destination', 'harbor.prod.raulstechtips.dev/raulstechtips/controller:1.2.3',
+            '--destination', 'harbor.dev.raulstechtips.dev/raulstechtips/controller:1.2.3',
             '--digest-file', '.pipeline/image.digest'], PublishingShellProbe.argv(executor, 'kaniko'))
         assertFalse(commands.any { it.text.contains('latest') })
         assertTrue(scopes.empty)
@@ -126,7 +126,7 @@ class BuildDockerImageTest extends BasePipelineTest {
         List entries = commands.findAll { it.text.contains('base64') }
         assertEquals(2, entries.size())
         assertEquals([['ghcr'], ['ghcr', 'harbor']], entries*.scopes)
-        assertEquals(['ghcr.io', 'harbor.prod.raulstechtips.dev'], entries.collect { it.environment.REG_HOST })
+        assertEquals(['ghcr.io', 'harbor.dev.raulstechtips.dev'], entries.collect { it.environment.REG_HOST })
         assertEquals(['robot$ghcr', 'robot$harbor'], entries.collect { it.environment.REG_USER })
         entries.each { Map entry ->
             assertTrue(entry.text.startsWith('set +x\n'))
@@ -231,9 +231,9 @@ class BuildDockerImageTest extends BasePipelineTest {
                 assertFalse(output.contains('cm9ib3Qk'), 'Base64 auth must not appear in tracing')
             }
             Map auths = new JsonSlurper().parseText(config.text).auths
-            assertEquals(['ghcr.io', 'harbor.prod.raulstechtips.dev'] as Set, auths.keySet())
+            assertEquals(['ghcr.io', 'harbor.dev.raulstechtips.dev'] as Set, auths.keySet())
             ['ghcr', 'harbor'].eachWithIndex { String target, int index ->
-                String host = index == 0 ? 'ghcr.io' : 'harbor.prod.raulstechtips.dev'
+                String host = index == 0 ? 'ghcr.io' : 'harbor.dev.raulstechtips.dev'
                 String expected = ('robot$' + target + ':synthetic-' + target + '-password').bytes.encodeBase64().toString()
                 assertEquals([auth: expected], auths[host])
             }

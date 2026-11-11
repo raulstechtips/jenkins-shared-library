@@ -244,7 +244,7 @@ class ClusterConfigurablePipelineTest extends DeclarativePipelineTest {
     void builtImageReferenceUsesFirstConfiguredRegistry() {
         configText = fixture('jenkins').replace('[ghcr]', '[harbor, ghcr]')
         runPipeline()
-        assertEquals('harbor.prod.raulstechtips.dev/raulstechtips/jenkins-controller:' +
+        assertEquals('harbor.dev.raulstechtips.dev/raulstechtips/jenkins-controller:' +
             observedConfig.version + '@' + digest, callNamed('trivyImageScan').argument)
     }
 

@@ -102,10 +102,10 @@ class HelmPackageUploadTest extends BasePipelineTest {
         assertEquals(2, pushes.size())
         assertEquals([
             ['push', '.pipeline/dist/chart-name-1.2.3.tgz', 'oci://ghcr.io/raulstechtips/charts'],
-            ['push', '.pipeline/dist/chart-name-1.2.3.tgz', 'oci://harbor.prod.raulstechtips.dev/raulstechtips/charts']
+            ['push', '.pipeline/dist/chart-name-1.2.3.tgz', 'oci://harbor.dev.raulstechtips.dev/raulstechtips/charts']
         ], pushes.collect { PublishingShellProbe.argv(it, 'helm') })
         ['ghcr', 'harbor'].eachWithIndex { String target, int index ->
-            String host = index == 0 ? 'ghcr.io' : 'harbor.prod.raulstechtips.dev'
+            String host = index == 0 ? 'ghcr.io' : 'harbor.dev.raulstechtips.dev'
             List targetCommands = commands.findAll { it.scopes == [target] }
             assertEquals(2, targetCommands.size(), 'Only login and push bind credentials')
             assertEquals(['registry', 'login', host, '-u', 'robot$' + target, '--password-stdin'],

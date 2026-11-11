@@ -85,7 +85,7 @@ class TrivyImageScanTest extends TrivyTestSupport {
     void builtRefIncludesDigestAndUsesFirstTargetsCredentialsOnly() {
         reportFixture = 'trivy-image'
         cfg['publish-targets'] = ['harbor', 'ghcr']
-        String ref = builtRef('harbor.prod.raulstechtips.dev/raulstechtips')
+        String ref = builtRef('harbor.dev.raulstechtips.dev/raulstechtips')
         loadScript('vars/trivyImageScan.groovy').call(cfg, ref)
         assertEquals(['harbor-push'], logins)
         assertScanCommands('image')
