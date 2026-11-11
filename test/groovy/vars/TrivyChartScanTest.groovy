@@ -14,8 +14,8 @@ class TrivyChartScanTest extends TrivyTestSupport {
         assertEquals('helm', pull.container)
         assertTrue(pull.credentials)
         assertTrue(pull.script.startsWith('set +x\n'))
-        assertTrue(pull.script.contains('printf \'%s\' "$REG_PASS" | helm registry login \'harbor.prod.raulstechtips.dev\' -u "$REG_USER" --password-stdin'))
-        assertTrue(pull.script.contains("helm pull 'oci://harbor.prod.raulstechtips.dev/raulstechtips/charts/demo-chart' --version '1.2.3' --untar --untardir .pipeline/pulled"))
+        assertTrue(pull.script.contains('printf \'%s\' "$REG_PASS" | helm registry login \'harbor.dev.raulstechtips.dev\' -u "$REG_USER" --password-stdin'))
+        assertTrue(pull.script.contains("helm pull 'oci://harbor.dev.raulstechtips.dev/raulstechtips/charts/demo-chart' --version '1.2.3' --untar --untardir .pipeline/pulled"))
         def renders = shells.findAll { it.script.startsWith('helm template ') }
         assertEquals(3, renders.size())
         renders.each { assertEquals('helm', it.container); assertFalse(it.credentials) }

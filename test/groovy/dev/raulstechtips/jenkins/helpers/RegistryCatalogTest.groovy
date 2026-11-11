@@ -12,9 +12,9 @@ class RegistryCatalogTest {
             'credentials-id': 'ghcr-push'
         ],
         harbor: [
-            host: 'harbor.prod.raulstechtips.dev',
-            'image-prefix': 'harbor.prod.raulstechtips.dev/raulstechtips',
-            'chart-repo': 'oci://harbor.prod.raulstechtips.dev/raulstechtips/charts',
+            host: 'harbor.dev.raulstechtips.dev',
+            'image-prefix': 'harbor.dev.raulstechtips.dev/raulstechtips',
+            'chart-repo': 'oci://harbor.dev.raulstechtips.dev/raulstechtips/charts',
             'credentials-id': 'harbor-push'
         ]
     ]
@@ -29,9 +29,9 @@ class RegistryCatalogTest {
             'credentials-id': 'ghcr-push'
         ], catalog.target('ghcr'))
         assertEquals([
-            host: 'harbor.prod.raulstechtips.dev',
-            'image-prefix': 'harbor.prod.raulstechtips.dev/raulstechtips',
-            'chart-repo': 'oci://harbor.prod.raulstechtips.dev/raulstechtips/charts',
+            host: 'harbor.dev.raulstechtips.dev',
+            'image-prefix': 'harbor.dev.raulstechtips.dev/raulstechtips',
+            'chart-repo': 'oci://harbor.dev.raulstechtips.dev/raulstechtips/charts',
             'credentials-id': 'harbor-push'
         ], catalog.target('harbor'))
     }
