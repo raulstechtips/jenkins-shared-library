@@ -12,10 +12,10 @@ class PodSpecBuilder implements Serializable {
      * Returns the agent pod spec as pretty-printed JSON.
      *
      * The pod always has a tools container. It adds helm when the repo has a chart, kubeconform
-     * when helm-test is true, trivy when trivy-scan is true, and jdk for the java pipeline. Each
-     * container runs sleep infinity as user 1000 with the same HOME and cache paths, and trivy also
-     * gets the Trivy database mirrors. Memory is limited to 2Gi for trivy and jdk and to 1Gi for
-     * the others. The service account token is not mounted.
+     * when helm-test is true, trivy when trivy-scan is true, and jdk, python or node for the pipeline
+     * of that type. Each container runs sleep infinity as user 1000 with the same HOME and cache
+     * paths, and trivy also gets the Trivy database mirrors. Memory is limited to 3Gi for node, to
+     * 2Gi for trivy, jdk and python, and to 1Gi for the others. The service account token is not mounted.
      *
      * @param cfg the loaded config. Reads chartPresent, type and pipeline-steps.
      * @param tools the parsed tools.yaml, which maps each container name to a map with its image
@@ -33,8 +33,9 @@ class PodSpecBuilder implements Serializable {
         if (cfg['pipeline-steps']['trivy-scan']) {
             names.add('trivy')
         }
-        if (cfg.type == 'java') {
-            names.add('jdk')
+        Map buildContainers = [java: 'jdk', python: 'python', node: 'node']
+        if (buildContainers[cfg.type]) {
+            names.add(buildContainers[cfg.type])
         }
         List containers = names.collect { String name ->
             Map environment = [
@@ -59,7 +60,7 @@ class PodSpecBuilder implements Serializable {
                 env: environment.collect { key, value -> [name: key, value: value] },
                 resources: [
                     requests: [cpu: '10m', memory: '128Mi'],
-                    limits: [memory: name in ['trivy', 'jdk'] ? '2Gi' : '1Gi']
+                    limits: [memory: name == 'node' ? '3Gi' : name in ['trivy', 'jdk', 'python'] ? '2Gi' : '1Gi']
                 ]
             ]
         }

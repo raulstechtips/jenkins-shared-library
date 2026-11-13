@@ -7,7 +7,7 @@ import dev.raulstechtips.jenkins.helpers.ConfigValidator
  * ConfigValidator. It then sets type, and sets chartPresent to true when charts/Chart.yaml can be
  * read with readTrusted. It needs no container, so the pipelines call it before any agent starts.
  *
- * @param args a map with type, 'cluster' or 'java'
+ * @param args a map with type, 'cluster', 'java', 'python' or 'node'
  * @return the validated config, with type and chartPresent added
  * @throws error (fails the build) when the file is missing, is not valid YAML, or fails validation.
  *     A validation error lists every problem.

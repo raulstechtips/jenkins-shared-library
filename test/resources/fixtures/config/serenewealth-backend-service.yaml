@@ -1,0 +1,14 @@
+project-config:
+  project-name: serenewealth-backend-service
+  project-description: Serene Wealth API and research workers
+  project-namespace: serenewealth-dev
+  publish-targets:
+    - harbor
+  build-command: bash scripts/build-image-context.sh
+  test-command: uv sync --frozen --extra dev && uv run --frozen pytest -m "not storage and not live"
+  pipeline-steps:
+    build: true
+    unit-test: true
+    trivy-scan: true
+    opengrep-scan: true
+    build-docker-image: true

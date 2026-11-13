@@ -46,7 +46,7 @@ class AgentPodYamlTest extends BasePipelineTest {
             'helm-clean-install': false,
             'argo-deploy': false
         ]
-        if (type == 'java') {
+        if (type in ['java', 'python', 'node']) {
             flags.build = false
         }
         flags.putAll(steps)
@@ -83,6 +83,18 @@ class AgentPodYamlTest extends BasePipelineTest {
         Map result = pod(config('java', false))
 
         assertTrue(result.spec.containers*.name.contains('jdk'))
+    }
+
+    @Test
+    void pythonAndNodeConfigsIncludeTheirPinnedContainer() {
+        ['python', 'node'].each { String type ->
+            readResources.clear()
+            parsedResources.clear()
+            Map container = pod(config(type, false)).spec.containers.find { it.name == type }
+            assertEquals(tools[type].image, container.image)
+            assertTrue(container.image ==~ /.+:[^@]+@sha256:[0-9a-f]{64}/)
+            assertEquals(tools[type].digest, container.image.substring(container.image.indexOf('@') + 1))
+        }
     }
 
     @Test

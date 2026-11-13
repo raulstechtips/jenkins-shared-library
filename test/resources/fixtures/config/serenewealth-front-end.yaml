@@ -1,0 +1,20 @@
+project-config:
+  project-name: serenewealth-front-end
+  project-description: Serene Wealth web app
+  project-namespace: serenewealth-dev
+  publish-targets:
+    - harbor
+  build-command: pnpm install --frozen-lockfile --ignore-scripts && pnpm build
+  test-command: pnpm typecheck && pnpm lint && pnpm test
+  helm-image-tag-path: .image.tag
+  helm-overrides:
+    - overrides.yaml
+  pipeline-steps:
+    build: true
+    unit-test: true
+    helm-test: true
+    trivy-scan: true
+    opengrep-scan: true
+    build-docker-image: true
+    helm-package-upload: true
+    helm-install: true

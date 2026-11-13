@@ -5,10 +5,14 @@ Jenkins shared library of CI/CD steps.
 ## 1. Purpose
 
 This library gives each repo a full CI/CD pipeline from one config file.
-The library has two repository pipelines:
+The library has four repository pipelines:
 
 - `clusterConfigurablePipeline()` is for repos that ship a Helm chart and an optional image.
 - `javaConfigurablePipeline()` is for Gradle (Java or Groovy) repos.
+- `pythonConfigurablePipeline()` is for uv (Python 3.13) repos.
+- `nodeConfigurablePipeline()` is for pnpm (Node.js 24) repos.
+
+The java, python and node pipelines share one stage body, `languageConfigurablePipeline`.
 
 Each pipeline reads `project-pipeline-config.yaml` from the repo root.
 The library validates the file and stops the build on any error.
@@ -59,7 +63,8 @@ The `Jenkinsfile` has two lines:
 clusterConfigurablePipeline()
 ```
 
-Use `javaConfigurablePipeline()` for a Gradle repo.
+Use `javaConfigurablePipeline()` for a Gradle repo, `pythonConfigurablePipeline()` for a uv repo and
+`nodeConfigurablePipeline()` for a pnpm repo.
 Pin the library to a release tag.
 This repo builds itself with `@Library('jenkins-shared-library@main') _` until its first release.
 
@@ -127,6 +132,55 @@ project-config:
     unit-test: true
 ```
 
+`serenewealth-backend-service` (the python pipeline, no chart):
+
+```yaml
+project-config:
+  project-name: serenewealth-backend-service
+  project-description: Serene Wealth API and research workers
+  project-namespace: serenewealth-dev
+  publish-targets:
+    - harbor
+  build-command: bash scripts/build-image-context.sh
+  test-command: uv sync --frozen --extra dev && uv run --frozen pytest -m "not storage and not live"
+  pipeline-steps:
+    build: true
+    unit-test: true
+    trivy-scan: true
+    opengrep-scan: true
+    build-docker-image: true
+```
+
+The build command writes `build/wheelhouse`, and the Dockerfile only copies it.
+
+`serenewealth-front-end` (the node pipeline, a chart and an image):
+
+```yaml
+project-config:
+  project-name: serenewealth-front-end
+  project-description: Serene Wealth web app
+  project-namespace: serenewealth-dev
+  publish-targets:
+    - harbor
+  build-command: pnpm install --frozen-lockfile --ignore-scripts && pnpm build
+  test-command: pnpm typecheck && pnpm lint && pnpm test
+  helm-image-tag-path: .image.tag
+  helm-overrides:
+    - overrides.yaml
+  pipeline-steps:
+    build: true
+    unit-test: true
+    helm-test: true
+    trivy-scan: true
+    opengrep-scan: true
+    build-docker-image: true
+    helm-package-upload: true
+    helm-install: true
+```
+
+The build command writes `.next/standalone` and `.next/static` (Next.js `output: "standalone"`), and the
+Dockerfile only copies them with `public`.
+
 The tests use copies of these files in `test/resources/fixtures/config/`.
 
 ## 3. Config key reference
@@ -143,7 +197,7 @@ The table shows each key under `project-config`.
 | `project-namespace` | string | null | Must match the `project-name` pattern when set. Required when `helm-install` or `helm-clean-install` is true. |
 | `publish-targets` | list of `ghcr`, `harbor` | `[]` | No duplicates. Must not be empty when `build-docker-image` or `helm-package-upload` is true. |
 | `test-command` | string | null | Required (not blank) when `unit-test` is true. One shell string. The library runs it with `sh` from the repo root. |
-| `build-command` | string | null | Java pipeline only. Required (not blank) when `build` is true. One shell string, run with `sh` from the repo root. |
+| `build-command` | string | null | Java, python and node pipelines only. Required (not blank) when `build` is true. One shell string, run with `sh` from the repo root. |
 | `helm-overrides` | list of string | `[]` | Each item must be a non-empty path relative to `charts/`. The library passes each path as `-f <path>` to `helm upgrade -i` from `charts/`, in list order. It also renders and, with `helm-test`, lints the combined overrides in that same order. |
 | `argo-deploy-targets` | list of string | `[]` | Each item must match the `project-name` pattern. Maximum 53 characters. No duplicates. When the list isn't empty, `argoDeploy` uses only these names, and not `project-name`. See [Argo deploy targets](#argo-deploy-targets). |
 | `trivy-fail-on` | list of `CRITICAL`, `HIGH`, `MEDIUM`, `LOW`, `UNKNOWN` | `[]` | An empty list makes the Trivy image and config scans warn only. |
@@ -154,7 +208,7 @@ The table shows each key under `project-config`.
 | `docker-image.context` | string | `.` | Must be a non-empty path relative to the repo root. |
 | `helm-image-tag-path` | string | `""` | When set, it must start with `.` and `build-docker-image` must be true. Example: `.jenkins.controller.image.tag`. The library writes `<version>` to this path in `charts/values.yaml` before `helm package` and before `helm install`. When it's empty, the library writes nothing. |
 | `pipeline-steps` | map | all flags `false` | Allowed child keys: the flags of section 4. |
-| `pipeline-steps.<flag>` | boolean | `false` | `build` is allowed only in the java pipeline. In the cluster pipeline, `build` is an unknown key. |
+| `pipeline-steps.<flag>` | boolean | `false` | `build` is allowed only in the java, python and node pipelines. In the cluster pipeline, `build` is an unknown key. |
 
 A relative path is not blank, doesn't start with `/` and has no `..` part.
 
@@ -205,23 +259,23 @@ Put the flags under `pipeline-steps`. Every flag is `false` by default.
 
 | Flag | Vars that run | Pipelines | Branch rule |
 | --- | --- | --- | --- |
-| (none, when `charts/Chart.yaml` exists) | `renderChart` | both | all |
-| `helm-test` | `helmTest`, which runs `helmDependencyBuild`, `helmLint`, `helmUnitTest` and `kubeconformCheck` | both | all |
-| `trivy-scan` | `trivySecretScan` and `trivyDockerfileScan` before the image build, `trivyImageScan` after the image build, `trivyChartScan` after the chart upload | both | all |
-| `opengrep-scan` | `opengrepScan` | both | all |
-| `build` | `runBuildCommand` | java only | all |
-| `unit-test` | `runTestCommand` | both | all |
-| `build-docker-image` | `buildDockerImage` | both | all |
-| `helm-package-upload` | `helmPackageUpload` | both | all |
-| `helm-install` | `helmInstall` | both | Never on `main`. Never in a release run. Skipped when `helm-clean-install` is also true. |
-| `helm-clean-install` | `helmCleanInstall` | both | Never on `main`. Never in a release run. |
-| `argo-deploy` | `argoDeploy` | both | Only on `main` builds and in release runs. A PR build never deploys. |
+| (none, when `charts/Chart.yaml` exists) | `renderChart` | all | all |
+| `helm-test` | `helmTest`, which runs `helmDependencyBuild`, `helmLint`, `helmUnitTest` and `kubeconformCheck` | all | all |
+| `trivy-scan` | `trivySecretScan` and `trivyDockerfileScan` before the image build, `trivyImageScan` after the image build, `trivyChartScan` after the chart upload | all | all |
+| `opengrep-scan` | `opengrepScan` | all | all |
+| `build` | `runBuildCommand` | java, python, node | all |
+| `unit-test` | `runTestCommand` | all | all |
+| `build-docker-image` | `buildDockerImage` | all | all |
+| `helm-package-upload` | `helmPackageUpload` | all | all |
+| `helm-install` | `helmInstall` | all | Never on `main`. Never in a release run. Skipped when `helm-clean-install` is also true. |
+| `helm-clean-install` | `helmCleanInstall` | all | Never on `main`. Never in a release run. |
+| `argo-deploy` | `argoDeploy` | all | Only on `main` builds and in release runs. A PR build never deploys. |
 
 ## 5. Stage order
 
 ### Before the `pipeline {}` block
 
-Both pipelines do these steps first, without a node:
+Every repository pipeline does these steps first, without a node:
 
 1. Load and validate the config with `loadProjectConfig`.
 2. Compose the pod YAML with `agentPodYaml`.
@@ -229,7 +283,7 @@ Both pipelines do these steps first, without a node:
 
 Jenkins shows the `RELEASE_VERSION` parameter only after the first build of the job.
 
-Both pipelines use `agent none`, a 60 minute timeout, no concurrent builds, and keep 20 builds (10 with artifacts).
+Every repository pipeline uses `agent none`, a 60 minute timeout, no concurrent builds, and keep 20 builds (10 with artifacts).
 All stages run inside one `Pipeline` stage on the main pod.
 That pod inherits the `generic` template.
 After all stages, the build archives `.pipeline/reports/**`.
@@ -258,6 +312,25 @@ After all stages, the build archives `.pipeline/reports/**`.
 4. `Build` (`build`). Runs `build-command` in the `jdk` container.
 5. `Unit test` (`unit-test`). Runs `test-command` in the `jdk` container.
 6. `Helm test`, `Prepare image context`, `Build image`, `Trivy image scan`, `Package and upload chart`, `Trivy chart scan`, `Helm clean install` or `Helm install`, `Update chart version`, `Release`, then `Argo deploy`. These have the same rules as in the cluster pipeline.
+
+### pythonConfigurablePipeline
+
+The same stages as the java pipeline, with these differences:
+
+- `Build` and `Unit test` run `build-command` and `test-command` in the `python` container. It has uv, Python 3.13 and git.
+- Both commands run inside `withCredentials` with the `github-app` credentials. The script exports `GIT_CONFIG_*` variables that make git use `https://x-access-token:$GH_TOKEN@github.com/` for `https://github.com/`, `git@github.com:` and `ssh://git@github.com/` URLs. So uv and pip fetch private GitHub dependencies, such as `ssh://git@github.com/raulstechtips/agentloop.git`, over HTTPS. The token stays in the environment of that one process: the script turns tracing off while it exports the variables, and nothing writes it to a git config or a workspace file.
+- `Prepare image context` leaves out the root `.venv` instead of `.gradle`.
+- A release run writes no Python version file.
+
+### nodeConfigurablePipeline
+
+The same stages as the java pipeline, with these differences:
+
+- `Build` and `Unit test` run `build-command` and `test-command` in the `node` container (Node.js 24).
+- Each command first runs `corepack enable` with the shims in `$HOME/.local/bin` and puts that directory first on `PATH`. So `pnpm` is the version in the `packageManager` field of `package.json`. Corepack downloads it on first use. The pnpm store is under `$HOME`, outside the workspace.
+- The commands get no credentials.
+- `Prepare image context` leaves out the root `node_modules` and `.next/cache` instead of `.gradle`. It keeps `.next/standalone`, `.next/static` and `public`.
+- A release run doesn't write `package.json`.
 
 ### Image-scan gate
 
@@ -302,7 +375,20 @@ Branch builds, PR builds and release runs never skip.
 These stages use `beforeAgent true`, so a skipped stage never starts a pod.
 The install stages run their own `checkout scm`.
 `Build image` clears its builder workspace and restores the `image-context` stash instead of checking out the old source revision.
-The stash includes the prepared release files and Java build outputs. It excludes Git metadata, `.pipeline` reports, and the root `.gradle` cache.
+The stash includes the prepared release files and the build outputs. It excludes Git metadata and `.pipeline` reports. The java pipeline also excludes the root `.gradle` cache, the python pipeline the root `.venv`, and the node pipeline the root `node_modules` and `.next/cache`.
+
+### Build containers
+
+The main pod adds one build container for the pipeline type. Each one is pinned by digest in `tools.yaml`, runs as user 1000 with `HOME=/home/jenkins/agent` and `XDG_CACHE_HOME=/home/jenkins/agent/.cache`, and requests 10m CPU and 128Mi memory.
+
+| Pipeline | Container | Image | Memory limit |
+| --- | --- | --- | --- |
+| java | `jdk` | `eclipse-temurin:21.0.12.1_1-jdk` | 2Gi |
+| python | `python` | `ghcr.io/astral-sh/uv:0.13.8-python3.13-trixie` | 2Gi |
+| node | `node` | `node:24.22.3-bookworm-slim` | 3Gi |
+
+The python image is the full Debian image because the slim one has no git, which uv needs for git dependencies.
+The uv and pnpm caches are under `$HOME`, outside the workspace, so the image context never holds them.
 
 ### Direct Helm deployment
 
@@ -458,7 +544,7 @@ Each target has `host`, `image-prefix`, `chart-repo` and `credentials-id`.
 | --- | --- | --- |
 | `ghcr` | `ghcr-push` | Push and pull images and charts on GHCR. |
 | `harbor` | `harbor-push` | Push and pull images and charts on Harbor. |
-| (none) | `github-app` | Release tag check and push, the latest release lookup, the chart version commit, and the Argo deploy commit to `cluster-config`. |
+| (none) | `github-app` | Release tag check and push, the latest release lookup, the chart version commit, the Argo deploy commit to `cluster-config`, and the git dependencies of python build and test commands. The GitHub App installation must include every private repo that a python project depends on. |
 
 Each credential is a Jenkins "username with password" credential.
 `withRegistryLogin(target) { ... }` binds the credential of a target as `REG_USER` and `REG_PASS`.

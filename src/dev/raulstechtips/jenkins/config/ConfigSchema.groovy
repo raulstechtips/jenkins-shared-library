@@ -13,10 +13,10 @@ class ConfigSchema implements Serializable {
     /**
      * Returns the schema tree for one pipeline type.
      *
-     * The root has one required map key, project-config. The java type also gets the build step
-     * flag and the build-command key. Any other type value gets the cluster shape.
+     * The root has one required map key, project-config. The java, python and node types also get the
+     * build step flag and the build-command key. Any other type value gets the cluster shape.
      *
-     * @param type the pipeline type, 'cluster' or 'java'
+     * @param type the pipeline type, 'cluster', 'java', 'python' or 'node'
      * @return a new map of key name to node spec, rooted at project-config
      */
     @NonCPS
@@ -27,7 +27,7 @@ class ConfigSchema implements Serializable {
             'helm-clean-install', 'argo-deploy'].each { String flag ->
             flags[flag] = [type: 'boolean', defaultValue: false]
         }
-        if (type == 'java') {
+        if (type in ['java', 'python', 'node']) {
             flags.build = [type: 'boolean', defaultValue: false]
         }
         Map keys = [
@@ -51,7 +51,7 @@ class ConfigSchema implements Serializable {
             ]],
             'pipeline-steps': [type: 'map', children: flags]
         ]
-        if (type == 'java') {
+        if (type in ['java', 'python', 'node']) {
             keys['build-command'] = [type: 'string', defaultValue: null]
         }
         ['project-config': [type: 'map', required: true, children: keys]]
