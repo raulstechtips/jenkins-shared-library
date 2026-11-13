@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*
 
 class PodSpecBuilderTest extends BasePipelineTest {
     private final String toolsText = new File('resources/dev/raulstechtips/jenkins/tools.yaml').text
-    private final Map tools = ['tools', 'helm', 'kubeconform', 'trivy', 'jdk'].collectEntries { String name ->
+    private final Map tools = ['tools', 'helm', 'kubeconform', 'trivy', 'jdk', 'python', 'node'].collectEntries { String name ->
         [(name): [image: "registry.example/${name}:pinned@sha256:${'a' * 64}".toString()]]
     }
 
@@ -35,7 +35,7 @@ class PodSpecBuilderTest extends BasePipelineTest {
             'helm-package-upload': false, 'helm-install': false,
             'helm-clean-install': false, 'argo-deploy': false
         ]
-        if (type == 'java') {
+        if (type in ['java', 'python', 'node']) {
             flags.build = false
         }
         flags.putAll(steps)
@@ -74,6 +74,28 @@ class PodSpecBuilderTest extends BasePipelineTest {
     void javaAlwaysAddsJdkEvenWhenBuildIsDisabled() {
         assertEquals(['tools', 'jdk'],
             pod(config('java', false, [build: false])).spec.containers*.name)
+    }
+
+    @Test
+    void pythonAndNodeAddTheirBuildContainerLast() {
+        assertEquals(['tools', 'trivy', 'python'],
+            pod(config('python', false, ['trivy-scan': true])).spec.containers*.name)
+        assertEquals(['tools', 'helm', 'node'], pod(config('node', true)).spec.containers*.name)
+    }
+
+    @Test
+    void pythonAndNodeShareTheCommonSecurityEnvironmentAndRequests() {
+        Map expectedEnv = pod(config('cluster', false)).spec.containers[0].env.collectEntries { [(it.name): it.value] }
+        [python: '2Gi', node: '3Gi'].each { String type, String limit ->
+            Map container = pod(config(type, false)).spec.containers.find { it.name == type }
+            assertEquals(tools[type].image, container.image)
+            assertEquals(['sleep'], container.command)
+            assertEquals(['infinity'], container.args)
+            assertEquals([runAsUser: 1000], container.securityContext)
+            assertEquals(expectedEnv, container.env.collectEntries { [(it.name): it.value] })
+            assertEquals([cpu: '10m', memory: '128Mi'], container.resources.requests)
+            assertEquals([memory: limit], container.resources.limits)
+        }
     }
 
     @Test

@@ -79,6 +79,15 @@ class LoadProjectConfigTest extends BasePipelineTest {
         assertTrue(cfg.containsKey('build-command'))
         assertTrue(errors.empty)
     }
+    @Test void pythonAndNodeTypesAreSetWithBuildCommandKey() {
+        ['python', 'node'].each { String type ->
+            Map cfg = loader.call(type: type)
+            assertEquals(type, cfg.type)
+            assertTrue(cfg.containsKey('build-command'))
+            assertEquals(false, cfg['pipeline-steps'].build)
+        }
+        assertTrue(errors.empty)
+    }
     @Test void missingConfigUsesExactE8MessageOnce() {
         missingConfig = true
         def ex = assertThrows(IllegalStateException) { loader.call(type: 'cluster') }

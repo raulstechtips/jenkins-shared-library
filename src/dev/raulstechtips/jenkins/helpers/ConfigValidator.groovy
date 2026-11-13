@@ -27,17 +27,17 @@ class ConfigValidator implements Serializable {
      *
      * @param raw the parsed YAML root. Any value is accepted, so a malformed root gets a validation
      *     error.
-     * @param type the pipeline type, 'cluster' or 'java'
+     * @param type the pipeline type, 'cluster', 'java', 'python' or 'node'
      * @return the project-config map, with every schema key present and missing values set to their
      *     defaults
-     * @throws IllegalArgumentException when type is not cluster or java, when raw is not a map, or
+     * @throws IllegalArgumentException when type is not cluster, java, python or node, when raw is not a map, or
      *     when any check fails. The message lists every error, one per line.
      */
     // Object deliberately accepts malformed YAML roots so they get validation errors.
     @NonCPS
     static Map validate(Object raw, String type) {
-        if (!(type in ['cluster', 'java'])) {
-            throw new IllegalArgumentException("Pipeline type must be 'cluster' or 'java'.")
+        if (!(type in ['cluster', 'java', 'python', 'node'])) {
+            throw new IllegalArgumentException("Pipeline type must be 'cluster', 'java', 'python' or 'node'.")
         }
         if (!(raw instanceof Map)) {
             throw new IllegalArgumentException("Invalid type for 'root': expected map, found ${yamlType(raw)}.")

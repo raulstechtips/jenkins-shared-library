@@ -100,6 +100,8 @@ class JavaConfigurablePipelineTest extends DeclarativePipelineTest {
         Script configLoader = loadScript('vars/loadProjectConfig.groovy')
         Script podBuilder = loadScript('vars/agentPodYaml.groovy')
         Script versionCalculator = loadScript('vars/computeVersion.groovy')
+        Script sharedPipeline = loadScript('vars/languageConfigurablePipeline.groovy')
+        helper.registerAllowedMethod('languageConfigurablePipeline', [Map], sharedPipeline.&call)
         helper.registerAllowedMethod('loadProjectConfig', [Map], configLoader.&call)
         helper.registerAllowedMethod('agentPodYaml', [Map], podBuilder.&call)
         helper.registerAllowedMethod('computeVersion', [Map], { Map cfg ->

@@ -19,7 +19,7 @@ class ConfigValidatorTest {
         Set expected = ['project-name', 'project-description', 'project-namespace',
             'publish-targets', 'test-command', 'helm-overrides', 'argo-deploy-targets', 'trivy-fail-on',
             'opengrep-fail-on', 'helm-image-tag-path', 'docker-image', 'pipeline-steps'] as Set
-        if (type == 'java') {
+        if (type in ['java', 'python', 'node']) {
             expected.add('build-command')
         }
         assertEquals(expected, cfg.keySet())
@@ -27,7 +27,7 @@ class ConfigValidatorTest {
         Set flags = ['helm-test', 'trivy-scan', 'opengrep-scan', 'unit-test',
             'build-docker-image', 'helm-package-upload', 'helm-install',
             'helm-clean-install', 'argo-deploy'] as Set
-        if (type == 'java') {
+        if (type in ['java', 'python', 'node']) {
             flags.add('build')
         }
         assertEquals(flags, cfg['pipeline-steps'].keySet())
@@ -47,6 +47,19 @@ class ConfigValidatorTest {
     @Test void argocdExampleIsValidAndNormalized() { valid('argocd', 'cluster') }
     @Test void jenkinsExampleIsValidAndNormalized() { valid('jenkins', 'cluster') }
     @Test void libraryExampleIsValidAndNormalized() { valid('jenkins-shared-library', 'java') }
+    @Test void backendExampleIsValidAndNormalized() {
+        Map cfg = valid('serenewealth-backend-service', 'python')
+        assertEquals('bash scripts/build-image-context.sh', cfg['build-command'])
+        assertTrue(cfg['pipeline-steps'].build)
+    }
+    @Test void frontEndExampleIsValidAndNormalized() {
+        Map cfg = valid('serenewealth-front-end', 'node')
+        assertEquals('pnpm install --frozen-lockfile --ignore-scripts && pnpm build', cfg['build-command'])
+        assertEquals(['overrides.yaml'], cfg['helm-overrides'])
+    }
+    @Test void pythonAndNodeBuildNeedCommand() {
+        ['python', 'node'].each { String type -> invalid('build-without-command', 'project-config.build-command', type) }
+    }
     @Test void suggestsNearestFlagForTypo() {
         assertEquals("Unknown key 'project-config.pipeline-steps.trivy-scna'. Did you mean 'trivy-scan'?",
             invalid('unknown-flag', 'project-config.pipeline-steps.trivy-scna'))
@@ -249,7 +262,7 @@ class ConfigValidatorTest {
     }
     @Test void unsupportedPipelineTypeIsClearError() {
         def ex = assertThrows(IllegalArgumentException) {
-            ConfigValidator.validate(['project-config': ['project-name': 'demo']], 'python')
+            ConfigValidator.validate(['project-config': ['project-name': 'demo']], 'ruby')
         }
         assertTrue(ex.message.contains('type'), ex.message)
     }
