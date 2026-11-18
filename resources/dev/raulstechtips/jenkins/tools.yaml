@@ -27,9 +27,9 @@ python:
   version: 0.13.8-python3.13-trixie
   digest: sha256:8d8ba6bf376cc972df1422f302dbe22c24865add109c43c47a994e5f485a4545
 node:
-  image: node:24.22.3-bookworm-slim@sha256:dc26ae92c9fb15cf6b1d63e20f0944b2efe0f115b20e00be48fb23fceb061c54
-  version: 24.22.3-bookworm-slim
-  digest: sha256:dc26ae92c9fb15cf6b1d63e20f0944b2efe0f115b20e00be48fb23fceb061c54
+  image: node:24.22.3-bookworm@sha256:9d266751ca3d7fdbe651c878ffd5ad0a42fed49a18c283509267c97f025b7496
+  version: 24.22.3-bookworm
+  digest: sha256:9d266751ca3d7fdbe651c878ffd5ad0a42fed49a18c283509267c97f025b7496
 shell:
   image: debian:stable-slim@sha256:a717a33469731894e77e912ea7d714e27c2dc38ee6554fd1a3102e92999cfc66
   version: stable-slim

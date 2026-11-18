@@ -70,15 +70,26 @@ class RunBuildCommandTest extends BasePipelineTest {
     }
 
     @Test
-    void nodeEnablesCorepackPnpmWithoutCredentials() {
+    void nodeRunsInsideGitHubAppCredentialsThenEnablesCorepackPnpm() {
+        List bindings = []
+        String secret = 'ghs_literalTokenValue'
+        helper.registerAllowedMethod('usernamePassword', [Map]) { Map args -> args }
         helper.registerAllowedMethod('withCredentials', [List, Closure]) { List args, Closure body ->
-            fail('node commands must not bind credentials')
+            bindings.addAll(args)
+            current = current + '+credentials'
+            binding.setVariable('env', [GH_TOKEN: secret])
+            body.call()
         }
         loadScript('vars/runBuildCommand.groovy').call(['build-command': 'pnpm run it', type: 'node'], 'node')
 
+        assertEquals([[credentialsId: 'github-app', usernameVariable: 'GH_USER', passwordVariable: 'GH_TOKEN']], bindings)
         assertEquals(1, calls.size())
-        assertEquals('node', calls[0][0])
-        assertTrue(calls[0][1].startsWith('export COREPACK_ENABLE_DOWNLOAD_PROMPT=0'))
-        assertTrue(calls[0][1].endsWith('corepack enable --install-directory "$HOME/.local/bin" pnpm\npnpm run it'))
+        assertEquals('node+credentials', calls[0][0])
+        String script = calls[0][1]
+        assertTrue(script.startsWith('set +x\n'))
+        assertTrue(script.contains('x-access-token:${GH_TOKEN}@github.com/'))
+        assertTrue(script.contains('set -x\nexport COREPACK_ENABLE_DOWNLOAD_PROMPT=0'))
+        assertTrue(script.endsWith('corepack enable --install-directory "$HOME/.local/bin" pnpm\npnpm run it'))
+        assertFalse(script.contains(secret))
     }
 }
