@@ -326,9 +326,9 @@ The same stages as the java pipeline, with these differences:
 
 The same stages as the java pipeline, with these differences:
 
-- `Build` and `Unit test` run `build-command` and `test-command` in the `node` container (Node.js 24).
-- Each command first runs `corepack enable` with the shims in `$HOME/.local/bin` and puts that directory first on `PATH`. So `pnpm` is the version in the `packageManager` field of `package.json`. Corepack downloads it on first use. The pnpm store is under `$HOME`, outside the workspace.
-- The commands get no credentials.
+- `Build` and `Unit test` run `build-command` and `test-command` in the `node` container. It has Node.js 24 and git.
+- Both commands run inside `withCredentials` with the `github-app` credentials and start with the same git URL rewrite as the python pipeline. So pnpm fetches git dependencies from private GitHub repos, such as `github:raulstechtips/glass-chrome-design-library`, over HTTPS. The token stays in the environment of that one process and is not written to any file.
+- Each command then runs `corepack enable` with the shims in `$HOME/.local/bin` and puts that directory first on `PATH`. So `pnpm` is the version in the `packageManager` field of `package.json`. Corepack downloads it on first use. The pnpm store is under `$HOME`, outside the workspace.
 - `Prepare image context` leaves out the root `node_modules` and `.next/cache` instead of `.gradle`. It keeps `.next/standalone`, `.next/static` and `public`.
 - A release run doesn't write `package.json`.
 
@@ -385,9 +385,9 @@ The main pod adds one build container for the pipeline type. Each one is pinned 
 | --- | --- | --- | --- |
 | java | `jdk` | `eclipse-temurin:21.0.12.1_1-jdk` | 2Gi |
 | python | `python` | `ghcr.io/astral-sh/uv:0.13.8-python3.13-trixie` | 2Gi |
-| node | `node` | `node:24.22.3-bookworm-slim` | 3Gi |
+| node | `node` | `node:24.22.3-bookworm` | 3Gi |
 
-The python image is the full Debian image because the slim one has no git, which uv needs for git dependencies.
+The python and node images are the full Debian images because the slim ones have no git, which uv and pnpm need for git dependencies.
 The uv and pnpm caches are under `$HOME`, outside the workspace, so the image context never holds them.
 
 ### Direct Helm deployment
@@ -544,7 +544,7 @@ Each target has `host`, `image-prefix`, `chart-repo` and `credentials-id`.
 | --- | --- | --- |
 | `ghcr` | `ghcr-push` | Push and pull images and charts on GHCR. |
 | `harbor` | `harbor-push` | Push and pull images and charts on Harbor. |
-| (none) | `github-app` | Release tag check and push, the latest release lookup, the chart version commit, the Argo deploy commit to `cluster-config`, and the git dependencies of python build and test commands. The GitHub App installation must include every private repo that a python project depends on. |
+| (none) | `github-app` | Release tag check and push, the latest release lookup, the chart version commit, the Argo deploy commit to `cluster-config`, and the git dependencies of python and node build and test commands. The GitHub App installation must include every private repo that a python or node project depends on. |
 
 Each credential is a Jenkins "username with password" credential.
 `withRegistryLogin(target) { ... }` binds the credential of a target as `REG_USER` and `REG_PASS`.

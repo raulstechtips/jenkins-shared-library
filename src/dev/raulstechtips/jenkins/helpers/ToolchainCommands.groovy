@@ -20,19 +20,19 @@ corepack enable --install-directory "$HOME/.local/bin" pnpm
      * Tells whether the commands of a pipeline type need the github-app token as GH_TOKEN.
      *
      * @param type the pipeline type
-     * @return true for python, whose dependencies can come from private GitHub repos
+     * @return true for python and node, whose dependencies can come from private GitHub repos
      */
     @NonCPS
     static boolean usesGitHubToken(String type) {
-        type == 'python'
+        type == 'python' || type == 'node'
     }
 
     /**
      * Returns the script to pass to sh for a project command.
      *
-     * For python it starts with JenkinsBot.GIT_AUTH, so git rewrites HTTPS and SSH GitHub URLs to
-     * use GH_TOKEN in that process only, then turns tracing back on. For node it starts with
-     * PNPM_SETUP. For any other type it is the command unchanged.
+     * For python and node it starts with JenkinsBot.GIT_AUTH, so git rewrites HTTPS and SSH GitHub
+     * URLs to use GH_TOKEN in that process only, then turns tracing back on. For node PNPM_SETUP
+     * comes next. For any other type it is the command unchanged.
      *
      * @param type the pipeline type
      * @param command the build-command or test-command
@@ -44,7 +44,7 @@ corepack enable --install-directory "$HOME/.local/bin" pnpm
             return JenkinsBot.GIT_AUTH + 'set -x\n' + command
         }
         if (type == 'node') {
-            return PNPM_SETUP + command
+            return JenkinsBot.GIT_AUTH + 'set -x\n' + PNPM_SETUP + command
         }
         command
     }

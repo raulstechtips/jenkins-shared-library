@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add the `argo-deploy-targets` config key, so that `argoDeploy` opens one dev deploy PR for each listed Argo file instead of only `argo/dev/<project-name>.yaml` ([DEVSECOPS-47](https://raulstechtips.atlassian.net/browse/DEVSECOPS-47))
 
 ### Changed
+- Give node build and test commands the `github-app` token for git, as python commands have, and run them in the full `node:24.22.3-bookworm` image, which has git. pnpm can then install git dependencies from private GitHub repos ([SWEALTH-335](https://raulstechtips.atlassian.net/browse/SWEALTH-335)).
 - Updated harbor from prod to dev ([DEVSECOPS-197](https://raulstechtips.atlassian.net/browse/DEVSECOPS-197)) 
 
 - Prepare changelogs, chart and application versions, and clean image tags before builds. Bootstrap missing changelogs and publish the release commit and tag before updating cluster-config ([DEVSECOPS-192](https://raulstechtips.atlassian.net/browse/DEVSECOPS-192)).
