@@ -2,6 +2,7 @@ package dev.raulstechtips.jenkins.helpers
 
 import com.cloudbees.groovy.cps.NonCPS
 import groovy.json.JsonSlurperClassic
+import groovy.transform.PackageScope
 
 /**
  * Builds the shell scripts of the MinIO jobs and reads their output. Pure: no steps.
@@ -191,16 +192,16 @@ class MinioCommands implements Serializable {
             '  echo "Infisical folder $name_path does not exist. Skipped."\n' +
             '  exit 0\n' +
             'fi\n' +
-            'if ! inf secrets folders get --path "$name_path" -o json >"$work/sub.json" 2>/dev/null; then\n' +
+            'if ! subfolders="$(count_folders "$name_path")"; then\n' +
             '  echo "Cannot list the subfolders of $name_path." >&2\n' +
             '  exit 1\n' +
             'fi\n' +
-            'if ! inf secrets get --path "$name_path" -o json >"$work/secrets.json" 2>/dev/null; then\n' +
+            '# secrets get needs a secret name, so export lists the folder. The file is mode 600 in $work.\n' +
+            'if ! inf export --path "$name_path" --format dotenv --output-file "$work/name.env" >/dev/null 2>&1; then\n' +
             '  echo "Cannot list the secrets of $name_path." >&2\n' +
             '  exit 1\n' +
             'fi\n' +
-            'subfolders="$(jq -s \'[.[] | if type == "array" then .[] else (.. | objects | select(has("name"))) end] | length\' "$work/sub.json")"\n' +
-            'secrets="$(jq -s \'[.[] | if type == "array" then .[] else (.. | objects | select(has("secretKey") or has("key"))) end] | length\' "$work/secrets.json")"\n' +
+            'secrets="$(grep -c \'=\' "$work/name.env" || true)"\n' +
             'if [ "$subfolders" = "0" ] && [ "$secrets" = "0" ]; then\n' +
             '  inf secrets folders delete --path "$keys_root" --name "$name" >/dev/null\n' +
             '  echo "Deleted Infisical folder $name_path."\n' +
@@ -328,10 +329,27 @@ class MinioCommands implements Serializable {
             'fi\n' +
             'export INFISICAL_TOKEN\n' +
             'inf() { infisical "$@" --env "$infisical_env" --projectId "$project_id" --domain "$INFISICAL_API_URL" --silent; }\n' +
+            folderFunctions()
+    }
+
+    /**
+     * Shell functions for Infisical folders. They need only sh and grep, so the tests run them in CI.
+     * The pinned CLI prints `folders get -o json` as compact JSON:
+     * [{"folderId":"...","folderName":"...","folderPath":"..."}], or null when there are no subfolders.
+     */
+    @PackageScope
+    @NonCPS
+    static String folderFunctions() {
+        'list_folders() {\n' +
+            '  inf secrets folders get --path "$1" -o json >"$work/folders.json" 2>"$work/folders.err"\n' +
+            '}\n' +
             'has_folder() {\n' +
-            '  inf secrets folders get --path "$1" -o json >"$work/folders.json" 2>/dev/null || return 1\n' +
-            '  jq -r \'..|.name? // empty\' "$work/folders.json" >"$work/folders.txt" || return 1\n' +
-            '  grep -qxF "$2" "$work/folders.txt"\n' +
+            '  list_folders "$1" || return 1\n' +
+            '  grep -qF "\\"folderName\\":\\"$2\\"" "$work/folders.json"\n' +
+            '}\n' +
+            'count_folders() {\n' +
+            '  list_folders "$1" || return 1\n' +
+            '  grep -o \'"folderName":"\' "$work/folders.json" | wc -l | tr -d \' \'\n' +
             '}\n' +
             'ensure_folder() {\n' +
             '  if has_folder "$1" "$2"; then\n' +
