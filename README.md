@@ -80,8 +80,8 @@ The pipelines make these names from `NAME` (or `USER_NAME`), the environment
 gives `ro` and `rw` access to that bucket. `createMinioUserPipeline()` gives
 the selected levels access to the `BUCKETS` list. For each level, both
 pipelines create the policy, the user, the policy attachment and the access
-key only if they are missing. If the policy exists for other buckets, the
-build fails. Use another name. A second run changes nothing.
+key only if they are missing. They find an existing policy by its name and
+do not read or change its content. A second run changes nothing.
 `rotateMinioKeysPipeline()` creates a new access key, writes it to Infisical
 and removes all other access keys of the user. The user must exist.
 `deleteMinioUserPipeline()` requires `CONFIRM_NAME` to be equal to `NAME`.

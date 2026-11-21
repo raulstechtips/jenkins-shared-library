@@ -6,8 +6,8 @@ import dev.raulstechtips.jenkins.helpers.MinioPolicy
  * Makes sure that a policy, a user and an access key in Infisical exist for each access level.
  *
  * All input is validated, and every policy is rendered, before the first MinIO or Infisical call.
- * Per level L: policy NAME-ENV-L is created when missing; when it exists for other buckets the
- * step fails. User NAME-ENV-L is created when missing, with a random password that nobody keeps.
+ * Per level L: policy NAME-ENV-L is created when missing. An existing policy is skipped by name and
+ * its content is not read or changed. User NAME-ENV-L is created when missing, with a random password that nobody keeps.
  * The policy is attached when it is not attached. When the AWS_ACCESS_KEY_ID in Infisical
  * (/minio/users/NAME/L in environment ENV) is still a key of the user, the keys are kept.
  * Otherwise a new key is created, written to Infisical, and every other key of the user is removed.
@@ -15,7 +15,6 @@ import dev.raulstechtips.jenkins.helpers.MinioPolicy
  *
  * @param args name, environment, access (RO, RW or BOTH, from levels.yaml), buckets (text or list)
  * @throws IllegalArgumentException for invalid input, before any shell command
- * @throws error (fails the build) when a policy exists for other buckets
  */
 def call(Map args) {
     MinioNames names = new MinioNames()
@@ -33,22 +32,12 @@ def call(Map args) {
     }
 
     minioSession { MinioCommands c ->
-        List<Map> missingPolicies = []
         for (Map t : targets) {
             String info = sh(script: c.policyInfo(t.account), returnStdout: true)
             if (c.missing(info)) {
-                missingPolicies.add(t)
-            } else {
-                List<String> existing = policy.bucketsOf(info)
-                if (existing != buckets) {
-                    error("policy ${t.account} exists for other buckets: ${existing.join(', ')}, use another name".toString())
-                }
-                echo "Policy ${t.account} exists for the same buckets. Skipped.".toString()
-            }
-        }
-        for (Map t : targets) {
-            if (missingPolicies.contains(t)) {
                 sh c.createPolicy(t.account, t.policy)
+            } else {
+                echo "Policy ${t.account} exists. Skipped.".toString()
             }
             ensureUser(c, t.account)
             ensureKeys(c, t.account, environment, name, t.level)

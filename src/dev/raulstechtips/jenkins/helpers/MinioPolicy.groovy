@@ -4,7 +4,7 @@ import com.cloudbees.groovy.cps.NonCPS
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurperClassic
 
-/** Renders MinIO policy templates and reads bucket names from policies. Pure: no steps. */
+/** Renders MinIO policy templates. Pure: no steps. */
 class MinioPolicy implements Serializable {
 
     private static final String BUCKET_ARNS = '__BUCKET_ARNS__'
@@ -25,49 +25,6 @@ class MinioPolicy implements Serializable {
         List<String> bucketArns = buckets.collect { ARN_PREFIX + it }
         List<String> objectArns = buckets.collect { ARN_PREFIX + it + '/*' }
         JsonOutput.toJson(substitute(template, bucketArns, objectArns))
-    }
-
-    @NonCPS
-    List<String> bucketsOf(String policyJson) {
-        Object doc = new JsonSlurperClassic().parseText(policyJson)
-        doc = unwrap(doc)
-        Set<String> buckets = new TreeSet<String>()
-        Object statements = doc instanceof Map ? doc.Statement : null
-        if (statements instanceof Map) {
-            statements = [statements]
-        }
-        (statements instanceof List ? statements : []).each { Object statement ->
-            if (!(statement instanceof Map)) {
-                return
-            }
-            Object resource = statement.Resource
-            List resources = resource instanceof List ? resource : [resource]
-            resources.each { Object arn ->
-                if (arn instanceof String && arn.startsWith(ARN_PREFIX)) {
-                    String bucket = arn.substring(ARN_PREFIX.length()).split('/', 2)[0]
-                    if (!bucket.isEmpty() && bucket != '*') {
-                        buckets << bucket
-                    }
-                }
-            }
-        }
-        buckets.toList()
-    }
-
-    @NonCPS
-    private static Object unwrap(Object doc) {
-        if (doc instanceof Map) {
-            Object inner = null
-            if (doc.policyInfo instanceof Map && doc.policyInfo.Policy != null) {
-                inner = doc.policyInfo.Policy
-            } else if (doc.policy != null) {
-                inner = doc.policy
-            }
-            if (inner != null) {
-                return inner instanceof String ? new JsonSlurperClassic().parseText(inner) : inner
-            }
-        }
-        doc
     }
 
     @NonCPS
