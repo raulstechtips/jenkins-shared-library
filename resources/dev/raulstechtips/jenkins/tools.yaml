@@ -42,3 +42,13 @@ opengrep:
   url: https://github.com/opengrep/opengrep/releases/download/v1.32.0/opengrep_manylinux_x86
   version: v1.32.0
   sha256: 7360d60174880bd9214f2dfbe439b7bce82b7a3d44cfe945ba833c85cc8bda75
+# mc and infisical resolved 2026-11-21. dl.min.io no longer serves mc (HTTP 410), so mc comes from the
+# minio/mc GitHub release. The sha256 values are of the exact downloaded files (the infisical one is the tar.gz).
+mc:
+  url: https://github.com/minio/mc/releases/download/RELEASE.2025-08-13T08-35-41Z/mc.linux-amd64.RELEASE.2025-08-13T08-35-41Z
+  version: RELEASE.2025-08-13T08-35-41Z
+  sha256: 01f866e9c5f9b87c2b09116fa5d7c06695b106242d829a8bb32990c00312e891
+infisical:
+  url: https://github.com/Infisical/cli/releases/download/v0.45.14/cli_0.45.14_linux_amd64.tar.gz
+  version: v0.45.14
+  sha256: aee706dfee561432cf85ed4d33a2ab8d3576cec55a34e0ae92c2350f35929b1e
