@@ -1,7 +1,7 @@
 package vars
 
 import com.lesfurets.jenkins.unit.BasePipelineTest
-import dev.raulstechtips.jenkins.helpers.MinioPolicy
+import groovy.json.JsonSlurper
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -28,7 +28,8 @@ class MinioEnsureAccessTest extends BasePipelineTest {
         ensure(name: 'app', environment: 'dev', access: 'BOTH', buckets: 'b-two, b-one\nb-one')
         ['ro', 'rw'].each { String level ->
             String account = 'app-dev-' + level
-            assertEquals(['b-one', 'b-two'], new MinioPolicy().bucketsOf(fake.policies[account]))
+            assertEquals(['arn:aws:s3:::b-one', 'arn:aws:s3:::b-two'],
+                new JsonSlurper().parseText(fake.policies[account]).Statement[0].Resource)
             assertEquals([account], fake.users[account])
             assertEquals(['NEWKEY' + (level == 'ro' ? 1 : 2)], fake.keys[account])
             assertEquals(fake.keys[account][0], fake.keyId('dev', '/minio/users/app/' + level))
@@ -47,13 +48,17 @@ class MinioEnsureAccessTest extends BasePipelineTest {
     }
 
     @Test
-    void policyForOtherBucketsFailsBeforeAnyChange() {
-        fake.policies['app-dev-rw'] = new MinioPolicy().render(new File('resources/dev/raulstechtips/jenkins/minio/policies/rw.json').text, ['other'])
-        def failure = assertThrows(IllegalStateException) {
-            ensure(name: 'app', environment: 'dev', access: 'BOTH', buckets: 'b-one')
-        }
-        assertEquals('policy app-dev-rw exists for other buckets: other, use another name', failure.message)
-        assertEquals([], fake.changes())
+    void existingPolicyIsSkippedByNameAndNotChanged() {
+        // Policy document captured from MinIO after a hand edit: it names another bucket.
+        String edited = '{"Version":"2012-10-17","Statement":[{"Effect":"Allow",' +
+            '"Action":["s3:GetBucketLocation","s3:ListBucket"],"Resource":["arn:aws:s3:::longhorn-backup"]},' +
+            '{"Effect":"Allow","Action":["s3:GetObject"],"Resource":["arn:aws:s3:::longhorn-backup/*"]}]}'
+        fake.policies['app-dev-ro'] = edited
+        ensure(name: 'app', environment: 'dev', access: 'BOTH', buckets: 'b-one')
+        assertEquals(edited, fake.policies['app-dev-ro'])
+        assertTrue(fake.logs.contains('Policy app-dev-ro exists. Skipped.'))
+        assertEquals(['add-user', 'attach-policy', 'create-keys',
+            'create-policy', 'add-user', 'attach-policy', 'create-keys'], fake.changes())
     }
 
     @Test

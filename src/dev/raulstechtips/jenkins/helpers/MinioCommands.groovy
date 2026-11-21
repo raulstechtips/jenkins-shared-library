@@ -142,7 +142,7 @@ class MinioCommands implements Serializable {
     /**
      * Creates the Infisical folders when missing, creates a new access key for the user, and writes
      * both keys to Infisical from a mode-600 .env file. Prints only the new access key ID (last line).
-     * When the Infisical write fails, the script removes the new key again and fails.
+     * When the Infisical write fails, the script fails. The next run makes a new key and removes the others.
      */
     @NonCPS
     String createKeys(String user, String env, String name, String level) {
@@ -163,8 +163,7 @@ class MinioCommands implements Serializable {
             'jq -r \'"AWS_ACCESS_KEY_ID=" + .accessKey, "AWS_SECRET_ACCESS_KEY=" + .secretKey\' "$work/key.json" >"$work/keys.env"\n' +
             'chmod 600 "$work/keys.env"\n' +
             'if ! inf secrets set --file "$work/keys.env" --path "$keys_path" >/dev/null 2>&1; then\n' +
-            '  mc admin accesskey rm "$alias" "$key_id" >/dev/null 2>&1 || true\n' +
-            '  echo "Infisical write to $keys_path failed. The new access key $key_id is removed." >&2\n' +
+            '  echo "Infisical write to $keys_path failed." >&2\n' +
             '  exit 1\n' +
             'fi\n' +
             'echo "Wrote access key $key_id of user $user to Infisical $infisical_env $keys_path." >&2\n' +

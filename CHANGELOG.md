@@ -37,6 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Skip an existing MinIO policy by its name only. The MinIO jobs no longer read the policy content and no longer fail when the policy names other buckets, so a policy that was changed by hand stays as it is ([DEVSECOPS-193](https://raulstechtips.atlassian.net/browse/DEVSECOPS-193))
 - Read the `folderName` field of the Infisical folder list in the MinIO jobs. The jobs no longer try to create an existing folder, so `BOTH` and a second run work. The delete job now counts the subfolders and secrets of `/minio/users/NAME` correctly and keeps the folder when it is not empty ([DEVSECOPS-193](https://raulstechtips.atlassian.net/browse/DEVSECOPS-193))
 - Set the build version in the local chart before direct Helm installation, and render and lint the combined deployment override files in deployment order ([DEVSECOPS-190](https://raulstechtips.atlassian.net/browse/DEVSECOPS-190))
 

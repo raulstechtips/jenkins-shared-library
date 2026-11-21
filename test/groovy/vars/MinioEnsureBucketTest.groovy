@@ -28,7 +28,8 @@ class MinioEnsureBucketTest extends BasePipelineTest {
         ensure(name: 'app', environment: 'staging')
         assertEquals(['app-staging'] as Set, fake.buckets)
         assertEquals(['app-staging-ro', 'app-staging-rw'] as Set, fake.policies.keySet())
-        assertEquals(['app-staging'], new MinioPolicy().bucketsOf(fake.policies['app-staging-rw']))
+        assertEquals(['arn:aws:s3:::app-staging'],
+            new groovy.json.JsonSlurper().parseText(fake.policies['app-staging-rw']).Statement[0].Resource)
         assertEquals(['app-staging-ro', 'app-staging-rw'] as Set, fake.users.keySet())
         assertEquals(1, fake.installs)
         assertEquals('create-bucket', fake.changes()[0])
@@ -44,12 +45,15 @@ class MinioEnsureBucketTest extends BasePipelineTest {
     }
 
     @Test
-    void existingPolicyForOtherBucketsFails() {
+    void existingPolicyWithOtherContentIsSkipped() {
         fake.buckets << 'app-dev'
-        fake.policies['app-dev-ro'] = new MinioPolicy().render(new File('resources/dev/raulstechtips/jenkins/minio/policies/ro.json').text, ['app-dev', 'x-dev'])
-        def failure = assertThrows(IllegalStateException) { ensure(name: 'app', environment: 'dev') }
-        assertEquals('policy app-dev-ro exists for other buckets: app-dev, x-dev, use another name', failure.message)
-        assertEquals([], fake.changes())
+        String edited = '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Action":["s3:GetObject"],' +
+            '"Resource":["arn:aws:s3:::other/*"]}]}'
+        fake.policies['app-dev-ro'] = edited
+        ensure(name: 'app', environment: 'dev')
+        assertEquals(edited, fake.policies['app-dev-ro'])
+        assertTrue(fake.logs.contains('Policy app-dev-ro exists. Skipped.'))
+        assertFalse(fake.changes().contains('create-bucket'))
     }
 
     @Test
