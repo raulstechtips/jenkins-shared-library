@@ -125,6 +125,7 @@ class MinioCommandsTest {
         assertTrue(script.contains('inf secrets set --file "$work/keys.env" --path "$keys_path"'), script)
         assertTrue(script.trim().endsWith('printf \'%s\\n\' "$key_id"'), script)
         assertTrue(script.contains("keys_root='/minio/users'"), script)
+        assertFalse(script.contains('accesskey rm'), 'createKeys must not remove keys; the next run cleans up')
     }
 
     @Test
