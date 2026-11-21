@@ -1,0 +1,7 @@
+minioEndpoint: https://s3-api.dev.raulstechtips.dev
+infisicalApiUrl: https://infisical.dev.raulstechtips.dev/api
+infisicalProjectId: a86484a5-93d4-4443-a85f-105e822d5973
+environments: [dev, staging, prod]
+minioCredentialsId: jenkins-minio
+infisicalCredentialsId: jenkins-infisical
+keysRoot: /minio/users

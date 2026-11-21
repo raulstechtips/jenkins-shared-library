@@ -52,6 +52,69 @@ first use; adding files does not change that script. The `platform-operations`
 README contains the initial discovery and approval steps.
 No project pipeline configuration or per-job metadata file is needed.
 
+Four manual operational pipelines manage MinIO buckets and access keys.
+`platform-operations` calls each one from a file in `pipelines/`:
+
+| Pipeline | `platform-operations` file | Build parameters |
+|---|---|---|
+| `createMinioBucketPipeline()` | `pipelines/create-minio-bucket.Jenkinsfile` | `NAME`, `ENVIRONMENT` |
+| `createMinioUserPipeline()` | `pipelines/create-minio-user.Jenkinsfile` | `USER_NAME`, `ACCESS`, `BUCKETS`, `ENVIRONMENT` |
+| `rotateMinioKeysPipeline()` | `pipelines/rotate-minio-keys.Jenkinsfile` | `NAME`, `ENVIRONMENT`, `ACCESS` |
+| `deleteMinioUserPipeline()` | `pipelines/delete-minio-user.Jenkinsfile` | `NAME`, `ENVIRONMENT`, `ACCESS`, `CONFIRM_NAME` |
+
+`ENVIRONMENT` is `dev`, `staging` or `prod`. `ACCESS` is one level from
+`levels.yaml` in uppercase (`RO`, `RW`), or `BOTH`. `BOTH` selects `ro` and
+`rw`. `BUCKETS` is a list of bucket names, separated by commas, spaces or new
+lines. An empty or invalid parameter stops the build before any MinIO or
+Infisical call, so the first build after discovery changes nothing.
+
+The pipelines make these names from `NAME` (or `USER_NAME`), the environment
+`E` and the level `L`:
+
+- Bucket: `NAME-E`. Only `createMinioBucketPipeline()` creates a bucket.
+- MinIO policy and MinIO user: `NAME-E-L`.
+- Infisical folder: `/minio/users/NAME/L` in the Infisical environment `E`.
+  It holds `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
+
+`createMinioBucketPipeline()` creates the bucket if it is missing. Then it
+gives `ro` and `rw` access to that bucket. `createMinioUserPipeline()` gives
+the selected levels access to the `BUCKETS` list. For each level, both
+pipelines create the policy, the user, the policy attachment and the access
+key only if they are missing. If the policy exists for other buckets, the
+build fails. Use another name. A second run changes nothing.
+`rotateMinioKeysPipeline()` creates a new access key, writes it to Infisical
+and removes all other access keys of the user. The user must exist.
+`deleteMinioUserPipeline()` requires `CONFIRM_NAME` to be equal to `NAME`.
+It removes the access keys, the user, the policy and the Infisical folder.
+It does not remove the bucket.
+
+The settings are in `resources/dev/raulstechtips/jenkins/minio/settings.yaml`.
+The pipelines use two Jenkins username and password credentials:
+
+- `jenkins-minio`: the MinIO access key and secret key.
+- `jenkins-infisical`: the Infisical universal-auth client ID and client secret.
+
+The pipelines run on the `generic` agent with `minioAgentPodYaml()`.
+`installMinioTools` downloads the pinned `mc` and `infisical` binaries from
+`resources/dev/raulstechtips/jenkins/tools.yaml` into
+`WORKSPACE/.minio-tools/bin` and checks their SHA-256. The pins are
+`mc` `RELEASE.2025-08-13T08-35-41Z` and `infisical` `v0.45.14`.
+The steps are `minioEnsureBucket`, `minioEnsureAccess`, `minioRotateKeys` and
+`minioDeleteAccess`. They run commands built by `MinioCommands` inside
+`minioSession`.
+
+### Add an access level
+
+1. Add one JSON policy template to
+   `resources/dev/raulstechtips/jenkins/minio/policies/`. Use the level as the
+   filename, for example `admin.json`. Put `"__BUCKET_ARNS__"` and
+   `"__OBJECT_ARNS__"` where the bucket and object ARN lists go.
+2. Add the level to `levels` in
+   `resources/dev/raulstechtips/jenkins/minio/levels.yaml`.
+
+No code change is necessary. The `ACCESS` parameter shows the new level in
+uppercase. `BOTH` continues to select only `ro` and `rw`.
+
 ## 2. How a repo uses the library
 
 A repo needs two files in its root.
