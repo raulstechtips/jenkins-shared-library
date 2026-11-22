@@ -14,6 +14,9 @@ The library has four repository pipelines:
 
 The java, python and node pipelines share one stage body, `languageConfigurablePipeline`.
 
+`infisicalConfigurablePipeline()` builds the Infisical fork (`raulstechtips/secrets-manager`) on
+`release/vX.Y.Z` branches only. See [infisicalConfigurablePipeline](#infisicalconfigurablepipeline).
+
 Each pipeline reads `project-pipeline-config.yaml` from the repo root.
 The library validates the file and stops the build on any error.
 Flags in the file enable the steps.
@@ -31,6 +34,22 @@ The implementation follows the same step and helper pattern:
 `InfisicalAuthCommands`. It does not read project pipeline configuration or
 change Git. See the `platform-operations` README for setup and use.
 
+The manual operational `infisicalReleaseSyncPipeline()` creates the missing
+`release/vX.Y.Z` branches in `raulstechtips/secrets-manager`, one for each upstream
+Infisical platform tag. Its `MODE` build parameter is `next` (only the next
+branch) or `all` (every missing branch, oldest first). The consumer sets the
+default with `infisicalReleaseSyncPipeline(mode: 'next' | 'all')`; a timer run
+uses that default. The optional `schedule` argument is a cron spec, for example
+`'TZ=UTC\n0 6 * * *'`; empty or absent means no timer. For each tag
+it cuts the branch from the tag, cherry-picks the commits of the previous release
+branch after that branch's tag (`git cherry-pick --empty=drop vPREV..release/vPREV`),
+and pushes. The cherry-picked commits keep their author, and the committer is
+`infisical-release-jenkins[bot]`. The job stops when the previous branch has a
+merge commit after its tag or a cherry-pick does not apply, and it never changes
+a branch that exists. It does not wait for the branch builds. Only
+`github.com/raulstechtips/` URLs get the `github-app` token; upstream is fetched
+without credentials into a treeless clone.
+
 Its unit tests run with `./gradlew test`.
 
 `discoverJobsPipeline()` is the discovery entry point for `platform-operations`.
@@ -39,9 +58,9 @@ On `main` only, it checks out that repository on the generic agent and finds
 display names to a fixed Job DSL script in `JobDiscovery`.
 The script creates manual SCM jobs under the root `Jobs` folder. It uses the
 checked-out repository's URL and credential, branch `*/main`, and each file's
-script path. It preserves runtime job properties and tracking actions, but
-removes automatic pipeline triggers. It never reads or executes operational
-Jenkinsfile contents.
+script path. It preserves runtime job properties (including the triggers that
+a pipeline declares) and tracking actions. Discovery itself adds no trigger.
+It never reads or executes operational Jenkinsfile contents.
 Feature branches, pull requests, and tags do not modify generated jobs.
 
 Removed files disable their jobs without deleting history. Restoring the same
@@ -268,10 +287,11 @@ The table shows each key under `project-config`.
 | `argo-deploy-targets` | list of string | `[]` | Each item must match the `project-name` pattern. Maximum 53 characters. No duplicates. When the list isn't empty, `argoDeploy` uses only these names, and not `project-name`. See [Argo deploy targets](#argo-deploy-targets). |
 | `trivy-fail-on` | list of `CRITICAL`, `HIGH`, `MEDIUM`, `LOW`, `UNKNOWN` | `[]` | An empty list makes the Trivy image and config scans warn only. |
 | `opengrep-fail-on` | list of `ERROR`, `WARNING`, `INFO` | `[]` | An empty list makes opengrep warn only. |
-| `docker-image` | map | see the child keys | Allowed child keys: `name`, `dockerfile`, `context`. |
+| `docker-image` | map | see the child keys | Allowed child keys: `name`, `dockerfile`, `context`, `build-args`. |
 | `docker-image.name` | string | value of `project-name` | Must match `^[a-z0-9]+([._-][a-z0-9]+)*$`. The library checks the pattern only when `build-docker-image` is true. |
 | `docker-image.dockerfile` | string | `Dockerfile` | Must be a non-empty path relative to the repo root. |
 | `docker-image.context` | string | `.` | Must be a non-empty path relative to the repo root. |
+| `docker-image.build-args` | list of strings | `[]` | Each entry is `NAME=VALUE`, where `NAME` matches `^[A-Za-z_][A-Za-z0-9_]*$`. Each entry becomes one Kaniko `--build-arg`. In `VALUE`, `${VERSION}`, `${GIT_COMMIT}` and `${GIT_URL}` become the build version, the checked-out commit and the repo URL. All other text stays literal. A placeholder with no value in the build fails the image build. |
 | `helm-image-tag-path` | string | `""` | When set, it must start with `.` and `build-docker-image` must be true. Example: `.jenkins.controller.image.tag`. The library writes `<version>` to this path in `charts/values.yaml` before `helm package` and before `helm install`. When it's empty, the library writes nothing. |
 | `pipeline-steps` | map | all flags `false` | Allowed child keys: the flags of section 4. |
 | `pipeline-steps.<flag>` | boolean | `false` | `build` is allowed only in the java, python and node pipelines. In the cluster pipeline, `build` is an unknown key. |
@@ -397,6 +417,25 @@ The same stages as the java pipeline, with these differences:
 - Each command then runs `corepack enable` with the shims in `$HOME/.local/bin` and puts that directory first on `PATH`. So `pnpm` is the version in the `packageManager` field of `package.json`. Corepack downloads it on first use. The pnpm store is under `$HOME`, outside the workspace.
 - `Prepare image context` leaves out the root `node_modules` and `.next/cache` instead of `.gradle`. It keeps `.next/standalone`, `.next/static` and `public`.
 - A release run doesn't write `package.json`.
+
+### infisicalConfigurablePipeline
+
+For `raulstechtips/secrets-manager` only. It loads the config with the cluster shape and runs:
+
+1. `Checkout`. The version is `<tag>-release-<head7>-<build number>` from the branch
+   `release/<tag>`, for example `v0.162.21-release-3e32d04-1`. Any other branch and every
+   pull request fail here.
+2. `Unpin apt packages`. In the workspace copy of `docker-image.dockerfile`, each
+   `package=version` argument of an `apt-get install` command becomes `package`, except
+   `infisical` (the Infisical CLI), whose pin stays. Debian keeps only the newest version of
+   a package, so an old pin stops the build. Nothing is committed. Each removed pin is
+   logged and written to `.pipeline/reports/apt-unpin.txt`.
+3. `Trivy Dockerfile scan` (`trivy-scan`).
+4. `Prepare image context`, then `Build image` (`build-docker-image`). The Kaniko container
+   requests 10Gi of memory with a 12Gi limit.
+5. `Trivy image scan` (`trivy-scan`), on the built image only.
+
+There are no unit tests, Helm steps or deploys. The build times out after 180 minutes.
 
 ### Image-scan gate
 
