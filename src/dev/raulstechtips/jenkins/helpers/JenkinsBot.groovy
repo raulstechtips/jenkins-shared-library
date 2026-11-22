@@ -7,6 +7,10 @@ package dev.raulstechtips.jenkins.helpers
 class JenkinsBot implements Serializable {
     static final String NAME = 'raulstechtips-jenkins[bot]'
     static final String EMAIL = 'raulstechtips-jenkins[bot]@users.noreply.github.com'
+    // Committer of the Infisical release branch cherry-picks. It is not in the org folder's
+    // ignored authors, and the cherry-picked commits keep their original author.
+    static final String INFISICAL_RELEASE_NAME = 'infisical-release-jenkins[bot]'
+    static final String INFISICAL_RELEASE_EMAIL = 'infisical-release-jenkins[bot]@users.noreply.github.com'
 
     /**
      * Rewrites HTTPS and SSH GitHub origins to use GH_TOKEN, in the current process only. The
