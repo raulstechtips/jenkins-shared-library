@@ -8,7 +8,7 @@ import dev.raulstechtips.jenkins.helpers.MinioNames
  * creates a new access key, writes it to Infisical /minio/users/NAME/L (the folders are created
  * when missing), and then removes every other access key of the user.
  *
- * @param args name, environment, access (RO, RW or BOTH)
+ * @param args name, environment, access (map with one checkbox per level, for example [RO: true])
  * @throws IllegalArgumentException for invalid input, before any shell command
  * @throws error (fails the build) when a user does not exist
  */
@@ -16,7 +16,7 @@ def call(Map args) {
     MinioNames names = new MinioNames()
     String name = names.validateName(args.name as String)
     String environment = names.validateEnvironment(args.environment as String)
-    List<String> levels = names.levels(args.access as String, knownLevels())
+    List<String> levels = names.levels(args.access as Map, knownLevels())
     List<String> accounts = []
     for (String level : levels) {
         accounts.add(names.accountName(name, environment, level))

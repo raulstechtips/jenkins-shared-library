@@ -27,7 +27,7 @@ class RotateMinioKeysPipelineTest extends DeclarativePipelineTest {
         binding.setVariable('params', [:])
         fake = new MinioFake()
         fake.install(this)
-        ['string', 'text', 'choice', 'password'].each { String type ->
+        ['string', 'text', 'choice', 'password', 'booleanParam'].each { String type ->
             ParametersDeclaration.metaClass."${type}" = { Map args ->
                 parameters << ([type: type] + args)
                 Map params = binding.getVariable('params') as Map
@@ -63,8 +63,8 @@ class RotateMinioKeysPipelineTest extends DeclarativePipelineTest {
 
     @Test
     void hasTheExactParametersOptionsAndAgent() {
-        run([NAME: 'app', ENVIRONMENT: 'dev', ACCESS: 'RO'])
-        assertEquals([['string', 'NAME'], ['choice', 'ENVIRONMENT', ['dev', 'staging', 'prod']], ['choice', 'ACCESS', ['RO', 'RW', 'BOTH']]], parameters.collect { [it.type, it.name] + (it.choices ? [it.choices] : []) })
+        run([NAME: 'app', ENVIRONMENT: 'dev', RO: true])
+        assertEquals([['string', 'NAME'], ['choice', 'ENVIRONMENT', ['dev', 'staging', 'prod']], ['booleanParam', 'RO'], ['booleanParam', 'RW']], parameters.collect { [it.type, it.name] + (it.choices ? [it.choices] : []) })
         assertTrue(parameters.findAll { it.type in ['string', 'text'] }.every { it.defaultValue == '' })
         assertEquals([skipDefaultCheckout: true, disableConcurrentBuilds: true,
             timeout: [time: 10, unit: 'MINUTES'], buildDiscarder: [numToKeepStr: '20']], options)
@@ -85,7 +85,7 @@ class RotateMinioKeysPipelineTest extends DeclarativePipelineTest {
 
     @Test
     void missingUserFails() {
-        def failure = assertThrows(IllegalStateException) { run([NAME: 'app', ENVIRONMENT: 'dev', ACCESS: 'RW']) }
+        def failure = assertThrows(IllegalStateException) { run([NAME: 'app', ENVIRONMENT: 'dev', RW: true]) }
         assertEquals('user app-dev-rw does not exist', failure.message)
         assertEquals([], fake.changes())
     }

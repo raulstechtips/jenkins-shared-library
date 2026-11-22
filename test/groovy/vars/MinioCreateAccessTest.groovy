@@ -25,7 +25,7 @@ class MinioCreateAccessTest extends BasePipelineTest {
 
     @Test
     void firstRunCreatesPolicyUserAttachmentAndKeysForEachLevel() {
-        ensure(name: 'app', environment: 'dev', access: 'BOTH', buckets: 'b-two, b-one\nb-one')
+        ensure(name: 'app', environment: 'dev', access: [RO: true, RW: true], buckets: 'b-two, b-one\nb-one')
         ['ro', 'rw'].each { String level ->
             String account = 'app-dev-' + level
             assertEquals(['arn:aws:s3:::b-one', 'arn:aws:s3:::b-two'],
@@ -40,10 +40,10 @@ class MinioCreateAccessTest extends BasePipelineTest {
 
     @Test
     void secondRunFailsWithEveryExistingResourceAndCreatesNothing() {
-        ensure(name: 'app', environment: 'dev', access: 'BOTH', buckets: ['b-one'])
+        ensure(name: 'app', environment: 'dev', access: [RO: true, RW: true], buckets: ['b-one'])
         fake.calls.clear()
         IllegalStateException e = assertThrows(IllegalStateException) {
-            ensure(name: 'app', environment: 'dev', access: 'BOTH', buckets: ['b-one'])
+            ensure(name: 'app', environment: 'dev', access: [RO: true, RW: true], buckets: ['b-one'])
         }
         assertEquals('These MinIO resources already exist: policy app-dev-ro, user app-dev-ro, ' +
             'policy app-dev-rw, user app-dev-rw. Nothing was created.', e.message)
@@ -55,7 +55,7 @@ class MinioCreateAccessTest extends BasePipelineTest {
     void oneExistingPolicyFailsBeforeAnyLevelIsCreated() {
         fake.policies['app-dev-rw'] = '{"Version":"2012-10-17","Statement":[]}'
         IllegalStateException e = assertThrows(IllegalStateException) {
-            ensure(name: 'app', environment: 'dev', access: 'BOTH', buckets: 'b-one')
+            ensure(name: 'app', environment: 'dev', access: [RO: true, RW: true], buckets: 'b-one')
         }
         assertEquals('These MinIO resources already exist: policy app-dev-rw. Nothing was created.', e.message)
         assertEquals([], fake.changes())
@@ -66,7 +66,7 @@ class MinioCreateAccessTest extends BasePipelineTest {
     void existingUserWithoutPolicyFails() {
         fake.users['app-dev-ro'] = []
         IllegalStateException e = assertThrows(IllegalStateException) {
-            ensure(name: 'app', environment: 'dev', access: 'RO', buckets: 'b-one')
+            ensure(name: 'app', environment: 'dev', access: [RO: true], buckets: 'b-one')
         }
         assertEquals('These MinIO resources already exist: user app-dev-ro. Nothing was created.', e.message)
         assertEquals([], fake.changes())
@@ -76,26 +76,26 @@ class MinioCreateAccessTest extends BasePipelineTest {
     void otherLevelIsNotChecked() {
         fake.policies['app-dev-rw'] = '{"Version":"2012-10-17","Statement":[]}'
         fake.users['app-dev-rw'] = ['app-dev-rw']
-        ensure(name: 'app', environment: 'dev', access: 'RO', buckets: 'b-one')
+        ensure(name: 'app', environment: 'dev', access: [RO: true], buckets: 'b-one')
         assertEquals(['create-policy', 'add-user', 'attach-policy', 'create-keys'], fake.changes())
     }
 
     @Test
     void existingInfisicalKeyIsOverwritten() {
         fake.storeKey('dev', 'app', 'ro', 'OLDKEY')
-        ensure(name: 'app', environment: 'dev', access: 'RO', buckets: 'b-one')
+        ensure(name: 'app', environment: 'dev', access: [RO: true], buckets: 'b-one')
         assertEquals('NEWKEY1', fake.keyId('dev', '/minio/users/app/ro'))
         assertTrue(fake.logs.contains('Created access key NEWKEY1 for user app-dev-ro.'))
     }
 
     @Test
     void emptyOrInvalidInputFailsWithoutAnyShellCall() {
-        [[:], [name: '', environment: 'dev', access: 'RO', buckets: 'b'],
-            [name: 'app', environment: '', access: 'RO', buckets: 'b'],
-            [name: 'app', environment: 'dev', access: '', buckets: 'b'],
-            [name: 'app', environment: 'dev', access: 'ro', buckets: 'b'],
-            [name: 'app', environment: 'dev', access: 'RO', buckets: ' , '],
-            [name: 'app', environment: 'dev', access: 'RO', buckets: 'Bad_Bucket']].each { Map args ->
+        [[:], [name: '', environment: 'dev', access: [RO: true], buckets: 'b'],
+            [name: 'app', environment: '', access: [RO: true], buckets: 'b'],
+            [name: 'app', environment: 'dev', access: [:], buckets: 'b'],
+            [name: 'app', environment: 'dev', access: [ro: true], buckets: 'b'],
+            [name: 'app', environment: 'dev', access: [RO: true], buckets: ' , '],
+            [name: 'app', environment: 'dev', access: [RO: true], buckets: 'Bad_Bucket']].each { Map args ->
             assertThrows(IllegalArgumentException) { ensure(args) }
         }
         assertEquals([], fake.calls)
