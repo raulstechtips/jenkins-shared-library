@@ -12,8 +12,8 @@ import dev.raulstechtips.jenkins.helpers.RegistryCatalog
  *
  * The version is TAG-release-HEAD7-BUILD, from the branch name, the head commit and the build
  * number, for example v0.162.21-release-3e32d04-1. Any other branch, and every pull request,
- * fails at Checkout. The Kaniko container requests 10Gi of memory with a 12Gi limit, and the
- * build times out after 180 minutes.
+ * fails at Checkout. The image build runs on the builder-large agent, whose Kaniko container
+ * requests 10Gi of memory with a 12Gi limit, and the build times out after 180 minutes.
  *
  * @throws error (fails the build) when the branch is not release/vX.Y.Z. Each step raises its
  *     own errors.
@@ -91,19 +91,8 @@ def call() {
                         }
                         agent {
                             kubernetes {
-                                inheritFrom 'builder'
-                                yaml '''apiVersion: v1
-kind: Pod
-spec:
-  containers:
-    - name: kaniko
-      resources:
-        requests:
-          memory: 10Gi
-        limits:
-          memory: 12Gi
-'''
-                                yamlMergeStrategy merge()
+                                // The jenkins chart template gives Kaniko a 10Gi request and a 12Gi limit.
+                                inheritFrom 'builder-large'
                             }
                         }
                         steps {

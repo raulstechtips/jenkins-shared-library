@@ -431,8 +431,8 @@ For `raulstechtips/secrets-manager` only. It loads the config with the cluster s
    a package, so an old pin stops the build. Nothing is committed. Each removed pin is
    logged and written to `.pipeline/reports/apt-unpin.txt`.
 3. `Trivy Dockerfile scan` (`trivy-scan`).
-4. `Prepare image context`, then `Build image` (`build-docker-image`). The Kaniko container
-   requests 10Gi of memory with a 12Gi limit.
+4. `Prepare image context`, then `Build image` (`build-docker-image`) on the `builder-large`
+   agent from the `jenkins` chart, whose Kaniko container requests 10Gi of memory with a 12Gi limit.
 5. `Trivy image scan` (`trivy-scan`), on the built image only.
 
 There are no unit tests, Helm steps or deploys. The build times out after 180 minutes.

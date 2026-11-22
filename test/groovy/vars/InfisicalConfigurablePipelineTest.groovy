@@ -109,11 +109,9 @@ class InfisicalConfigurablePipelineTest extends DeclarativePipelineTest {
         Map pod = new Yaml().load(pipeline.agent.kubernetes.yaml)
         assertEquals(['tools', 'trivy'], pod.spec.containers*.name)
         def builder = pipeline.stages['Build image']
-        assertEquals('builder', builder.agent.kubernetes.inheritFrom)
-        assertEquals('merge', builder.agent.kubernetes.yamlMergeStrategy)
+        assertEquals('builder-large', builder.agent.kubernetes.inheritFrom)
+        assertNull(builder.agent.kubernetes.yaml)
         assertEquals(Boolean.TRUE, builder.when.beforeAgent)
-        Map kaniko = new Yaml().load(builder.agent.kubernetes.yaml).spec.containers[0]
-        assertEquals([name: 'kaniko', resources: [requests: [memory: '10Gi'], limits: [memory: '12Gi']]], kaniko)
     }
 
     @Test
