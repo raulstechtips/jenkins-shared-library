@@ -25,7 +25,7 @@ class MinioDeleteAccessTest extends BasePipelineTest {
 
     @Test
     void removesKeysUserPolicyAndFoldersButNeverTheBucket() {
-        loadScript('vars/minioEnsureBucket.groovy').call(name: 'app', environment: 'dev')
+        loadScript('vars/minioCreateBucket.groovy').call(name: 'app', environment: 'dev')
         fake.calls.clear()
         delete(name: 'app', environment: 'dev', access: 'BOTH', confirmName: 'app')
         assertEquals([:], fake.users)
@@ -42,7 +42,7 @@ class MinioDeleteAccessTest extends BasePipelineTest {
 
     @Test
     void oneLevelKeepsTheOtherLevelFolder() {
-        loadScript('vars/minioEnsureBucket.groovy').call(name: 'app', environment: 'dev')
+        loadScript('vars/minioCreateBucket.groovy').call(name: 'app', environment: 'dev')
         delete(name: 'app', environment: 'dev', access: 'RO', confirmName: 'app')
         assertEquals(['app-dev-rw'] as Set, fake.users.keySet())
         assertEquals(['dev:/minio/users/app', 'dev:/minio/users/app/rw'] as Set, fake.folders)

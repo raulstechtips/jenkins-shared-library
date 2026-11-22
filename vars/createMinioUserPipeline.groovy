@@ -34,7 +34,7 @@ def call() {
                     }
                 }
                 steps {
-                    minioEnsureAccess(name: params.USER_NAME, environment: params.ENVIRONMENT, access: params.ACCESS,
+                    minioCreateAccess(name: params.USER_NAME, environment: params.ENVIRONMENT, access: params.ACCESS,
                         buckets: params.BUCKETS)
                 }
             }

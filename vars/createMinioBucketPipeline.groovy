@@ -29,7 +29,7 @@ def call() {
                     }
                 }
                 steps {
-                    minioEnsureBucket(name: params.NAME, environment: params.ENVIRONMENT)
+                    minioCreateBucket(name: params.NAME, environment: params.ENVIRONMENT)
                 }
             }
         }

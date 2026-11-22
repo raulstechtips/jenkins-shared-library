@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test
 
 import static org.junit.jupiter.api.Assertions.*
 
-class MinioEnsureAccessTest extends BasePipelineTest {
+class MinioCreateAccessTest extends BasePipelineTest {
     private MinioFake fake
 
     @Override
@@ -20,7 +20,7 @@ class MinioEnsureAccessTest extends BasePipelineTest {
     }
 
     private void ensure(Map args) {
-        loadScript('vars/minioEnsureAccess.groovy').call(args)
+        loadScript('vars/minioCreateAccess.groovy').call(args)
     }
 
     @Test

@@ -128,21 +128,10 @@ class MinioCommands implements Serializable {
             'echo "Removed access key $key_id of user $user."\n')
     }
 
-    /** Prints the AWS_ACCESS_KEY_ID stored in Infisical, or nothing when the folder or key is missing. */
-    @NonCPS
-    String readKeyId(String env, String name, String level) {
-        infisicalScript('read-key-id', infisicalVars(env, name, level), false,
-            'if inf secrets get AWS_ACCESS_KEY_ID --path "$keys_path" --plain >"$work/id" 2>"$work/id.err"; then\n' +
-            '  id="$(head -n 1 "$work/id")"\n' +
-            '  case "$id" in *"not found"*) id="" ;; esac\n' +
-            '  printf \'%s\\n\' "$id"\n' +
-            'fi\n')
-    }
-
     /**
      * Creates the Infisical folders when missing, creates a new access key for the user, and writes
      * both keys to Infisical from a mode-600 .env file. Prints only the new access key ID (last line).
-     * When the Infisical write fails, the script fails. The next run makes a new key and removes the others.
+     * When the Infisical write fails, the script fails. The rotate job then makes a new key and removes the others.
      */
     @NonCPS
     String createKeys(String user, String env, String name, String level) {

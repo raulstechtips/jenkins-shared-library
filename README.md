@@ -102,7 +102,7 @@ The pipelines run on the `generic` agent with `minioAgentPodYaml()`.
 `resources/dev/raulstechtips/jenkins/tools.yaml` into
 `WORKSPACE/.minio-tools/bin` and checks their SHA-256. The pins are
 `mc` `RELEASE.2025-08-13T08-35-41Z` and `infisical` `v0.45.14`.
-The steps are `minioEnsureBucket`, `minioEnsureAccess`, `minioRotateKeys` and
+The steps are `minioCreateBucket`, `minioCreateAccess`, `minioRotateKeys` and
 `minioDeleteAccess`. They run commands built by `MinioCommands` inside
 `minioSession`.
 
