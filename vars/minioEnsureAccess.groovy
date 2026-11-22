@@ -3,17 +3,19 @@ import dev.raulstechtips.jenkins.helpers.MinioNames
 import dev.raulstechtips.jenkins.helpers.MinioPolicy
 
 /**
- * Makes sure that a policy, a user and an access key in Infisical exist for each access level.
+ * Creates a policy, a user and an access key in Infisical for each access level, and optionally
+ * a new bucket first.
  *
  * All input is validated, and every policy is rendered, before the first MinIO or Infisical call.
- * Per level L: policy NAME-ENV-L is created when missing. An existing policy is skipped by name and
- * its content is not read or changed. User NAME-ENV-L is created when missing, with a random password that nobody keeps.
- * The policy is attached when it is not attached. When the AWS_ACCESS_KEY_ID in Infisical
- * (/minio/users/NAME/L in environment ENV) is still a key of the user, the keys are kept.
- * Otherwise a new key is created, written to Infisical, and every other key of the user is removed.
- * A second run with the same input changes nothing.
+ * Then every MinIO resource that the step creates is checked: the bucket (when args.bucket is set)
+ * and policy and user NAME-ENV-L for each level L. When one or more of them exist, the build fails
+ * with the list of all existing resources, and nothing is created.
+ * Otherwise the step creates the bucket, and per level the policy, the user with a random password
+ * that nobody keeps, the policy attachment and a new access key. The key is written to Infisical
+ * (/minio/users/NAME/L in environment ENV); an existing Infisical secret there is overwritten.
  *
- * @param args name, environment, access (RO, RW or BOTH, from levels.yaml), buckets (text or list)
+ * @param args name, environment, access (RO, RW or BOTH, from levels.yaml), buckets (text or list),
+ *        bucket (optional, a validated bucket name to create)
  * @throws IllegalArgumentException for invalid input, before any shell command
  */
 def call(Map args) {
@@ -23,6 +25,7 @@ def call(Map args) {
     List<String> levels = names.levels(args.access as String, knownLevels())
     Object rawBuckets = args.buckets
     List<String> buckets = names.parseBuckets(rawBuckets instanceof List ? ((List) rawBuckets).join(',') : rawBuckets as String)
+    String newBucket = args.bucket as String
     MinioPolicy policy = new MinioPolicy()
     List<Map> targets = []
     for (String level : levels) {
@@ -32,47 +35,31 @@ def call(Map args) {
     }
 
     minioSession { MinioCommands c ->
-        for (Map t : targets) {
-            String info = sh(script: c.policyInfo(t.account), returnStdout: true)
-            if (c.missing(info)) {
-                sh c.createPolicy(t.account, t.policy)
-            } else {
-                echo "Policy ${t.account} exists. Skipped.".toString()
-            }
-            ensureUser(c, t.account)
-            ensureKeys(c, t.account, environment, name, t.level)
+        List<String> existing = []
+        if (newBucket && c.lines(sh(script: c.listBuckets(), returnStdout: true)).contains(newBucket)) {
+            existing.add("bucket ${newBucket}".toString())
         }
-    }
-}
+        for (Map t : targets) {
+            if (!c.missing(sh(script: c.policyInfo(t.account), returnStdout: true))) {
+                existing.add("policy ${t.account}".toString())
+            }
+            if (!c.missing(sh(script: c.userInfo(t.account), returnStdout: true))) {
+                existing.add("user ${t.account}".toString())
+            }
+        }
+        if (!existing.isEmpty()) {
+            error("These MinIO resources already exist: ${existing.join(', ')}. Nothing was created.".toString())
+        }
 
-private void ensureUser(MinioCommands c, String account) {
-    String info = sh(script: c.userInfo(account), returnStdout: true)
-    List<String> attached = []
-    if (c.missing(info)) {
-        sh c.addUser(account)
-    } else {
-        attached = c.attachedPolicies(info)
-        echo "User ${account} exists. Skipped.".toString()
-    }
-    if (attached.contains(account)) {
-        echo "Policy ${account} is attached to user ${account}. Skipped.".toString()
-    } else {
-        sh c.attachPolicy(account, account)
-    }
-}
-
-private void ensureKeys(MinioCommands c, String account, String environment, String name, String level) {
-    List<String> stored = c.lines(sh(script: c.readKeyId(environment, name, level), returnStdout: true))
-    List<String> current = c.lines(sh(script: c.listAccessKeys(account), returnStdout: true))
-    if (!stored.isEmpty() && current.contains(stored[0])) {
-        echo "Access key ${stored[0]} in Infisical is a key of user ${account}. Skipped.".toString()
-        return
-    }
-    String created = c.newKeyId(sh(script: c.createKeys(account, environment, name, level), returnStdout: true))
-    echo "Created access key ${created} for user ${account}.".toString()
-    for (String old : current) {
-        if (old != created) {
-            sh c.removeAccessKey(account, old)
+        if (newBucket) {
+            sh c.createBucket(newBucket)
+        }
+        for (Map t : targets) {
+            sh c.createPolicy(t.account, t.policy)
+            sh c.addUser(t.account)
+            sh c.attachPolicy(t.account, t.account)
+            String created = c.newKeyId(sh(script: c.createKeys(t.account, environment, name, t.level), returnStdout: true))
+            echo "Created access key ${created} for user ${t.account}.".toString()
         }
     }
 }

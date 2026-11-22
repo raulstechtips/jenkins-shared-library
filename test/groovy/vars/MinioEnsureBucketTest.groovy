@@ -36,24 +36,31 @@ class MinioEnsureBucketTest extends BasePipelineTest {
     }
 
     @Test
-    void secondRunWithExistingBucketPolicyUserAndKeyCreatesNothing() {
+    void secondRunFailsWithEveryExistingResourceAndCreatesNothing() {
         ensure(name: 'app', environment: 'dev')
         fake.calls.clear()
-        ensure(name: 'app', environment: 'dev')
+        IllegalStateException e = assertThrows(IllegalStateException) { ensure(name: 'app', environment: 'dev') }
+        assertEquals('These MinIO resources already exist: bucket app-dev, policy app-dev-ro, user app-dev-ro, ' +
+            'policy app-dev-rw, user app-dev-rw. Nothing was created.', e.message)
         assertEquals([], fake.changes())
-        assertTrue(fake.logs.contains('Bucket app-dev exists. Skipped.'))
     }
 
     @Test
-    void existingPolicyWithOtherContentIsSkipped() {
+    void existingBucketAloneFails() {
         fake.buckets << 'app-dev'
-        String edited = '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Action":["s3:GetObject"],' +
-            '"Resource":["arn:aws:s3:::other/*"]}]}'
-        fake.policies['app-dev-ro'] = edited
-        ensure(name: 'app', environment: 'dev')
-        assertEquals(edited, fake.policies['app-dev-ro'])
-        assertTrue(fake.logs.contains('Policy app-dev-ro exists. Skipped.'))
-        assertFalse(fake.changes().contains('create-bucket'))
+        IllegalStateException e = assertThrows(IllegalStateException) { ensure(name: 'app', environment: 'dev') }
+        assertEquals('These MinIO resources already exist: bucket app-dev. Nothing was created.', e.message)
+        assertEquals([], fake.changes())
+        assertTrue(fake.policies.isEmpty())
+    }
+
+    @Test
+    void existingPolicyFailsAndTheBucketIsNotCreated() {
+        fake.policies['app-dev-ro'] = '{"Version":"2012-10-17","Statement":[]}'
+        IllegalStateException e = assertThrows(IllegalStateException) { ensure(name: 'app', environment: 'dev') }
+        assertEquals('These MinIO resources already exist: policy app-dev-ro. Nothing was created.', e.message)
+        assertEquals([], fake.changes())
+        assertTrue(fake.buckets.isEmpty())
     }
 
     @Test
