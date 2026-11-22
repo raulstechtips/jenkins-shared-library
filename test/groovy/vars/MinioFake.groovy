@@ -40,7 +40,7 @@ class MinioFake {
     }
 
     List<String> changes() {
-        ops().findAll { !(it in ['list-buckets', 'policy-info', 'user-info', 'list-access-keys', 'read-key-id']) }
+        ops().findAll { !(it in ['list-buckets', 'policy-info', 'user-info', 'list-access-keys']) }
     }
 
     String keyId(String env, String path) {
@@ -95,7 +95,7 @@ class MinioFake {
         }
         helper.registerAllowedMethod('sh', [String]) { String script -> run(script) }
         helper.registerAllowedMethod('sh', [Map]) { Map args -> run(args.script as String) }
-        ['minioSession': Closure, 'minioEnsureAccess': Map, 'minioEnsureBucket': Map,
+        ['minioSession': Closure, 'minioCreateAccess': Map, 'minioCreateBucket': Map,
             'minioRotateKeys': Map, 'minioDeleteAccess': Map].each { String step, Class type ->
             helper.registerAllowedMethod(step, [type]) { Object arg -> t.loadScript('vars/' + step + '.groovy').call(arg) }
         }
@@ -137,7 +137,6 @@ class MinioFake {
             case 'remove-policy': policies.remove(vars.policy); return ''
             case 'list-access-keys': return (keys[vars.user] ?: []).join('\n') + '\n'
             case 'remove-access-key': keys[vars.user].remove(vars.key_id); return ''
-            case 'read-key-id': return (keyId(env2, vars.keys_path) ?: '') + '\n'
             case 'create-keys':
                 assertTrue(users.containsKey(vars.user), 'create-keys for a missing user')
                 String id = 'NEWKEY' + (++nextKey)

@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test
 
 import static org.junit.jupiter.api.Assertions.*
 
-class MinioEnsureAccessTest extends BasePipelineTest {
+class MinioCreateAccessTest extends BasePipelineTest {
     private MinioFake fake
 
     @Override
@@ -20,7 +20,7 @@ class MinioEnsureAccessTest extends BasePipelineTest {
     }
 
     private void ensure(Map args) {
-        loadScript('vars/minioEnsureAccess.groovy').call(args)
+        loadScript('vars/minioCreateAccess.groovy').call(args)
     }
 
     @Test
@@ -39,46 +39,53 @@ class MinioEnsureAccessTest extends BasePipelineTest {
     }
 
     @Test
-    void secondRunWithEverythingPresentCreatesNothing() {
-        ensure(name: 'app', environment: 'dev', access: 'RW', buckets: ['b-one'])
+    void secondRunFailsWithEveryExistingResourceAndCreatesNothing() {
+        ensure(name: 'app', environment: 'dev', access: 'BOTH', buckets: ['b-one'])
         fake.calls.clear()
-        ensure(name: 'app', environment: 'dev', access: 'RW', buckets: ['b-one'])
+        IllegalStateException e = assertThrows(IllegalStateException) {
+            ensure(name: 'app', environment: 'dev', access: 'BOTH', buckets: ['b-one'])
+        }
+        assertEquals('These MinIO resources already exist: policy app-dev-ro, user app-dev-ro, ' +
+            'policy app-dev-rw, user app-dev-rw. Nothing was created.', e.message)
         assertEquals([], fake.changes())
-        assertEquals(['policy-info', 'user-info', 'read-key-id', 'list-access-keys'], fake.ops())
+        assertEquals(['policy-info', 'user-info', 'policy-info', 'user-info'], fake.ops())
     }
 
     @Test
-    void existingPolicyIsSkippedByNameAndNotChanged() {
-        // Policy document captured from MinIO after a hand edit: it names another bucket.
-        String edited = '{"Version":"2012-10-17","Statement":[{"Effect":"Allow",' +
-            '"Action":["s3:GetBucketLocation","s3:ListBucket"],"Resource":["arn:aws:s3:::longhorn-backup"]},' +
-            '{"Effect":"Allow","Action":["s3:GetObject"],"Resource":["arn:aws:s3:::longhorn-backup/*"]}]}'
-        fake.policies['app-dev-ro'] = edited
-        ensure(name: 'app', environment: 'dev', access: 'BOTH', buckets: 'b-one')
-        assertEquals(edited, fake.policies['app-dev-ro'])
-        assertTrue(fake.logs.contains('Policy app-dev-ro exists. Skipped.'))
-        assertEquals(['add-user', 'attach-policy', 'create-keys',
-            'create-policy', 'add-user', 'attach-policy', 'create-keys'], fake.changes())
+    void oneExistingPolicyFailsBeforeAnyLevelIsCreated() {
+        fake.policies['app-dev-rw'] = '{"Version":"2012-10-17","Statement":[]}'
+        IllegalStateException e = assertThrows(IllegalStateException) {
+            ensure(name: 'app', environment: 'dev', access: 'BOTH', buckets: 'b-one')
+        }
+        assertEquals('These MinIO resources already exist: policy app-dev-rw. Nothing was created.', e.message)
+        assertEquals([], fake.changes())
+        assertFalse(fake.users.containsKey('app-dev-ro'))
     }
 
     @Test
-    void attachesOnlyWhenNotAttached() {
-        fake.users['app-dev-ro'] = ['unrelated']
-        ensure(name: 'app', environment: 'dev', access: 'RO', buckets: 'b-one')
-        assertEquals(['unrelated', 'app-dev-ro'], fake.users['app-dev-ro'])
-        assertFalse(fake.ops().contains('add-user'))
+    void existingUserWithoutPolicyFails() {
+        fake.users['app-dev-ro'] = []
+        IllegalStateException e = assertThrows(IllegalStateException) {
+            ensure(name: 'app', environment: 'dev', access: 'RO', buckets: 'b-one')
+        }
+        assertEquals('These MinIO resources already exist: user app-dev-ro. Nothing was created.', e.message)
+        assertEquals([], fake.changes())
     }
 
     @Test
-    void staleInfisicalKeyCreatesANewKeyAndRemovesEveryOtherKey() {
+    void otherLevelIsNotChecked() {
+        fake.policies['app-dev-rw'] = '{"Version":"2012-10-17","Statement":[]}'
+        fake.users['app-dev-rw'] = ['app-dev-rw']
         ensure(name: 'app', environment: 'dev', access: 'RO', buckets: 'b-one')
-        fake.keys['app-dev-ro'] = ['OLD1', 'OLD2']
-        fake.calls.clear()
+        assertEquals(['create-policy', 'add-user', 'attach-policy', 'create-keys'], fake.changes())
+    }
+
+    @Test
+    void existingInfisicalKeyIsOverwritten() {
+        fake.storeKey('dev', 'app', 'ro', 'OLDKEY')
         ensure(name: 'app', environment: 'dev', access: 'RO', buckets: 'b-one')
-        assertEquals(['create-keys', 'remove-access-key', 'remove-access-key'], fake.changes())
-        assertEquals(['NEWKEY2'], fake.keys['app-dev-ro'])
-        assertEquals('NEWKEY2', fake.keyId('dev', '/minio/users/app/ro'))
-        assertTrue(fake.logs.contains('Created access key NEWKEY2 for user app-dev-ro.'))
+        assertEquals('NEWKEY1', fake.keyId('dev', '/minio/users/app/ro'))
+        assertTrue(fake.logs.contains('Created access key NEWKEY1 for user app-dev-ro.'))
     }
 
     @Test

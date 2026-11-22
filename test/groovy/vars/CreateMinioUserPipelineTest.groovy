@@ -91,6 +91,14 @@ class CreateMinioUserPipelineTest extends DeclarativePipelineTest {
     }
 
     @Test
+    void secondRunFailsAndChangesNothing() {
+        run([USER_NAME: 'reader', ACCESS: 'RO', BUCKETS: 'app-dev', ENVIRONMENT: 'dev'])
+        fake.calls.clear()
+        assertThrows(IllegalStateException) { run([USER_NAME: 'reader', ACCESS: 'RO', BUCKETS: 'app-dev', ENVIRONMENT: 'dev']) }
+        assertEquals([], fake.changes())
+    }
+
+    @Test
     void emptyBucketsFailWithoutAnyShellCall() {
         assertThrows(IllegalArgumentException) { run([USER_NAME: 'reader', ACCESS: 'RO', BUCKETS: ' \n ', ENVIRONMENT: 'dev']) }
         assertEquals([], fake.calls)

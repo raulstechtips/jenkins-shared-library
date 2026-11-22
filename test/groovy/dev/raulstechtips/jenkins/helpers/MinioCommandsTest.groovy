@@ -27,7 +27,6 @@ class MinioCommandsTest {
             'remove-policy': commands.removePolicy('app-dev-ro'),
             'list-access-keys': commands.listAccessKeys('app-dev-ro'),
             'remove-access-key': commands.removeAccessKey('app-dev-ro', 'KEY1'),
-            'read-key-id': commands.readKeyId('dev', 'app', 'ro'),
             'create-keys': commands.createKeys('app-dev-ro', 'dev', 'app', 'ro'),
             'delete-keys-folder': commands.deleteKeysFolder('dev', 'app', 'ro'),
             'delete-name-folder': commands.deleteNameFolderIfEmpty('dev', 'app')
@@ -102,12 +101,12 @@ class MinioCommandsTest {
 
     @Test
     void infisicalTokenComesFromLoginAndIsExported() {
-        String script = commands.readKeyId('dev', 'app', 'ro')
+        String script = commands.deleteKeysFolder('dev', 'app', 'ro')
         assertTrue(script.contains("jq -n '{clientId: env.INFISICAL_CLIENT_ID, clientSecret: env.INFISICAL_CLIENT_SECRET}' | " +
             "curl -fsS -X POST -H 'Content-Type: application/json' --data @- " +
             '"$INFISICAL_API_URL/v1/auth/universal-auth/login" >"$work/login.json"'), script)
         assertTrue(script.contains('INFISICAL_TOKEN="$(jq -r \'.accessToken // empty\' "$work/login.json")"'), script)
-        assertTrue(script.indexOf('export INFISICAL_TOKEN') < script.indexOf('inf secrets get'), script)
+        assertTrue(script.indexOf('export INFISICAL_TOKEN') < script.indexOf('inf secrets folders delete'), script)
         assertTrue(script.contains('inf() { infisical "$@" --env "$infisical_env" --projectId "$project_id" --domain "$INFISICAL_API_URL" --silent; }'), script)
         assertTrue(script.contains("infisical_env='dev'"), script)
         assertTrue(script.contains("keys_path='/minio/users/app/ro'"), script)
@@ -170,7 +169,7 @@ class MinioCommandsTest {
 
     @Test
     void infisicalPathsAreValidated() {
-        assertThrows(IllegalArgumentException) { commands.readKeyId('qa', 'app', 'ro') }
+        assertThrows(IllegalArgumentException) { commands.deleteKeysFolder('qa', 'app', 'ro') }
         assertThrows(IllegalArgumentException) { commands.deleteKeysFolder('dev', '../x', 'ro') }
     }
 }

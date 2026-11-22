@@ -83,11 +83,11 @@ class CreateMinioBucketPipelineTest extends DeclarativePipelineTest {
     }
 
     @Test
-    void secondRunChangesNothing() {
+    void secondRunFailsAndChangesNothing() {
         run([NAME: 'app', ENVIRONMENT: 'prod'])
         assertTrue(fake.buckets.contains('app-prod'))
         fake.calls.clear()
-        run([NAME: 'app', ENVIRONMENT: 'prod'])
+        assertThrows(IllegalStateException) { run([NAME: 'app', ENVIRONMENT: 'prod']) }
         assertEquals([], fake.changes())
     }
 }
