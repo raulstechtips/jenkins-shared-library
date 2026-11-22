@@ -1,12 +1,12 @@
 import dev.raulstechtips.jenkins.helpers.MinioNames
 
 /**
- * Creates bucket NAME-ENV with ro and rw access through minioCreateAccess. Before it creates
+ * Creates bucket NAME-ENV with the checked access levels through minioCreateAccess. Before it creates
  * anything, minioCreateAccess checks the bucket, the policies and the users, and fails the build
  * when one of them exists. The bucket check uses the bucket list, because the Jenkins MinIO
  * policy has no s3:ListBucket.
  *
- * @param args name and environment
+ * @param args name, environment and access (map with one checkbox per level, for example [RO: true])
  * @throws IllegalArgumentException for invalid input, before any shell command
  */
 def call(Map args) {
@@ -15,5 +15,5 @@ def call(Map args) {
     String environment = names.validateEnvironment(args.environment as String)
     String bucket = names.bucketName(name, environment)
 
-    minioCreateAccess(name: name, environment: environment, access: 'BOTH', buckets: [bucket], bucket: bucket)
+    minioCreateAccess(name: name, environment: environment, access: args.access, buckets: [bucket], bucket: bucket)
 }

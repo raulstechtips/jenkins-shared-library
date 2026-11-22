@@ -28,7 +28,7 @@ class MinioRotateKeysTest extends BasePipelineTest {
         fake.users['app-prod-rw'] = ['app-prod-rw']
         fake.keys['app-prod-rw'] = ['OLD1', 'OLD2']
         fake.storeKey('prod', 'app', 'rw', 'OLD1')
-        rotate(name: 'app', environment: 'prod', access: 'RW')
+        rotate(name: 'app', environment: 'prod', access: [RW: true])
         assertEquals(['NEWKEY1'], fake.keys['app-prod-rw'])
         assertEquals('NEWKEY1', fake.keyId('prod', '/minio/users/app/rw'))
         assertEquals(['create-keys', 'remove-access-key', 'remove-access-key'], fake.changes())
@@ -37,15 +37,15 @@ class MinioRotateKeysTest extends BasePipelineTest {
     @Test
     void missingUserFailsBeforeAnyChange() {
         fake.users['app-dev-ro'] = ['app-dev-ro']
-        def failure = assertThrows(IllegalStateException) { rotate(name: 'app', environment: 'dev', access: 'BOTH') }
+        def failure = assertThrows(IllegalStateException) { rotate(name: 'app', environment: 'dev', access: [RO: true, RW: true]) }
         assertEquals('user app-dev-rw does not exist', failure.message)
         assertEquals([], fake.changes())
     }
 
     @Test
     void emptyOrInvalidInputFailsWithoutAnyShellCall() {
-        [[:], [name: '', environment: 'dev', access: 'RO'], [name: 'app', environment: 'qa', access: 'RO'],
-            [name: 'app', environment: 'dev', access: 'ADMIN']].each { Map args ->
+        [[:], [name: '', environment: 'dev', access: [RO: true]], [name: 'app', environment: 'qa', access: [RO: true]],
+            [name: 'app', environment: 'dev', access: [ADMIN: true]]].each { Map args ->
             assertThrows(IllegalArgumentException) { rotate(args) }
         }
         assertEquals([], fake.calls)

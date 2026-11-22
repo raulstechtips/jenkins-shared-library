@@ -20,7 +20,7 @@ class MinioCreateBucketTest extends BasePipelineTest {
     }
 
     private void ensure(Map args) {
-        loadScript('vars/minioCreateBucket.groovy').call(args)
+        loadScript('vars/minioCreateBucket.groovy').call([access: [RO: true, RW: true]] + args)
     }
 
     @Test
@@ -66,6 +66,7 @@ class MinioCreateBucketTest extends BasePipelineTest {
     @Test
     void emptyOrInvalidInputFailsWithoutAnyShellCall() {
         [[:], [name: '', environment: 'dev'], [name: 'app', environment: null],
+            [name: 'app', environment: 'dev', access: [RO: false, RW: false]],
             [name: 'App', environment: 'dev'], [name: 'a--b', environment: 'dev'],
             [name: 'x' * 60, environment: 'dev']].each { Map args ->
             assertThrows(IllegalArgumentException) { ensure(args) }

@@ -62,22 +62,18 @@ class MinioNamesTest {
     }
 
     @Test
-    void bothMeansReadOnlyAndReadWrite() {
-        assertEquals(['ro', 'rw'], names.levels('BOTH', ['ro', 'rw']))
-        assertEquals(['ro', 'rw'], names.levels('BOTH', ['ro', 'rw', 'audit']))
+    void checkedLevelsAreReturnedInLevelsYamlOrder() {
+        assertEquals(['ro', 'rw'], names.levels([RW: true, RO: true], ['ro', 'rw']))
+        assertEquals(['ro'], names.levels([NAME: 'app', RO: true, RW: false], ['ro', 'rw']))
+        assertEquals(['rw'], names.levels([RO: false, RW: 'true'], ['ro', 'rw']))
+        assertEquals(['ro', 'audit'], names.levels([RO: true, AUDIT: true], ['ro', 'rw', 'audit']))
     }
 
     @Test
-    void singleLevelsAreLowercased() {
-        assertEquals(['ro'], names.levels('RO', ['ro', 'rw']))
-        assertEquals(['rw'], names.levels('RW', ['ro', 'rw']))
-        assertEquals(['audit'], names.levels('AUDIT', ['ro', 'rw', 'audit']))
-    }
-
-    @Test
-    void unknownAccessFails() {
-        [null, '', 'ADMIN', 'ro', 'Both', 'AUDIT'].each { String access ->
-            assertThrows(IllegalArgumentException) { names.levels(access, ['ro', 'rw']) }
+    void noCheckedKnownLevelFails() {
+        [null, [:], [RO: false, RW: false], [ADMIN: true], [ro: true], [AUDIT: true]].each { Map access ->
+            IllegalArgumentException e = assertThrows(IllegalArgumentException) { names.levels(access, ['ro', 'rw']) }
+            assertEquals('Select at least one access level: RO, RW.', e.message)
         }
     }
 

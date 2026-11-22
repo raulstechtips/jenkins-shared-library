@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add the `argo-deploy-targets` config key, so that `argoDeploy` opens one dev deploy PR for each listed Argo file instead of only `argo/dev/<project-name>.yaml` ([DEVSECOPS-47](https://raulstechtips.atlassian.net/browse/DEVSECOPS-47))
 
 ### Changed
+- Replace the MinIO `ACCESS` dropdown (`RO`, `RW`, `BOTH`) with one checkbox for each access level (`RO`, `RW`) in `createMinioBucketPipeline()`, `createMinioUserPipeline()`, `rotateMinioKeysPipeline()` and `deleteMinioUserPipeline()`. The checkboxes are not checked by default, and a build with no checked level fails before any MinIO or Infisical call. The bucket pipeline now creates only the checked levels, not always `ro` and `rw`. A new level needs one `booleanParam` line in each of the four pipelines ([DEVSECOPS-207](https://raulstechtips.atlassian.net/browse/DEVSECOPS-207))
 - Give node build and test commands the `github-app` token for git, as python commands have, and run them in the full `node:24.22.3-bookworm` image, which has git. pnpm can then install git dependencies from private GitHub repos ([SWEALTH-335](https://raulstechtips.atlassian.net/browse/SWEALTH-335)).
 - Updated harbor from prod to dev ([DEVSECOPS-197](https://raulstechtips.atlassian.net/browse/DEVSECOPS-197)) 
 

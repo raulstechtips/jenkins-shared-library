@@ -14,7 +14,7 @@ import dev.raulstechtips.jenkins.helpers.MinioPolicy
  * that nobody keeps, the policy attachment and a new access key. The key is written to Infisical
  * (/minio/users/NAME/L in environment ENV); an existing Infisical secret there is overwritten.
  *
- * @param args name, environment, access (RO, RW or BOTH, from levels.yaml), buckets (text or list),
+ * @param args name, environment, access (map with one checkbox per level from levels.yaml, for example [RO: true]), buckets (text or list),
  *        bucket (optional, a validated bucket name to create)
  * @throws IllegalArgumentException for invalid input, before any shell command
  */
@@ -22,7 +22,7 @@ def call(Map args) {
     MinioNames names = new MinioNames()
     String name = names.validateName(args.name as String)
     String environment = names.validateEnvironment(args.environment as String)
-    List<String> levels = names.levels(args.access as String, knownLevels())
+    List<String> levels = names.levels(args.access as Map, knownLevels())
     Object rawBuckets = args.buckets
     List<String> buckets = names.parseBuckets(rawBuckets instanceof List ? ((List) rawBuckets).join(',') : rawBuckets as String)
     String newBucket = args.bucket as String

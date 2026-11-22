@@ -7,7 +7,6 @@ import dev.raulstechtips.jenkins.helpers.MinioNames
  */
 def call() {
     List<String> environments = new MinioNames().environments()
-    List<String> access = accessChoices()
     pipeline {
         agent none
         options {
@@ -18,8 +17,8 @@ def call() {
         }
         parameters {
             string(name: 'USER_NAME', defaultValue: '', description: 'User base name. The user is USER_NAME-ENVIRONMENT-LEVEL.')
-            choice(name: 'ACCESS', choices: access,
-                description: 'Access level. BOTH means RO and RW.')
+            booleanParam(name: 'RO', defaultValue: false, description: 'Read-only access (level ro).')
+            booleanParam(name: 'RW', defaultValue: false, description: 'Read and write access (level rw).')
             text(name: 'BUCKETS', defaultValue: '',
                 description: 'Bucket names, separated by commas, spaces or new lines.')
             choice(name: 'ENVIRONMENT', choices: environments,
@@ -34,21 +33,10 @@ def call() {
                     }
                 }
                 steps {
-                    minioCreateAccess(name: params.USER_NAME, environment: params.ENVIRONMENT, access: params.ACCESS,
+                    minioCreateAccess(name: params.USER_NAME, environment: params.ENVIRONMENT, access: params,
                         buckets: params.BUCKETS)
                 }
             }
         }
     }
-}
-
-// ACCESS choices: every level in levels.yaml in uppercase, then BOTH.
-private List<String> accessChoices() {
-    Map doc = readYaml(text: libraryResource('dev/raulstechtips/jenkins/minio/levels.yaml'))
-    List<String> choices = []
-    for (Object level : (doc.levels as List)) {
-        choices.add(level.toString().toUpperCase())
-    }
-    choices.add('BOTH')
-    return choices
 }

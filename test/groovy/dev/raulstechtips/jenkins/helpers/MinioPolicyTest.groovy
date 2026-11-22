@@ -54,7 +54,7 @@ class MinioPolicyTest {
         String json = policy.render(audit, ['new-dev'])
         assertEquals(['arn:aws:s3:::new-dev'], parse(json).Statement[0].Resource)
         assertEquals(['arn:aws:s3:::new-dev/*'], parse(json).Statement[1].Resource)
-        assertEquals(['audit'], new MinioNames().levels('AUDIT', ['ro', 'rw', 'audit']))
+        assertEquals(['audit'], new MinioNames().levels([AUDIT: true], ['ro', 'rw', 'audit']))
     }
 
 }
