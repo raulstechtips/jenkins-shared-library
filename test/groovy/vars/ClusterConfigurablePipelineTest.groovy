@@ -83,6 +83,7 @@ class ClusterConfigurablePipelineTest extends DeclarativePipelineTest {
         helper.registerAllowedMethod('checkout', [Map], { Map scm ->
             assertEquals(binding.getVariable('scm'), scm)
             events << 'checkout'
+            [GIT_COMMIT: 'c' * 40, GIT_URL: 'https://github.com/raulstechtips/example.git']
         })
         helper.registerAllowedMethod('stash', [Map], { Map args ->
             assertEquals([name: 'image-context', includes: '**/*',
@@ -141,6 +142,8 @@ class ClusterConfigurablePipelineTest extends DeclarativePipelineTest {
         assertEquals('1.2.1-main-0067101-13', callNamed('updateChartVersion').version)
         assertEquals('cluster', observedConfig.type)
         assertEquals('argocd', observedConfig['project-name'])
+        assertEquals('c' * 40, observedConfig.gitCommit)
+        assertEquals('https://github.com/raulstechtips/example.git', observedConfig.gitUrl)
         assertEquals(false, observedConfig['pipeline-steps']['helm-clean-install'])
         assertEquals('1.2.1-main-0067101-13', binding.getVariable('currentBuild').displayName)
         assertEquals(['project-pipeline-config.yaml', 'charts/Chart.yaml',

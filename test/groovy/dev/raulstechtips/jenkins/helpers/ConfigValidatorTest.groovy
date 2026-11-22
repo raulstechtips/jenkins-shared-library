@@ -23,7 +23,8 @@ class ConfigValidatorTest {
             expected.add('build-command')
         }
         assertEquals(expected, cfg.keySet())
-        assertEquals(['name', 'dockerfile', 'context'] as Set, cfg['docker-image'].keySet())
+        assertEquals(['name', 'dockerfile', 'context', 'build-args'] as Set, cfg['docker-image'].keySet())
+        assertEquals([], cfg['docker-image']['build-args'])
         Set flags = ['helm-test', 'trivy-scan', 'opengrep-scan', 'unit-test',
             'build-docker-image', 'helm-package-upload', 'helm-install',
             'helm-clean-install', 'argo-deploy'] as Set
@@ -113,6 +114,20 @@ class ConfigValidatorTest {
                 ConfigValidator.validate(['project-config': ['project-name': 'demo',
                     'helm-overrides': [path]]], 'cluster')
             }
+        }
+    }
+    @Test void buildArgsAcceptNameValueEntries() {
+        Map cfg = ConfigValidator.validate(['project-config': ['project-name': 'example',
+            'docker-image': ['build-args': ['VERSION=${VERSION}', 'EMPTY=', 'URL=a=b']]]], 'cluster')
+        assertEquals(['VERSION=${VERSION}', 'EMPTY=', 'URL=a=b'], cfg['docker-image']['build-args'])
+    }
+    @Test void buildArgsNeedValidName() {
+        ['NO_EQUALS', '=value', '1NAME=value', 'BAD-NAME=value'].each { String entry ->
+            def failure = assertThrows(IllegalArgumentException) {
+                ConfigValidator.validate(['project-config': ['project-name': 'example',
+                    'docker-image': ['build-args': [entry]]]], 'cluster')
+            }
+            assertTrue(failure.message.contains("'project-config.docker-image.build-args[0]' must be NAME=VALUE"), entry)
         }
     }
     @Test void dockerfileMustBeRelative() { invalid('absolute-dockerfile', 'project-config.docker-image.dockerfile') }
@@ -243,7 +258,7 @@ class ConfigValidatorTest {
         assertEquals([], cfg['trivy-fail-on'])
         assertEquals([], cfg['opengrep-fail-on'])
         assertEquals('', cfg['helm-image-tag-path'])
-        assertEquals([name: 'demo', dockerfile: 'Dockerfile', context: 'image'], cfg['docker-image'])
+        assertEquals([name: 'demo', dockerfile: 'Dockerfile', context: 'image', 'build-args': []], cfg['docker-image'])
         assertEquals(false, cfg['pipeline-steps'].build)
         cfg['publish-targets'].add('harbor')
         cfg['docker-image'].context = 'changed'

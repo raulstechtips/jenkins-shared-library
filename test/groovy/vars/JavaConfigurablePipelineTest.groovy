@@ -87,6 +87,7 @@ class JavaConfigurablePipelineTest extends DeclarativePipelineTest {
         helper.registerAllowedMethod('checkout', [Map], { Map scm ->
             assertEquals(binding.getVariable('scm'), scm)
             events << 'checkout'
+            [GIT_COMMIT: 'c' * 40, GIT_URL: 'https://github.com/raulstechtips/example.git']
         })
         helper.registerAllowedMethod('stash', [Map], { Map args ->
             assertEquals([name: 'image-context', includes: '**/*',

@@ -59,8 +59,10 @@ def call() {
                 stages {
                     stage('Checkout') {
                         steps {
-                            checkout scm
                             script {
+                                Map scmVars = checkout(scm) ?: [:]
+                                cfg.gitCommit = scmVars.GIT_COMMIT
+                                cfg.gitUrl = scmVars.GIT_URL
                                 cfg.skipAll = false
                                 currentBuild.description = cfg['project-description']
                                 if (!cfg.releaseVersion && env.BRANCH_NAME == 'main' && !env.CHANGE_ID) {

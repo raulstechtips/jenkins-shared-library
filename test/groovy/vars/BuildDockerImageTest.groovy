@@ -160,6 +160,46 @@ class BuildDockerImageTest extends BasePipelineTest {
     }
 
     @Test
+    void passesResolvedBuildArgsInConfigOrder() {
+        cfg['publish-targets'] = ['ghcr']
+        cfg.gitCommit = '3e32d0469321c6dc67d7d82976ad965cdfad0e5d'
+        cfg.gitUrl = 'https://github.com/raulstechtips/secrets-manager.git'
+        cfg['docker-image']['build-args'] = ['INFISICAL_PLATFORM_VERSION=${VERSION}',
+            'DD_GIT_COMMIT_SHA=${GIT_COMMIT}', 'DD_GIT_REPOSITORY_URL=${GIT_URL}']
+        loadScript('vars/buildDockerImage.groovy').call(cfg)
+        Map executor = commands.find { it.text.contains('/kaniko/executor') }
+        assertEquals(['--context', 'plugins', '--dockerfile', 'plugins/Dockerfile',
+            '--build-arg', 'INFISICAL_PLATFORM_VERSION=1.2.3',
+            '--build-arg', 'DD_GIT_COMMIT_SHA=3e32d0469321c6dc67d7d82976ad965cdfad0e5d',
+            '--build-arg', 'DD_GIT_REPOSITORY_URL=https://github.com/raulstechtips/secrets-manager.git',
+            '--destination', 'ghcr.io/raulstechtips/controller:1.2.3',
+            '--digest-file', '.pipeline/image.digest'], PublishingShellProbe.argv(executor, 'kaniko'))
+    }
+
+    @ParameterizedTest
+    @MethodSource('buildArgInputs')
+    void buildArgValuesStayInert(String payload) {
+        cfg['publish-targets'] = ['ghcr']
+        cfg.gitCommit = payload
+        cfg['docker-image']['build-args'] = ['STATIC=' + payload, 'COMMIT=${GIT_COMMIT}']
+        loadScript('vars/buildDockerImage.groovy').call(cfg)
+        Map executor = commands.find { it.text.contains('/kaniko/executor') }
+        List argv = PublishingShellProbe.argv(executor, 'kaniko')
+        assertEquals(['--build-arg', 'STATIC=' + payload, '--build-arg', 'COMMIT=' + payload], argv[4..7])
+    }
+
+    static List<Arguments> buildArgInputs() {
+        PublishingShellProbe.payloads.collect { String payload -> Arguments.of(payload) }
+    }
+
+    @Test
+    void missingPlaceholderValueFailsBeforeKaniko() {
+        cfg['docker-image']['build-args'] = ['DD_GIT_COMMIT_SHA=${GIT_COMMIT}']
+        assertThrows(IllegalArgumentException) { loadScript('vars/buildDockerImage.groovy').call(cfg) }
+        assertFalse(commands.any { it.text.contains('/kaniko/executor') })
+    }
+
+    @Test
     void rejectsMalformedDigestRatherThanTrustingSuccessfulExecutor() {
         ['sha256:abc', 'sha256:' + 'A' * 64, 'sha512:' + 'a' * 64,
             'sha256:' + 'a' * 64 + '\nextra', ''].each { String invalid ->

@@ -21,6 +21,7 @@ class ConfigValidator implements Serializable {
      * entry has the project-name format and that the list has no duplicates; the docker-image.name format
      * when build-docker-image is true; that docker-image.dockerfile and docker-image.context are
      * paths relative to the repo root and each helm-overrides entry is relative to charts/;
+ * that each docker-image.build-args entry is NAME=VALUE with a valid argument name;
      * and that helm-image-tag-path starts
      * with '.' and needs build-docker-image. When docker-image.name is not given, it defaults to
      * project-name.
@@ -93,6 +94,11 @@ class ConfigValidator implements Serializable {
                 ['dockerfile', 'context'].each { String key ->
                     if (image[key] != null && !relativePath(image[key])) {
                         errors.add("'project-config.docker-image.${key}' must be a non-empty path relative to the repo root.")
+                    }
+                }
+                image['build-args']?.eachWithIndex { String entry, int index ->
+                    if (entry != null && !(entry ==~ /(?s)^[A-Za-z_][A-Za-z0-9_]*=.*$/)) {
+                        errors.add("'project-config.docker-image.build-args[${index}]' must be NAME=VALUE, where NAME matches ^[A-Za-z_][A-Za-z0-9_]*\$.")
                     }
                 }
             }
