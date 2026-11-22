@@ -31,17 +31,14 @@ jobDefinitions.each { jobSpec ->
             }
         }
         configure { node ->
-            // Keep parameters, options, and tracking actions written by the operational pipeline.
+            // Keep parameters, options, triggers, and tracking actions written by the operational
+            // pipeline. Discovery itself adds no trigger.
             if (previous != null) {
                 ['properties', 'actions'].each { element ->
                     if (previous[element]) {
                         node[element][0].replaceNode(previous[element][0])
                     }
                 }
-            }
-            // Discovery creates manual jobs, including when refreshing an existing definition.
-            node.properties[0].children().removeAll {
-                it.name() == 'org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty'
             }
         }
     }

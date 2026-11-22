@@ -40,7 +40,7 @@ class JobDiscoveryTest {
     }
 
     @Test
-    void refreshPreservesRuntimeParametersAndActionsButRemovesAutomaticTriggers() {
+    void refreshPreservesRuntimeParametersActionsAndTriggers() {
         String previous = '''
 <flow-definition>
   <actions><declarative-tracker><parameters><string>CONNECTION</string></parameters></declarative-tracker></actions>
@@ -63,8 +63,10 @@ class JobDiscoveryTest {
         assertEquals('infisical-prod', parameters.parameterDefinitions[0].children()[0].defaultValue[0].text())
         assertEquals(1, generated.properties[0].
             'org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty'.size())
-        assertEquals(0, generated.properties[0].
-            'org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty'.size())
+        def triggers = generated.properties[0].
+            'org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty'
+        assertEquals(1, triggers.size())
+        assertEquals('H H * * *', triggers[0].triggers[0].'hudson.triggers.TimerTrigger'[0].spec[0].text())
         assertEquals('CONNECTION', generated.actions[0].'declarative-tracker'[0].parameters[0].string[0].text())
     }
 
