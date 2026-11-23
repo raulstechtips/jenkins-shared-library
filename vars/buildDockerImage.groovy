@@ -1,4 +1,5 @@
 import com.cloudbees.groovy.cps.NonCPS
+import dev.raulstechtips.jenkins.helpers.BuildArgs
 import dev.raulstechtips.jenkins.helpers.RegistryCatalog
 
 /**
@@ -6,17 +7,20 @@ import dev.raulstechtips.jenkins.helpers.RegistryCatalog
  *
  * It restores the prepared image context from the pipeline stash, writes a Kaniko registry config with the credentials of each target, and
  * runs /kaniko/executor with one destination per target, tagged IMAGE-PREFIX/NAME:VERSION from
- * docker-image and the build version. It runs in the kaniko container, so the pipelines call it on
+ * docker-image and the build version. Each docker-image.build-args entry becomes one --build-arg,
+ * after BuildArgs fills ${VERSION}, ${GIT_COMMIT} and ${GIT_URL} from cfg.version, cfg.gitCommit and
+ * cfg.gitUrl. It runs in the kaniko container, so the pipelines call it on
  * the builder agent. Kaniko runs as root, so after a successful build it makes .pipeline and the
  * digest file readable for the agent user that reads it. The registry config is deleted afterwards, also when
  * the build fails.
  * RUN and COPY layers use a shared registry cache at IMAGE-PREFIX/NAME-build-cache.
  * GHCR takes priority when both publish targets are selected, regardless of their order.
  *
- * @param cfg the loaded config. Reads publish-targets, docker-image and version.
+ * @param cfg the loaded config. Reads publish-targets, docker-image, version, gitCommit and gitUrl.
  * @return the pushed image digest, sha256: followed by 64 lowercase hex characters
  * @throws error (fails the build) when Kaniko writes an invalid digest or a shell command fails
- * @throws IllegalArgumentException when a publish target is not in registries.yaml
+ * @throws IllegalArgumentException when a publish target is not in registries.yaml, or a build
+ *     argument uses a placeholder that has no value
  */
 def call(Map cfg) {
     deleteDir()
@@ -31,6 +35,12 @@ def call(Map cfg) {
     List buildEnv = ['BUILD_CONTEXT=' + image.context, 'BUILD_DOCKERFILE=' + image.dockerfile]
     buildEnv << 'BUILD_CACHE_REPO=' + cacheTarget.registry['image-prefix'] + '/' + image.name + '-build-cache'
     String command = '/kaniko/executor --context "$BUILD_CONTEXT" --dockerfile "$BUILD_DOCKERFILE"'
+    List<String> buildArgs = BuildArgs.resolve(image['build-args'] as List,
+        [VERSION: cfg.version, GIT_COMMIT: cfg.gitCommit, GIT_URL: cfg.gitUrl])
+    buildArgs.eachWithIndex { String arg, int index ->
+        buildEnv << 'BUILD_ARG_' + index + '=' + arg
+        command += ' --build-arg "$BUILD_ARG_' + index + '"'
+    }
     targets.eachWithIndex { Map target, int index ->
         buildEnv << 'BUILD_DESTINATION_' + index + '=' + target.registry['image-prefix'] +
             '/' + image.name + ':' + cfg.version

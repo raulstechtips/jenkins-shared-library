@@ -47,7 +47,9 @@ class ConfigSchema implements Serializable {
             'docker-image': [type: 'map', children: [
                 name: [type: 'string', defaultValue: null],
                 dockerfile: [type: 'string', defaultValue: 'Dockerfile'],
-                context: [type: 'string', defaultValue: '.']
+                context: [type: 'string', defaultValue: '.'],
+                // NAME=VALUE entries for Kaniko --build-arg; BuildArgs fills the placeholders.
+                'build-args': [type: 'list', defaultValue: []]
             ]],
             'pipeline-steps': [type: 'map', children: flags]
         ]

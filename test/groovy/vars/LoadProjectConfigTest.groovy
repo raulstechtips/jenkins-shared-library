@@ -68,7 +68,7 @@ class LoadProjectConfigTest extends BasePipelineTest {
         assertEquals('cluster', cfg.type)
         assertEquals(true, cfg.chartPresent)
         assertEquals('demo', cfg['project-name'])
-        assertEquals([name: 'demo', dockerfile: 'Dockerfile', context: '.'], cfg['docker-image'])
+        assertEquals([name: 'demo', dockerfile: 'Dockerfile', context: '.', 'build-args': []], cfg['docker-image'])
         assertEquals(['project-pipeline-config.yaml', 'charts/Chart.yaml'], reads)
         assertTrue(errors.empty)
     }
