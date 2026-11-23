@@ -27,7 +27,7 @@ class DeleteMinioUserPipelineTest extends DeclarativePipelineTest {
         binding.setVariable('params', [:])
         fake = new MinioFake()
         fake.install(this)
-        ['string', 'text', 'choice', 'password'].each { String type ->
+        ['string', 'text', 'choice', 'password', 'booleanParam'].each { String type ->
             ParametersDeclaration.metaClass."${type}" = { Map args ->
                 parameters << ([type: type] + args)
                 Map params = binding.getVariable('params') as Map
@@ -62,8 +62,8 @@ class DeleteMinioUserPipelineTest extends DeclarativePipelineTest {
 
     @Test
     void hasTheExactParametersOptionsAndAgent() {
-        run([NAME: 'app', ENVIRONMENT: 'dev', ACCESS: 'BOTH', CONFIRM_NAME: 'app'])
-        assertEquals([['string', 'NAME'], ['choice', 'ENVIRONMENT', ['dev', 'staging', 'prod']], ['choice', 'ACCESS', ['RO', 'RW', 'BOTH']], ['string', 'CONFIRM_NAME']], parameters.collect { [it.type, it.name] + (it.choices ? [it.choices] : []) })
+        run([NAME: 'app', ENVIRONMENT: 'dev', RO: true, RW: true, CONFIRM_NAME: 'app'])
+        assertEquals([['string', 'NAME'], ['choice', 'ENVIRONMENT', ['dev', 'staging', 'prod']], ['booleanParam', 'RO'], ['booleanParam', 'RW'], ['string', 'CONFIRM_NAME']], parameters.collect { [it.type, it.name] + (it.choices ? [it.choices] : []) })
         assertTrue(parameters.findAll { it.type in ['string', 'text'] }.every { it.defaultValue == '' })
         assertEquals([skipDefaultCheckout: true, disableConcurrentBuilds: true,
             timeout: [time: 10, unit: 'MINUTES'], buildDiscarder: [numToKeepStr: '20']], options)
@@ -84,7 +84,7 @@ class DeleteMinioUserPipelineTest extends DeclarativePipelineTest {
 
     @Test
     void wrongConfirmNameFailsBeforeAnyShellCall() {
-        assertThrows(IllegalStateException) { run([NAME: 'app', ENVIRONMENT: 'dev', ACCESS: 'BOTH', CONFIRM_NAME: 'ap']) }
+        assertThrows(IllegalStateException) { run([NAME: 'app', ENVIRONMENT: 'dev', RO: true, RW: true, CONFIRM_NAME: 'ap']) }
         assertEquals([], fake.calls)
         assertEquals(0, fake.installs)
     }
@@ -92,7 +92,7 @@ class DeleteMinioUserPipelineTest extends DeclarativePipelineTest {
     @Test
     void neverRemovesABucket() {
         fake.buckets << 'app-dev'
-        run([NAME: 'app', ENVIRONMENT: 'dev', ACCESS: 'BOTH', CONFIRM_NAME: 'app'])
+        run([NAME: 'app', ENVIRONMENT: 'dev', RO: true, RW: true, CONFIRM_NAME: 'app'])
         assertEquals(['app-dev'] as Set, fake.buckets)
         assertFalse(fake.calls.any { it.script =~ /mc (rb|rm)\b/ })
     }

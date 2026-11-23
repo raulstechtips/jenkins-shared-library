@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Enable Kaniko RUN and COPY layer caching in the selected publish registry. GHCR takes priority when both GHCR and Harbor are selected. Reuse the existing registry credentials and a stable cache repository per image ([DEVSECOPS-211](https://raulstechtips.atlassian.net/browse/DEVSECOPS-211)).
+
 ### Added
 
 - Add `infisicalConfigurablePipeline()` for the Infisical fork. It builds only `release/vX.Y.Z` branches, with the version `<tag>-release-<head7>-<build number>`, removes the apt version pins from the image Dockerfile in the workspace (the Infisical CLI pin stays), runs the Trivy Dockerfile and image scans, and builds with Kaniko on the `builder-large` agent (10Gi memory request, 12Gi limit, from the `jenkins` chart). The build times out after 180 minutes ([DEVSECOPS-208](https://raulstechtips.atlassian.net/browse/DEVSECOPS-208))
@@ -25,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - `discoverJobsPipeline()` keeps the triggers that an operational pipeline declares, for example `triggers { cron(...) }`, when it refreshes the jobs. It no longer removes them. Discovery itself still adds no trigger, so jobs without a `triggers` block stay manual. The fixed Job DSL script changed, so it needs one new administrator approval ([DEVSECOPS-208](https://raulstechtips.atlassian.net/browse/DEVSECOPS-208)).
+- Replace the MinIO `ACCESS` dropdown (`RO`, `RW`, `BOTH`) with one checkbox for each access level (`RO`, `RW`) in `createMinioBucketPipeline()`, `createMinioUserPipeline()`, `rotateMinioKeysPipeline()` and `deleteMinioUserPipeline()`. The checkboxes are not checked by default, and a build with no checked level fails before any MinIO or Infisical call. The bucket pipeline now creates only the checked levels, not always `ro` and `rw`. A new level needs one `booleanParam` line in each of the four pipelines ([DEVSECOPS-207](https://raulstechtips.atlassian.net/browse/DEVSECOPS-207))
 - Give node build and test commands the `github-app` token for git, as python commands have, and run them in the full `node:24.22.3-bookworm` image, which has git. pnpm can then install git dependencies from private GitHub repos ([SWEALTH-335](https://raulstechtips.atlassian.net/browse/SWEALTH-335)).
 - Updated harbor from prod to dev ([DEVSECOPS-197](https://raulstechtips.atlassian.net/browse/DEVSECOPS-197)) 
 

@@ -76,14 +76,14 @@ Four manual operational pipelines manage MinIO buckets and access keys.
 
 | Pipeline | `platform-operations` file | Build parameters |
 |---|---|---|
-| `createMinioBucketPipeline()` | `pipelines/create-minio-bucket.Jenkinsfile` | `NAME`, `ENVIRONMENT` |
-| `createMinioUserPipeline()` | `pipelines/create-minio-user.Jenkinsfile` | `USER_NAME`, `ACCESS`, `BUCKETS`, `ENVIRONMENT` |
-| `rotateMinioKeysPipeline()` | `pipelines/rotate-minio-keys.Jenkinsfile` | `NAME`, `ENVIRONMENT`, `ACCESS` |
-| `deleteMinioUserPipeline()` | `pipelines/delete-minio-user.Jenkinsfile` | `NAME`, `ENVIRONMENT`, `ACCESS`, `CONFIRM_NAME` |
+| `createMinioBucketPipeline()` | `pipelines/create-minio-bucket.Jenkinsfile` | `NAME`, `ENVIRONMENT`, `RO`, `RW` |
+| `createMinioUserPipeline()` | `pipelines/create-minio-user.Jenkinsfile` | `USER_NAME`, `RO`, `RW`, `BUCKETS`, `ENVIRONMENT` |
+| `rotateMinioKeysPipeline()` | `pipelines/rotate-minio-keys.Jenkinsfile` | `NAME`, `ENVIRONMENT`, `RO`, `RW` |
+| `deleteMinioUserPipeline()` | `pipelines/delete-minio-user.Jenkinsfile` | `NAME`, `ENVIRONMENT`, `RO`, `RW`, `CONFIRM_NAME` |
 
-`ENVIRONMENT` is `dev`, `staging` or `prod`. `ACCESS` is one level from
-`levels.yaml` in uppercase (`RO`, `RW`), or `BOTH`. `BOTH` selects `ro` and
-`rw`. `BUCKETS` is a list of bucket names, separated by commas, spaces or new
+`ENVIRONMENT` is `dev`, `staging` or `prod`. `RO` and `RW` are checkboxes, one
+for each level in `levels.yaml`, and they are not checked by default. The
+pipeline uses only the checked levels. You must check at least one. `BUCKETS` is a list of bucket names, separated by commas, spaces or new
 lines. An empty or invalid parameter stops the build before any MinIO or
 Infisical call, so the first build after discovery changes nothing.
 
@@ -95,7 +95,7 @@ The pipelines make these names from `NAME` (or `USER_NAME`), the environment
 - Infisical folder: `/minio/users/NAME/L` in the Infisical environment `E`.
   It holds `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
 
-`createMinioBucketPipeline()` creates the bucket and gives `ro` and `rw`
+`createMinioBucketPipeline()` creates the bucket and gives the checked levels
 access to that bucket. `createMinioUserPipeline()` gives the selected levels
 access to the `BUCKETS` list. Before the first change, both pipelines check
 the MinIO resources that they create: the bucket (bucket pipeline only) and
@@ -134,8 +134,12 @@ The steps are `minioCreateBucket`, `minioCreateAccess`, `minioRotateKeys` and
 2. Add the level to `levels` in
    `resources/dev/raulstechtips/jenkins/minio/levels.yaml`.
 
-No code change is necessary. The `ACCESS` parameter shows the new level in
-uppercase. `BOTH` continues to select only `ro` and `rw`.
+3. Add one checkbox for the level to the `parameters` block of each of the
+   four MinIO pipelines in `vars/`, for example
+   `booleanParam(name: 'ADMIN', defaultValue: false, description: '...')`.
+   The name is the level in uppercase. Declarative Pipeline does not accept a
+   loop in `parameters`, so each checkbox must be written out. The steps read
+   the checked levels from `levels.yaml`, so no other code changes.
 
 ## 2. How a repo uses the library
 
@@ -356,6 +360,17 @@ Put the flags under `pipeline-steps`. Every flag is `false` by default.
 | `helm-install` | `helmInstall` | all | Never on `main`. Never in a release run. Skipped when `helm-clean-install` is also true. |
 | `helm-clean-install` | `helmCleanInstall` | all | Never on `main`. Never in a release run. |
 | `argo-deploy` | `argoDeploy` | all | Only on `main` builds and in release runs. A PR build never deploys. |
+
+Image builds cache Kaniko `RUN` and `COPY` layers in the selected publish registry.
+When `publish-targets` contains `ghcr`, the cache uses GHCR, including when Harbor is
+also selected. With only `harbor`, the cache uses Harbor. List order does not change
+this selection. The finished image still goes to every selected publish target.
+
+The cache repository is `<image-prefix>/<docker-image.name>-build-cache`. It is
+shared across branches and build versions for that image. The build uses the
+existing registry credentials, which need pull and push access to this repository.
+No new project config field is required. The first build populates the cache;
+later builds reuse matching layers.
 
 ## 5. Stage order
 

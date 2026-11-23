@@ -9,7 +9,7 @@ import dev.raulstechtips.jenkins.helpers.MinioNames
  * deletes the Infisical folder /minio/users/NAME/L. Missing items are skipped. Then it deletes
  * /minio/users/NAME when that folder has no subfolders and no secrets.
  *
- * @param args name, environment, access (RO, RW or BOTH), confirmName
+ * @param args name, environment, access (map with one checkbox per level, for example [RO: true]), confirmName
  * @throws IllegalArgumentException for invalid input, before any shell command
  * @throws error (fails the build) when confirmName is not equal to name
  */
@@ -17,7 +17,7 @@ def call(Map args) {
     MinioNames names = new MinioNames()
     String name = names.validateName(args.name as String)
     String environment = names.validateEnvironment(args.environment as String)
-    List<String> levels = names.levels(args.access as String, knownLevels())
+    List<String> levels = names.levels(args.access as Map, knownLevels())
     String confirm = args.confirmName == null ? '' : args.confirmName.toString().trim()
     if (confirm != name) {
         error("CONFIRM_NAME '${confirm}' is not equal to NAME '${name}'. Nothing is changed.".toString())

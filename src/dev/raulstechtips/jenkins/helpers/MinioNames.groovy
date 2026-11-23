@@ -62,17 +62,21 @@ class MinioNames implements Serializable {
         "${namePath(name)}/${validateLevel(level)}"
     }
 
+    /**
+     * @param access the job parameters: one checkbox per level, named as the level in uppercase (RO, RW)
+     * @param knownLevels the levels from levels.yaml
+     * @return the checked levels, in the knownLevels order
+     * @throws IllegalArgumentException when no level is checked
+     */
     @NonCPS
-    List<String> levels(String access, List<String> knownLevels) {
-        String value = access == null ? '' : access.trim()
-        if (value == 'BOTH') {
-            return ['ro', 'rw']
+    List<String> levels(Map access, List<String> knownLevels) {
+        List<String> selected = knownLevels.findAll { String level ->
+            access != null && access[level.toUpperCase()]?.toString() == 'true'
         }
-        if (value.isEmpty() || value != value.toUpperCase() || !(value.toLowerCase() in knownLevels)) {
-            List<String> allowed = knownLevels.collect { it.toUpperCase() } + ['BOTH']
-            throw new IllegalArgumentException("ACCESS '${value}' must be one of: ${allowed.join(', ')}.")
+        if (selected.isEmpty()) {
+            throw new IllegalArgumentException("Select at least one access level: ${knownLevels.collect { it.toUpperCase() }.join(', ')}.")
         }
-        [value.toLowerCase()]
+        selected
     }
 
     @NonCPS

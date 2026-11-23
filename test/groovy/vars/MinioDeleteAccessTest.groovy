@@ -25,9 +25,9 @@ class MinioDeleteAccessTest extends BasePipelineTest {
 
     @Test
     void removesKeysUserPolicyAndFoldersButNeverTheBucket() {
-        loadScript('vars/minioCreateBucket.groovy').call(name: 'app', environment: 'dev')
+        loadScript('vars/minioCreateBucket.groovy').call(name: 'app', environment: 'dev', access: [RO: true, RW: true])
         fake.calls.clear()
-        delete(name: 'app', environment: 'dev', access: 'BOTH', confirmName: 'app')
+        delete(name: 'app', environment: 'dev', access: [RO: true, RW: true], confirmName: 'app')
         assertEquals([:], fake.users)
         assertEquals([:], fake.policies)
         assertEquals([:], fake.keys)
@@ -42,15 +42,15 @@ class MinioDeleteAccessTest extends BasePipelineTest {
 
     @Test
     void oneLevelKeepsTheOtherLevelFolder() {
-        loadScript('vars/minioCreateBucket.groovy').call(name: 'app', environment: 'dev')
-        delete(name: 'app', environment: 'dev', access: 'RO', confirmName: 'app')
+        loadScript('vars/minioCreateBucket.groovy').call(name: 'app', environment: 'dev', access: [RO: true, RW: true])
+        delete(name: 'app', environment: 'dev', access: [RO: true], confirmName: 'app')
         assertEquals(['app-dev-rw'] as Set, fake.users.keySet())
         assertEquals(['dev:/minio/users/app', 'dev:/minio/users/app/rw'] as Set, fake.folders)
     }
 
     @Test
     void missingItemsAreSkipped() {
-        delete(name: 'gone', environment: 'dev', access: 'BOTH', confirmName: 'gone')
+        delete(name: 'gone', environment: 'dev', access: [RO: true, RW: true], confirmName: 'gone')
         assertEquals(['delete-keys-folder', 'delete-keys-folder', 'delete-name-folder'], fake.changes())
         assertTrue(fake.logs.contains('User gone-dev-ro does not exist. Skipped.'))
         assertTrue(fake.logs.contains('Policy gone-dev-rw does not exist. Skipped.'))
@@ -60,7 +60,7 @@ class MinioDeleteAccessTest extends BasePipelineTest {
     void wrongConfirmNameFailsBeforeAnyShellCall() {
         [null, '', 'other', 'app2'].each { String confirm ->
             def failure = assertThrows(IllegalStateException) {
-                delete(name: 'app', environment: 'dev', access: 'BOTH', confirmName: confirm)
+                delete(name: 'app', environment: 'dev', access: [RO: true, RW: true], confirmName: confirm)
             }
             assertTrue(failure.message.contains('is not equal to NAME'), failure.message)
         }
@@ -70,8 +70,8 @@ class MinioDeleteAccessTest extends BasePipelineTest {
 
     @Test
     void emptyOrInvalidInputFailsWithoutAnyShellCall() {
-        [[:], [name: '', environment: 'dev', access: 'RO', confirmName: ''],
-            [name: 'app', environment: 'dev', access: 'NONE', confirmName: 'app']].each { Map args ->
+        [[:], [name: '', environment: 'dev', access: [RO: true], confirmName: ''],
+            [name: 'app', environment: 'dev', access: [NONE: true], confirmName: 'app']].each { Map args ->
             assertThrows(IllegalArgumentException) { delete(args) }
         }
         assertEquals([], fake.calls)

@@ -27,7 +27,7 @@ class CreateMinioUserPipelineTest extends DeclarativePipelineTest {
         binding.setVariable('params', [:])
         fake = new MinioFake()
         fake.install(this)
-        ['string', 'text', 'choice', 'password'].each { String type ->
+        ['string', 'text', 'choice', 'password', 'booleanParam'].each { String type ->
             ParametersDeclaration.metaClass."${type}" = { Map args ->
                 parameters << ([type: type] + args)
                 Map params = binding.getVariable('params') as Map
@@ -62,8 +62,8 @@ class CreateMinioUserPipelineTest extends DeclarativePipelineTest {
 
     @Test
     void hasTheExactParametersOptionsAndAgent() {
-        run([USER_NAME: 'reader', ACCESS: 'RO', BUCKETS: 'app-dev\nlogs-dev', ENVIRONMENT: 'dev'])
-        assertEquals([['string', 'USER_NAME'], ['choice', 'ACCESS', ['RO', 'RW', 'BOTH']], ['text', 'BUCKETS'], ['choice', 'ENVIRONMENT', ['dev', 'staging', 'prod']]], parameters.collect { [it.type, it.name] + (it.choices ? [it.choices] : []) })
+        run([USER_NAME: 'reader', RO: true, BUCKETS: 'app-dev\nlogs-dev', ENVIRONMENT: 'dev'])
+        assertEquals([['string', 'USER_NAME'], ['booleanParam', 'RO'], ['booleanParam', 'RW'], ['text', 'BUCKETS'], ['choice', 'ENVIRONMENT', ['dev', 'staging', 'prod']]], parameters.collect { [it.type, it.name] + (it.choices ? [it.choices] : []) })
         assertTrue(parameters.findAll { it.type in ['string', 'text'] }.every { it.defaultValue == '' })
         assertEquals([skipDefaultCheckout: true, disableConcurrentBuilds: true,
             timeout: [time: 10, unit: 'MINUTES'], buildDiscarder: [numToKeepStr: '20']], options)
@@ -83,24 +83,26 @@ class CreateMinioUserPipelineTest extends DeclarativePipelineTest {
     }
 
     @Test
-    void accessChoicesComeFromLevelsYaml() {
-        run([USER_NAME: 'reader', ACCESS: 'BOTH', BUCKETS: 'app-dev', ENVIRONMENT: 'dev'])
+    void levelCheckboxesMatchLevelsYaml() {
+        run([USER_NAME: 'reader', RO: true, RW: true, BUCKETS: 'app-dev', ENVIRONMENT: 'dev'])
         List levels = new org.yaml.snakeyaml.Yaml().load(new File('resources/dev/raulstechtips/jenkins/minio/levels.yaml').text).levels
-        assertEquals(levels.collect { it.toUpperCase() } + ['BOTH'], parameters.find { it.name == 'ACCESS' }.choices)
+        List<Map> boxes = parameters.findAll { it.type == 'booleanParam' }
+        assertEquals(levels.collect { it.toUpperCase() }, boxes.collect { it.name })
+        assertTrue(boxes.every { it.defaultValue == false })
         assertEquals(['reader-dev-ro', 'reader-dev-rw'] as Set, fake.users.keySet())
     }
 
     @Test
     void secondRunFailsAndChangesNothing() {
-        run([USER_NAME: 'reader', ACCESS: 'RO', BUCKETS: 'app-dev', ENVIRONMENT: 'dev'])
+        run([USER_NAME: 'reader', RO: true, BUCKETS: 'app-dev', ENVIRONMENT: 'dev'])
         fake.calls.clear()
-        assertThrows(IllegalStateException) { run([USER_NAME: 'reader', ACCESS: 'RO', BUCKETS: 'app-dev', ENVIRONMENT: 'dev']) }
+        assertThrows(IllegalStateException) { run([USER_NAME: 'reader', RO: true, BUCKETS: 'app-dev', ENVIRONMENT: 'dev']) }
         assertEquals([], fake.changes())
     }
 
     @Test
     void emptyBucketsFailWithoutAnyShellCall() {
-        assertThrows(IllegalArgumentException) { run([USER_NAME: 'reader', ACCESS: 'RO', BUCKETS: ' \n ', ENVIRONMENT: 'dev']) }
+        assertThrows(IllegalArgumentException) { run([USER_NAME: 'reader', RO: true, BUCKETS: ' \n ', ENVIRONMENT: 'dev']) }
         assertEquals([], fake.calls)
     }
 }

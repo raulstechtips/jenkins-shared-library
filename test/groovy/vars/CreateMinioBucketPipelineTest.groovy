@@ -27,7 +27,7 @@ class CreateMinioBucketPipelineTest extends DeclarativePipelineTest {
         binding.setVariable('params', [:])
         fake = new MinioFake()
         fake.install(this)
-        ['string', 'text', 'choice', 'password'].each { String type ->
+        ['string', 'text', 'choice', 'password', 'booleanParam'].each { String type ->
             ParametersDeclaration.metaClass."${type}" = { Map args ->
                 parameters << ([type: type] + args)
                 Map params = binding.getVariable('params') as Map
@@ -62,8 +62,8 @@ class CreateMinioBucketPipelineTest extends DeclarativePipelineTest {
 
     @Test
     void hasTheExactParametersOptionsAndAgent() {
-        run([NAME: 'app', ENVIRONMENT: 'dev'])
-        assertEquals([['string', 'NAME'], ['choice', 'ENVIRONMENT', ['dev', 'staging', 'prod']]], parameters.collect { [it.type, it.name] + (it.choices ? [it.choices] : []) })
+        run([NAME: 'app', ENVIRONMENT: 'dev', RO: true, RW: true])
+        assertEquals([['string', 'NAME'], ['choice', 'ENVIRONMENT', ['dev', 'staging', 'prod']], ['booleanParam', 'RO'], ['booleanParam', 'RW']], parameters.collect { [it.type, it.name] + (it.choices ? [it.choices] : []) })
         assertTrue(parameters.findAll { it.type in ['string', 'text'] }.every { it.defaultValue == '' })
         assertEquals([skipDefaultCheckout: true, disableConcurrentBuilds: true,
             timeout: [time: 10, unit: 'MINUTES'], buildDiscarder: [numToKeepStr: '20']], options)
@@ -83,11 +83,25 @@ class CreateMinioBucketPipelineTest extends DeclarativePipelineTest {
     }
 
     @Test
+    void onlyTheCheckedLevelIsCreated() {
+        run([NAME: 'app', ENVIRONMENT: 'dev', RO: true, RW: false])
+        assertEquals(['app-dev-ro'] as Set, fake.users.keySet())
+        assertEquals(['app-dev-ro'] as Set, fake.policies.keySet())
+    }
+
+    @Test
+    void noCheckedLevelFailsWithoutAnyShellCall() {
+        assertThrows(IllegalArgumentException) { run([NAME: 'app', ENVIRONMENT: 'dev', RO: false, RW: false]) }
+        assertEquals([], fake.calls)
+        assertEquals(0, fake.installs)
+    }
+
+    @Test
     void secondRunFailsAndChangesNothing() {
-        run([NAME: 'app', ENVIRONMENT: 'prod'])
+        run([NAME: 'app', ENVIRONMENT: 'prod', RO: true, RW: true])
         assertTrue(fake.buckets.contains('app-prod'))
         fake.calls.clear()
-        assertThrows(IllegalStateException) { run([NAME: 'app', ENVIRONMENT: 'prod']) }
+        assertThrows(IllegalStateException) { run([NAME: 'app', ENVIRONMENT: 'prod', RO: true, RW: true]) }
         assertEquals([], fake.changes())
     }
 }
