@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Enable Kaniko RUN and COPY layer caching in the selected publish registry. GHCR takes priority when both GHCR and Harbor are selected. Reuse the existing registry credentials and a stable cache repository per image ([DEVSECOPS-211](https://raulstechtips.atlassian.net/browse/DEVSECOPS-211)).
+
 ### Added
 
 - Add `createMinioBucketPipeline()` to create the MinIO bucket `NAME-ENVIRONMENT` with `ro` and `rw` users, policies and access keys. The keys go to Infisical under `/minio/users`. A second run changes nothing ([DEVSECOPS-193](https://raulstechtips.atlassian.net/browse/DEVSECOPS-193))

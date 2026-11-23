@@ -341,6 +341,17 @@ Put the flags under `pipeline-steps`. Every flag is `false` by default.
 | `helm-clean-install` | `helmCleanInstall` | all | Never on `main`. Never in a release run. |
 | `argo-deploy` | `argoDeploy` | all | Only on `main` builds and in release runs. A PR build never deploys. |
 
+Image builds cache Kaniko `RUN` and `COPY` layers in the selected publish registry.
+When `publish-targets` contains `ghcr`, the cache uses GHCR, including when Harbor is
+also selected. With only `harbor`, the cache uses Harbor. List order does not change
+this selection. The finished image still goes to every selected publish target.
+
+The cache repository is `<image-prefix>/<docker-image.name>-build-cache`. It is
+shared across branches and build versions for that image. The build uses the
+existing registry credentials, which need pull and push access to this repository.
+No new project config field is required. The first build populates the cache;
+later builds reuse matching layers.
+
 ## 5. Stage order
 
 ### Before the `pipeline {}` block
