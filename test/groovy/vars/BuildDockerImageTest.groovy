@@ -112,6 +112,8 @@ class BuildDockerImageTest extends BasePipelineTest {
         assertEquals(['--context', 'plugins', '--dockerfile', 'plugins/Dockerfile',
             '--destination', 'ghcr.io/raulstechtips/controller:1.2.3',
             '--destination', 'harbor.dev.raulstechtips.dev/raulstechtips/controller:1.2.3',
+            '--cache=true', '--cache-repo', 'ghcr.io/raulstechtips/controller-build-cache',
+            '--cache-run-layers=true', '--cache-copy-layers=true',
             '--digest-file', '.pipeline/image.digest'], PublishingShellProbe.argv(executor, 'kaniko'))
         assertFalse(commands.any { it.text.contains('latest') })
         assertTrue(scopes.empty)
@@ -147,16 +149,30 @@ class BuildDockerImageTest extends BasePipelineTest {
         assertTrue(commands.last().text.contains('rm -f /kaniko/.docker/config.json'))
     }
 
-    @Test
-    void usesNormalizedDockerImageDefaults() {
+    static List<Arguments> cacheTargets() {
+        [
+            Arguments.of(['ghcr'], 'ghcr.io/raulstechtips/example-build-cache'),
+            Arguments.of(['harbor'], 'harbor.dev.raulstechtips.dev/raulstechtips/example-build-cache'),
+            Arguments.of(['ghcr', 'harbor'], 'ghcr.io/raulstechtips/example-build-cache'),
+            Arguments.of(['harbor', 'ghcr'], 'ghcr.io/raulstechtips/example-build-cache')
+        ]
+    }
+
+    @ParameterizedTest
+    @MethodSource('cacheTargets')
+    void cachesInSelectedRegistryWithGhcrPriority(List<String> targets, String cacheRepo) {
         cfg['docker-image'] = [name: 'example', dockerfile: 'Dockerfile', context: '.']
-        cfg['publish-targets'] = ['ghcr']
+        cfg['publish-targets'] = targets
         loadScript('vars/buildDockerImage.groovy').call(cfg)
         Map executor = commands.find { it.text.contains('/kaniko/executor') }
-        assertEquals(['--context', '.', '--dockerfile', 'Dockerfile',
-            '--destination', 'ghcr.io/raulstechtips/example:1.2.3',
+        List destinations = targets.collectMany { String target ->
+            ['--destination', registries[target]['image-prefix'] + '/example:1.2.3']
+        }
+        assertEquals(['--context', '.', '--dockerfile', 'Dockerfile'] + destinations + [
+            '--cache=true', '--cache-repo', cacheRepo,
+            '--cache-run-layers=true', '--cache-copy-layers=true',
             '--digest-file', '.pipeline/image.digest'], PublishingShellProbe.argv(executor, 'kaniko'))
-        assertEquals(1, executor.text.count('--destination '))
+        assertEquals(targets, executor.scopes)
     }
 
     @Test
@@ -207,6 +223,8 @@ class BuildDockerImageTest extends BasePipelineTest {
             '--context', cfg['docker-image'].context, '--dockerfile', cfg['docker-image'].dockerfile,
             '--destination', registries.ghcr['image-prefix'] + '/' + cfg['docker-image'].name + ':' + cfg.version,
             '--destination', registries.harbor['image-prefix'] + '/' + cfg['docker-image'].name + ':' + cfg.version,
+            '--cache=true', '--cache-repo', registries.ghcr['image-prefix'] + '/' + cfg['docker-image'].name + '-build-cache',
+            '--cache-run-layers=true', '--cache-copy-layers=true',
             '--digest-file', '.pipeline/image.digest'
         ], PublishingShellProbe.argv(command, 'kaniko'))
     }

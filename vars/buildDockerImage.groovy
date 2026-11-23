@@ -10,6 +10,8 @@ import dev.raulstechtips.jenkins.helpers.RegistryCatalog
  * the builder agent. Kaniko runs as root, so after a successful build it makes .pipeline and the
  * digest file readable for the agent user that reads it. The registry config is deleted afterwards, also when
  * the build fails.
+ * RUN and COPY layers use a shared registry cache at IMAGE-PREFIX/NAME-build-cache.
+ * GHCR takes priority when both publish targets are selected, regardless of their order.
  *
  * @param cfg the loaded config. Reads publish-targets, docker-image and version.
  * @return the pushed image digest, sha256: followed by 64 lowercase hex characters
@@ -25,13 +27,16 @@ def call(Map cfg) {
         [name: name, registry: catalog.target(name)]
     }
     Map image = cfg['docker-image']
+    Map cacheTarget = targets.find { it.name == 'ghcr' } ?: targets[0]
     List buildEnv = ['BUILD_CONTEXT=' + image.context, 'BUILD_DOCKERFILE=' + image.dockerfile]
+    buildEnv << 'BUILD_CACHE_REPO=' + cacheTarget.registry['image-prefix'] + '/' + image.name + '-build-cache'
     String command = '/kaniko/executor --context "$BUILD_CONTEXT" --dockerfile "$BUILD_DOCKERFILE"'
     targets.eachWithIndex { Map target, int index ->
         buildEnv << 'BUILD_DESTINATION_' + index + '=' + target.registry['image-prefix'] +
             '/' + image.name + ':' + cfg.version
         command += ' --destination "$BUILD_DESTINATION_' + index + '"'
     }
+    command += ' --cache=true --cache-repo "$BUILD_CACHE_REPO" --cache-run-layers=true --cache-copy-layers=true'
     command += ' --digest-file .pipeline/image.digest'
 
     container('kaniko') {
