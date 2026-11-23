@@ -520,7 +520,7 @@ class JavaConfigurablePipelineTest extends DeclarativePipelineTest {
         assertNull(agent.defaultContainer)
         Map pod = new Yaml().load(agent.yaml)
         assertEquals(['tools', 'trivy', 'jdk'], pod.spec.containers*.name)
-        ['Build image': 'builder', 'Helm install': 'deployer', 'Helm clean install': 'deployer'].each {
+        ['Build image': 'builder-medium', 'Helm install': 'deployer', 'Helm clean install': 'deployer'].each {
             String name, String parent ->
             assertEquals(parent, pipeline.stages[name].agent.kubernetes.inheritFrom)
             assertEquals(Boolean.TRUE, pipeline.stages[name].when.beforeAgent, name)
