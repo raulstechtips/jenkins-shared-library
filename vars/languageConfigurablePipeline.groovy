@@ -11,7 +11,7 @@ import dev.raulstechtips.jenkins.helpers.RegistryCatalog
  * prepared image context transfer, image build, Trivy image scan, chart package and upload,
  * Trivy chart scan, Helm clean install or Helm install, chart version update, release publication,
  * and Argo deploy. Most stages run on the generic agent merged with the
- * library pod. Image build runs on the builder agent and the Helm installs on the deployer agent.
+ * library pod. Image build runs on the builder-medium agent and the Helm installs on the deployer agent.
  * Build and unit test run build-command and test-command in language.container. The image context
  * stash holds the workspace after the build, without language.imageContextExcludes. The Helm installs
  * never run on main or in a release run, and Argo deploy runs only on a main push or in a release
@@ -172,7 +172,8 @@ def call(Map language) {
                         }
                         agent {
                             kubernetes {
-                                inheritFrom 'builder'
+                                // The jenkins chart template gives Kaniko a 5Gi request and a 7Gi limit.
+                                inheritFrom 'builder-medium'
                             }
                         }
                         steps {
