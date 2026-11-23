@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- `infisicalReleaseSync` no longer uses the Groovy spread operator (`*.`), which Jenkins CPS rejects at compile time, so the release sync job can run. Update the `buildDockerImage` build-args test for the Kaniko cache flags ([DEVSECOPS-208](https://raulstechtips.atlassian.net/browse/DEVSECOPS-208))
 - Enable Kaniko RUN and COPY layer caching in the selected publish registry. GHCR takes priority when both GHCR and Harbor are selected. Reuse the existing registry credentials and a stable cache repository per image ([DEVSECOPS-211](https://raulstechtips.atlassian.net/browse/DEVSECOPS-211)).
 
 ### Added

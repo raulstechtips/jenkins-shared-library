@@ -189,6 +189,8 @@ class BuildDockerImageTest extends BasePipelineTest {
             '--build-arg', 'DD_GIT_COMMIT_SHA=3e32d0469321c6dc67d7d82976ad965cdfad0e5d',
             '--build-arg', 'DD_GIT_REPOSITORY_URL=https://github.com/raulstechtips/secrets-manager.git',
             '--destination', 'ghcr.io/raulstechtips/controller:1.2.3',
+            '--cache=true', '--cache-repo', 'ghcr.io/raulstechtips/controller-build-cache',
+            '--cache-run-layers=true', '--cache-copy-layers=true',
             '--digest-file', '.pipeline/image.digest'], PublishingShellProbe.argv(executor, 'kaniko'))
     }
 

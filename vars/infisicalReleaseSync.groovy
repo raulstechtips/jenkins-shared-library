@@ -31,9 +31,9 @@ List<String> call(String mode) {
                 'COMMITTER_NAME=' + JenkinsBot.INFISICAL_RELEASE_NAME,
                 'COMMITTER_EMAIL=' + JenkinsBot.INFISICAL_RELEASE_EMAIL]) {
                 sh(InfisicalReleases.FORK_AUTH + InfisicalReleases.FETCH_SCRIPT)
-                List<String> tags = sh(script: 'git -C "$WORKDIR" tag -l "v*"', returnStdout: true).readLines()*.trim()
+                List<String> tags = sh(script: 'git -C "$WORKDIR" tag -l "v*"', returnStdout: true).readLines().collect { it.trim() }
                 List<String> branches = sh(script: 'git -C "$WORKDIR" for-each-ref ' +
-                    '--format="%(refname:lstrip=3)" refs/remotes/origin/release/', returnStdout: true).readLines()*.trim()
+                    '--format="%(refname:lstrip=3)" refs/remotes/origin/release/', returnStdout: true).readLines().collect { it.trim() }
                 Map plan
                 try {
                     plan = InfisicalReleases.plan(tags, branches, mode)
