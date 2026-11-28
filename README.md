@@ -17,6 +17,10 @@ The java, python and node pipelines share one stage body, `languageConfigurableP
 `infisicalConfigurablePipeline()` builds the Infisical fork (`raulstechtips/secrets-manager`) on
 `release/vX.Y.Z` branches only. See [infisicalConfigurablePipeline](#infisicalconfigurablepipeline).
 
+`releaseConfigurablePipeline()` only releases. It is for repos whose checks run somewhere else,
+for example the Terraform and Packer module repos, whose checks stay in GitHub Actions. It reads no
+config file. See [releaseConfigurablePipeline](#releaseconfigurablepipeline).
+
 Each pipeline reads `project-pipeline-config.yaml` from the repo root.
 The library validates the file and stops the build on any error.
 Flags in the file enable the steps.
@@ -451,6 +455,30 @@ For `raulstechtips/secrets-manager` only. It loads the config with the cluster s
 5. `Trivy image scan` (`trivy-scan`), on the built image only.
 
 There are no unit tests, Helm steps or deploys. The build times out after 180 minutes.
+
+### releaseConfigurablePipeline
+
+For repos that only need the release. The `Jenkinsfile` is:
+
+```groovy
+@Library('jenkins-shared-library@main') _
+releaseConfigurablePipeline()
+```
+
+The repo needs no `project-pipeline-config.yaml`. The pipeline does not read it.
+Before the `pipeline {}` block, it reads `RELEASE_VERSION` and stops on a branch or PR build with the same
+error as the other pipelines. It has one stage:
+
+1. `Release`. Only in a release run (`RELEASE_VERSION` set on `main`). Runs on a pod from the `generic`
+   template with only the `tools` container. It runs `checkout scm`, sets the version as the build name, then
+   `releasePipeline.prepare` and `releasePipeline.publish`. The result is the `release: <v>` commit with the
+   released `CHANGELOG.md` and the tag `<v>`. No version file is changed, also when `charts/Chart.yaml` exists.
+
+Every push and PR build still starts, because Jenkins starts a branch event build for each push and PR
+(`overrideIndexTriggers` stops only indexing builds). Without `RELEASE_VERSION`, `Release` is skipped
+before any agent starts (`beforeAgent true`), so the build ends with success, does nothing, and has the
+description `No RELEASE_VERSION: nothing to release.` It does not calculate a version, so any branch name
+is accepted. The build times out after 15 minutes and builds do not run concurrently. It keeps 20 builds.
 
 ### Image-scan gate
 
